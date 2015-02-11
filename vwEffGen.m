@@ -1,4 +1,5 @@
-(* ::Package:: *)
+#!/usr/local/bin/MathematicaScript/ -script
+
 
 AppendTo[$Path,"/Users/aleksey/code/mathematica/star_formation"];
 Needs["vwEff`"]
