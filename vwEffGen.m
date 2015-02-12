@@ -1,6 +1,9 @@
 #!/usr/local/bin/MathematicaScript/ -script
 
 
+Needs["vwEff`"]
+
+
 mhalos=10.^Range[10.8, 13.8,0.2] MS;
 mstarTots=mstarTot/@mhalos;
 mbhs=MbhMbulge/@mstarTots
