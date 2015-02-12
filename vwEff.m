@@ -68,6 +68,7 @@ Mbh[mhalo_]:=(mhalo/(10.^13 MS))^1.55 10.^8.18 MS
 vcirc[mhalo_]:=2. 10^7 10.0^((Log10[mhalo/(10.^12 MS)]-0.15)/3.32)
 (*m-sigma relationship--from Gultekin...*)
 \[Sigma][mbh_]:=(1./2.)^(1./5.1) (mbh/(10^8 MS))^(1./5.1) 2 10^7
+MbhMbulge[mbulge_]:=10.^8.46 (mbulge/(10.^11 MS))^1.05 MS
 (*Influence radius*)
 rinf[mbh_]:=14*(mbh/(10.^8 MS))^0.6 pc
 

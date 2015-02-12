@@ -1,13 +1,9 @@
 #!/usr/local/bin/MathematicaScript/ -script
 
 
-AppendTo[$Path,"/Users/aleksey/code/mathematica/star_formation"];
-Needs["vwEff`"]
-
-
-mbhs = 10.^Range[6., 9., 0.2]*MS; 
-mbhs = Sort[Append[mbhs, 4.87*10^7*MS]]; 
-mhalos = Mhalo /@ mbhs; 
+mhalos=10.^Range[10.8, 13.8,0.2] MS;
+mstarTots=mstarTot/@mhalos;
+mbhs=MbhMbulge/@mstarTots
 
 
 vweffStars = vweffStar /@ mhalos; 
@@ -26,33 +22,40 @@ vweffTotsCore = tmp[[1 ;; All,3]];
 
 
 \[Eta]s = \[Eta] /@ mhalos; 
-mdots = Table[mdotsol[mbhs[[i]], vweffTots[[i]], 0.8, \[Eta]s[[i]]], {i, 1, Length[mbhs]}]; 
-mdotsCore = Table[mdotsol[mbhs[[i]], vweffTotsCore[[i]], 0.1, \[Eta]s[[i]]], {i, 1, Length[mbhs]}]; 
+mdots = Table[mdotsol[mbhs[[i]], vweffTots[[i]], 0.8, \[Eta]s[[i]]], 
+    {i, 1, Length[mbhs]}]; 
+mdotsCore = Table[mdotsol[mbhs[[i]], vweffTotsCore[[i]], 0.1, \[Eta]s[[i]]], 
+    {i, 1, Length[mbhs]}]; 
 mdotEdds = mdotEdd /@ mbhs; 
 eddrs = mdots/mdotEdds; 
 eddrsCore = mdotsCore/mdotEdds; 
 
 
 radiiIa = Table[radiusIa[mbhs[[i]], mhalos[[i]]], {i, 1, Length[mbhs]}]; 
-mdotIas = Table[mdotIA[mbhs[[i]], radiiIa[[i]], 0.8, \[Eta]s[[i]]], {i, 1, Length[\[Eta]s]}]; 
+mdotIas = Table[mdotIA[mbhs[[i]], radiiIa[[i]], 0.8, \[Eta]s[[i]]], 
+    {i, 1, Length[\[Eta]s]}]; 
 eddrIas = mdotIas/mdotEdds; 
 mdotInfs = (\[Eta]s*mbhs)/th; 
 eddrInfs = mdotInfs/mdotEdds; 
-eddrMaxCools = Table[eddrMaxCool[mbhs[[i]], 0.8, \[Eta]s[[i]]], {i, 1, Length[\[Eta]s]}]; 
+eddrMaxCools = Table[eddrMaxCool[mbhs[[i]], 0.8, \[Eta]s[[i]]], 
+    {i, 1, Length[\[Eta]s]}]; 
 
 
 stags = Table[rs[mbhs[[i]], vweffTots[[i]]], {i, 1, Length[mbhs]}]; 
 
 
-hcs = Table[hc[mbhs[[i]], vweffTots[[i]], 0.8, \[Eta]s[[i]]], {i, 1, Length[mbhs]}]; 
-hcsCore = Table[hc[mbhs[[i]], vweffTots[[i]], 0.1, \[Eta]s[[i]]], {i, 1, Length[mbhs]}]; 
+hcs = Table[hc[mbhs[[i]], vweffTots[[i]], 0.8, \[Eta]s[[i]]], 
+    {i, 1, Length[mbhs]}]; 
+hcsCore = Table[hc[mbhs[[i]], vweffTots[[i]], 0.1, \[Eta]s[[i]]], 
+    {i, 1, Length[mbhs]}]; 
 
 
 timeImps = 10.^Range[6.6, 10., 0.2]*year; 
 vweffStarImps = vweffStarImp /@ timeImps; 
 \[Eta]Imps = \[Eta]Imp /@ timeImps; 
 mbhsSparse = 10.^Range[6., 9., 1.]*MS; 
-eddrImps = Table[mdotsol[mbhsSparse[[j]], vweffStarImps[[i]], 0.8, \[Eta]Imps[[i]]]/mdotEdd[mbhsSparse[[j]]], {i, 1, Length[timeImps]}, 
+eddrImps = Table[mdotsol[mbhsSparse[[j]], vweffStarImps[[i]], 0.8, \[Eta]Imps[[i]]]/
+     mdotEdd[mbhsSparse[[j]]], {i, 1, Length[timeImps]}, 
     {j, 1, Length[mbhsSparse]}]; 
 
 
