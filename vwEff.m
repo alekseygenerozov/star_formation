@@ -281,4 +281,7 @@ eddrMaxCool[mbh_, \[CapitalGamma]_:1, \[Eta]_:1, hcCrit_:1]:=6.58 10^-5 0.43^(3.
 
 
 
+EndPackage[]
+
+
 
