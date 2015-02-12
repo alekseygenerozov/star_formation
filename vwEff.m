@@ -130,10 +130,29 @@ f1[mhalo_]:= f10 Exp[-(Log10[mhalo/MS]-f11)^2/(2 f12^2)]
 f2[mhalo_]:=f20 +f21 Log10[(mhalo/MS)/10.^12]
 f3[mhalo_]:=10.^(f30+f31 ((mhalo/MS)/10.^12)^f32)
 (*Note that we divide by the mean stellar mass (in solar masses) to obtain the rate of star formation--in g s^-1*)
-dSdt[z_, mhalo_]:=f1[mhalo] (1+z)^-f2[mhalo] Exp[f2[mhalo]/f3[mhalo] z/(1+z)] 
-dNdt[z_, mhalo_]:=1/mavg dSdt[z,mhalo]
+dSdtForm[z_, mhalo_]:=f1[mhalo] (1+z)^-f2[mhalo] Exp[f2[mhalo]/f3[mhalo] z/(1+z)] 
+dNdtForm[z_, mhalo_]:=1/mavg dSdt[z,mhalo]
 (*To find the total stellar mass at present one would have to account for stars dying off. However, to compute this requires a more computationally intensive double integral and to a good approximation the total stellar mass at present is the total stellar mass formed.--this is the commented out function mstarTotComp*)
 mstarTot[M_]:=mavg NIntegrate[Abs[dNdt[z[t], M]], {t, 0., tL[zu]}, Method->"DoubleExponential"]
+
+
+(*Stellar mass accreted*)
+g10=1.633 MS/year;
+g20=0.855;
+g11=-2.017;
+g21=0.098;
+g12=-0.806;
+g22=-0.797;
+
+g1[mhalo_]:=g10*((mhalo/(10.^12.5  MS))^g11+(mhalo/(10.^12.5 MS))^g12)^-1
+g2[mhalo_]:=g20+g21 (mhalo/(10.^12 MS))^g22
+dSdtAcc[z_, mhalo_]:=g1[mhalo] Exp[-z/g2[mhalo]]
+dNdtAcc[z_, mhalo_]:=dSdtAcc[z, mhalo]/mavg
+
+
+
+dSdt[z_, mhalo_]:=dSdtAcc[z, mhalo]+dSdtForm[z, mhalo]
+dNdt[z_, mhalo_]:=dNdtAcc[z, mhalo]+dNdtForm[z, mhalo]
 
 
 
