@@ -111,9 +111,8 @@ f2[mhalo_]:=f20 +f21 Log10[(mhalo/MS)/10.^12]
 f3[mhalo_]:=10.^(f30+f31 ((mhalo/MS)/10.^12)^f32)
 (*Note that we divide by the mean stellar mass (in solar masses) to obtain the rate of star formation--in g s^-1*)
 dSdtForm[z_, mhalo_]:=f1[mhalo] (1+z)^-f2[mhalo] Exp[f2[mhalo]/f3[mhalo] z/(1+z)] 
-dNdtForm[z_, mhalo_]:=1/mavg dSdt[z,mhalo]
-(*To find the total stellar mass at present one would have to account for stars dying off. However, to compute this requires a more computationally intensive double integral and to a good approximation the total stellar mass at present is the total stellar mass formed.--this is the commented out function mstarTotComp*)
-mstarTot[M_]:=mavg NIntegrate[Abs[dNdt[z[t], M]], {t, 0., tL[zu]}, Method->"DoubleExponential"]
+dNdtForm[z_, mhalo_]:=1/mavg dSdtForm[z,mhalo]
+
 
 
 (*Stellar mass accreted*)
@@ -133,7 +132,12 @@ dNdtAcc[z_, mhalo_]:=dSdtAcc[z, mhalo]/mavg
 
 dSdt[z_, mhalo_]:=dSdtAcc[z, mhalo]+dSdtForm[z, mhalo]
 dNdt[z_, mhalo_]:=dNdtAcc[z, mhalo]+dNdtForm[z, mhalo]
-
+(*Total stellar mass accumulated within galaxy including stars which are accreted in mergers
+To find the total stellar mass at present one would have to account for stars dying off. 
+However, to compute this requires a more computationally intensive double integral 
+and to a good approximation the total stellar mass at present is the total stellar mass
+ formed.*)
+mstarTot[M_]:=mavg NIntegrate[Abs[dNdt[z[t], M]], {t, 0., tL[zu]}, Method->"DoubleExponential"]
 
 
 (*Stellar properties*)
@@ -165,13 +169,14 @@ mdotVoss[t_]:=If[t> 4. 10^6 year, 1./(nVoss/100.) 10.^-6.1 (t/(4. 10^6 year))^-1
 
 (*Ia properties*)
 DTD[t_]:=0.03((t/(10.^8 year))^(-1.12 ))*(1./(10.^10 MS))*(1/year)
-(*Ia rate per stellar mass--continuous star formation limit*)
-rateIa[mhalo_]:=NIntegrate[DTD[t]*dSdt[z[t],mhalo], {t,  tmin, tL[zu]}]/NIntegrate[dSdt[z[t],mhalo], {t,  tmin, tL[zu]}]
+(*Ia rate per stellar mass--from star formed with galay*)
+rateIa[mhalo_]:=NIntegrate[DTD[t]*dSdtForm[z[t],mhalo], {t,  tmin, tL[zu]}]\
+/NIntegrate[dSdtForm[z[t],mhalo], {t,  tmin, tL[zu]}]
 (*Ia rate within the impulsive limit*)
 rateIaImp[t_]:=DTD[t]
 fracII=NIntegrate[\[Mu]sal[mstar], {mstar, 8.MS, 100.MS}];
-(*Type II properties*)
-RII[mhalo_]:=dNdt[0, mhalo]fracII
+(*Type II properties--so far just include the stars which were formed in situ.*)
+RII[mhalo_]:=dNdtForm[0, mhalo]fracII
 RIIsp[mhalo_]:=RII[mhalo]/mstarTot[mhalo]
 (*Radius for which time between successive Ias is the same as the dynamical time*)
 radiusIa[mbh_, mhalo_]:=
@@ -185,17 +190,15 @@ radiusII[mbh_, rateII_, \[CapitalGamma]_:1]:=(rinf[mbh]^(2-\[CapitalGamma])/(rat
 radiusII[mbh_, \[CapitalGamma]_:1]:=radiusII[mbh, RIIsp[Mhalo[mbh]], \[CapitalGamma]]
 
 
-
-
-
 (*Mass and energy injectiuon as a function of Halo mass*)
 mdotImp[t_]:=Abs[Mt0Fit'[t]] \[CapitalDelta]M[t] \[Mu]sal[Mt0Fit[t]]
 (*Mass shed by turn-off stars*)
-mdot[mhalo_]:=NIntegrate[dNdt[z[t], mhalo]Abs[dMt0dt[t]] \[CapitalDelta]M[t] \[Mu]sal[Mt0Fit[t]], {t,  0., tL[zu]}, Method->"DoubleExponential"]
+mdot[mhalo_]:=NIntegrate[dNdtForm[z[t], mhalo]Abs[dMt0dt[t]] \[CapitalDelta]M[t] \[Mu]sal[Mt0Fit[t]], {t,  0., tL[zu]}, Method->"DoubleExponential"]
 (*Turnoff contribution to energy*)
-edotTO[mhalo_]:= NIntegrate[dNdt[z[t], mhalo] edotWR[t], {t, 0., tL[zu]} ]
+edotTO[mhalo_]:= NIntegrate[dNdtForm[z[t], mhalo] edotWR[t], {t, 0., tL[zu]} ]
 I1=0.5*NIntegrate[mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2, {Mstar, 0.1 MS ,100. MS}];
-edotMS[mhalo_]:=(*I1*NIntegrate[dNdt[z[t], M], {t,0, tmin}]+*)0.5 NIntegrate[dNdt[z[t], mhalo]mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2, {t,0., tL[zu]},{Mstar, 0.1 MS ,MS}]+0.5 NIntegrate[dNdt[z[t], mhalo]mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2, {t,0., tL[zu]},{Mstar ,MS, Mt0Fit[t]}];
+edotMS[mhalo_]:=0.5 NIntegrate[dNdtForm[z[t], mhalo]mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2, {t,0., tL[zu]},{Mstar, 0.1 MS ,MS}]\
++0.5 NIntegrate[dNdtForm[z[t], mhalo]mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2, {t,0., tL[zu]},{Mstar ,MS, Mt0Fit[t]}];
 (*Contribution of main sequence stars to energy injected*)
 (*Overall effective wind velocity.*)
 
