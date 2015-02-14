@@ -129,7 +129,6 @@ dSdtAcc[z_, mhalo_]:=g1[mhalo] Exp[-z/g2[mhalo]]
 dNdtAcc[z_, mhalo_]:=dSdtAcc[z, mhalo]/mavg
 
 
-
 dSdt[z_, mhalo_]:=dSdtAcc[z, mhalo]+dSdtForm[z, mhalo]
 dNdt[z_, mhalo_]:=dNdtAcc[z, mhalo]+dNdtForm[z, mhalo]
 (*Total stellar mass accumulated within galaxy including stars which are accreted in mergers
@@ -193,17 +192,29 @@ radiusII[mbh_, \[CapitalGamma]_:1]:=radiusII[mbh, RIIsp[Mhalo[mbh]], \[CapitalGa
 (*Mass and energy injectiuon as a function of Halo mass*)
 mdotImp[t_]:=Abs[Mt0Fit'[t]] \[CapitalDelta]M[t] \[Mu]sal[Mt0Fit[t]]
 (*Mass shed by turn-off stars*)
-mdot[mhalo_]:=NIntegrate[dNdtForm[z[t], mhalo]Abs[dMt0dt[t]] \[CapitalDelta]M[t] \[Mu]sal[Mt0Fit[t]], {t,  0., tL[zu]}, Method->"DoubleExponential"]
-(*Turnoff contribution to energy*)
-edotTO[mhalo_]:= NIntegrate[dNdtForm[z[t], mhalo] edotWR[t], {t, 0., tL[zu]} ]
-I1=0.5*NIntegrate[mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2, {Mstar, 0.1 MS ,100. MS}];
-edotMS[mhalo_]:=0.5 NIntegrate[dNdtForm[z[t], mhalo]mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2, {t,0., tL[zu]},{Mstar, 0.1 MS ,MS}]\
-+0.5 NIntegrate[dNdtForm[z[t], mhalo]mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2, {t,0., tL[zu]},{Mstar ,MS, Mt0Fit[t]}];
+(*Mass injection per star for Moster star formation history truncated at lookback time t.*) 
+mdotStar[t_, mhalo_]:=NIntegrate[dNdtForm[z[t1], mhalo]Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[Mt0Fit[t1]], {t1,  t, tL[zu]}, Method->"DoubleExponential"]/\
+NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]}]
+mdotForm[mhalo_]:=mdotStar[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0, tL[zu]}]
+mdotAcc[mhalo_]:=NIntegrate[mdotStar[t1]*dNdtAcc[z[t1], mhalo], {t1, 0, tL[zu]}]
+
+(*Turnoff and main sequence energy injection per star for Moster star formation histories truncated at time t.*)
+edotTOStar[t_?NumericQ, mhalo_]:=NIntegrate[dNdtForm[z[t1], mhalo]*edotWR[t1], {t1, t, tL[zu]} ]/NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]} ]
+edotMSStar[t_?NumericQ, mhalo_]:=0.5*NIntegrate[dNdtForm[z[t1], mhalo]*mdotStar[Mstar]*\[Mu]sal[Mstar]*vwMS[Mstar]^2, {t1, t, tL[zu]},{Mstar,0.1*MS,Mt0Fit[t1]}]\
+/NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]} ]
+(*Turnoff and main sequence contributions to energy injection.*)
+edotTOForm[mhalo_]:= edotTOStar[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0., tL[zu]} ]
+edotMSForm[mhalo_]:= edotMSStar[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0., tL[zu]} ]
+(*Energy injection per accreted star for stars accreted at look-back time t*)
+edotTOAcc[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotTOStar[t, mhalo], {t, 0., tL[zu]} ]
+edotMSAcc[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotMSStar[t, mhalo], {t, 0., tL[zu]} ]
+(*edotMSAcc[mhalo_]:=0.5 NIntegrate[dNdtForm[z[t], mhalo]mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2, {t,0., tL[zu]},{Mstar, 0.1 MS ,MS}]\
++0.5 NIntegrate[dNdtForm[z[t], mhalo]mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2, {t,0., tL[zu]},{Mstar ,MS, Mt0Fit[t]}];*)
+
 (*Contribution of main sequence stars to energy injected*)
 (*Overall effective wind velocity.*)
+vweffStar[mhalo_]:=Sqrt[2 (edotMSForm[mhalo]+edotTOForm[mhalo]+edotMSAcc[mhalo]+edotTOAcc[mhalo])/(mdotForm[mhalo]+mdotAcc[mhalo])]
 
-vweffStar[mhalo_]:=Sqrt[2 (edotMS[mhalo]+edotTO[mhalo])/mdot[mhalo]]
-vweffMS[mhalo_]:=Sqrt[2 (edotMS[mhalo])/mdot[mhalo]]
 \[Eta][mhalo_]:=mdot[mhalo]/mstarTot[mhalo] th
 (*Energy injected by MS stars in impulsive limit--note that unlike the continuous star formation limit here we have the mass and energy injected per star. Maybe make the impulsive and the continuous limits more consistent.*)
 edotMSImp[t_?NumericQ]:=0.5 NIntegrate[mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2,{Mstar, 0.1 , Mt0Fit[t]}]
