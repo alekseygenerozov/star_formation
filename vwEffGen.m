@@ -4,7 +4,7 @@
 Needs["vwEff`"]
 
 
-mhalos=10.^Range[10.8, 14.,0.2] MS;
+mhalos=10.^Range[14., 14.,0.2] MS;
 mstarTots=mstarTot/@mhalos;
 mbhs=MbhMbulge/@mstarTots
 
