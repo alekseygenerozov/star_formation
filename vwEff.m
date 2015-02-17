@@ -159,6 +159,7 @@ mdotStarReimers[Mstar_]:=4 10^-13 (Mstar/MS)^-1 (Lstar[Mstar]/Lsun)(Rstar[Mstar]
 (*Improved prescription from Schroder & Cuntz 2005*)
 mdotStar[Mstar_]:=mdotStarReimers[Mstar]
 mdotStar[Mstar_]:=8 10^-14 (Mstar/MS)^-1 (Lstar[Mstar]/Lsun)(Rstar[Mstar]/Rsun)(Teff[Mstar]/4000.)^3.5 (1+gsun/(4300. gstar[MS])) MS/year
+enStar[Mstar_]:=0.5*mdotStar[Mstar]*\[Mu]sal[Mstar]*vwMS[Mstar]^2
 (*Fitting formula to mass-loss rate per star from Voss 2009*)
 mdotVoss[t_]:=If[t> 4. 10^6 year, 1./(nVoss/100.) 10.^-6.1 (t/(4. 10^6 year))^-1.8 MS/year, 1./(nVoss/100.) 10.^-6.1 MS/year]
 
@@ -199,9 +200,17 @@ mdotForm[mhalo_]:=mdotSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1,
 mdotAcc[mhalo_]:=NIntegrate[mdotSpecific[t1, mhalo]*dNdtAcc[z[t1], mhalo], {t1, 0, tL[zu]}]
 mdot[mhalo_]:=mdotAcc[mhalo]+mdotForm[mhalo]
 
+(*lookup table for computing heating from main sequence stellar winds*)
+lookupTableOrds=10.^Range[-0.8,2, 0.2]MS;
+lookupTable=NIntegrate[enStar[ms], {ms, 0.1 MS, #}]&/@lookupTableOrds;
+enStarIntInterp=Transpose[{Log10[lookupTableOrds], Log10[lookupTable]}]//Interpolation;
+enStarInt[mt0_]:=10.^enStarIntInterp[Log10[mt0]]
+
+I1=NIntegrate[enStar[Mstar], {Mstar,0.1*MS,MS}];
 (*Turnoff and main sequence energy injection per star for Moster star formation histories truncated at time t.*)
 edotTOSpecific[t_?NumericQ, mhalo_]:=NIntegrate[dNdtForm[z[t1], mhalo]*edotWR[t1], {t1, t, tL[zu]} ]/NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]} ]
-edotMSSpecific[t_?NumericQ, mhalo_]:=0.5*NIntegrate[dNdtForm[z[t1], mhalo]*mdotStar[Mstar]*\[Mu]sal[Mstar]*vwMS[Mstar]^2, {t1, t, tL[zu]},{Mstar,0.1*MS,Mt0Fit[t1]}]\
+edotMSSpecific[t_?NumericQ, mhalo_]:=(I1*NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]}]\
++NIntegrate[dNdtForm[z[t1], mhalo]*enStarInt[Mt0Fit[t1]], {t1, t, tL[zu]}])\
 /NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]} ]
 (*Turnoff and main sequence contributions to energy injection.*)
 edotTOForm[mhalo_]:= edotTOSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0., tL[zu]} ]
@@ -214,11 +223,11 @@ edotMSAcc[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpecific[t, mhalo], {t
 
 (*Contribution of main sequence stars to energy injected*)
 (*Overall effective wind velocity.*)
-vweffStar[mhalo_]:=Sqrt[2 (edotMSForm[mhalo]+edotTOForm[mhalo]+edotMSAcc[mhalo]+edotTOAcc[mhalo])/(mdot[mhalo])]
+vweffStar[mhalo_]:=Sqrt[2 (edotMSForm[mhalo](*+edotTOForm[mhalo]*)+edotMSAcc[mhalo](*+edotTOAcc[mhalo]*))/(mdotAcc[mhalo]+mdotForm[mhalo])]
 
 \[Eta][mhalo_]:=mdot[mhalo]/mstarTot[mhalo] th
 (*Energy injected by MS stars in impulsive limit--note that unlike the continuous star formation limit here we have the mass and energy injected per star. Maybe make the impulsive and the continuous limits more consistent.*)
-edotMSImp[t_?NumericQ]:=0.5 NIntegrate[mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2,{Mstar, 0.1 , Mt0Fit[t]}]
+edotMSImp[t_?NumericQ]:=0.5 NIntegrate[enStar[Mstar],{Mstar, 0.1 , Mt0Fit[t]}]
 edotTOImp[t_]:=edotWR[t]
 
 mdotMSImp[t_?NumericQ]:= NIntegrate[mdotStar[Mstar]\[Mu]sal[Mstar],{Mstar, 0.1 , Mt0Fit[t]}]
