@@ -210,8 +210,8 @@ enStarInt[mt0_]:=10.^enStarIntInterp[Log10[mt0]]
 I1=NIntegrate[enStar[Mstar], {Mstar,0.1*MS,MS}];
 (*Turnoff and main sequence energy injection per star for Moster star formation histories truncated at time t.*)
 edotTOSpecific[t_?NumericQ, mhalo_]:=NIntegrate[dNdtForm[z[t1], mhalo]*edotWR[t1], {t1, t, tL[zu]} ]/NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]} ]
-edotMSSpecific[t_?NumericQ, mhalo_]:=NIntegrate[dNdtForm[z[t1],mhalo] enStarInt[Mt0Fit[t1]],{t1, 0,tL[zu]}, Method->"AdaptiveQuasiMonteCarlo"]\
-/NIntegrate[dNdtForm[z[t1],mhalo],{t1, 0,tL[zu]}]
+edotMSSpecific[t_?NumericQ, mhalo_]:=NIntegrate[dNdtForm[z[t1], mhalo]*enStarInt[Mt0Fit[t1]], {t1, t, tL[zu]}]\
+/NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]} ]
 (*Turnoff and main sequence contributions to energy injection.*)
 edotTOForm[mhalo_]:= edotTOSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0., tL[zu]} ]
 edotMSForm[mhalo_]:= edotMSSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0., tL[zu]} ]
