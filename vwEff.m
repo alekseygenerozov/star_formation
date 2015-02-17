@@ -223,7 +223,7 @@ edotMSAcc[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpecific[t, mhalo], {t
 
 (*Contribution of main sequence stars to energy injected*)
 (*Overall effective wind velocity.*)
-vweffStar[mhalo_]:=Sqrt[2 (edotMSForm[mhalo](*+edotTOForm[mhalo]*)+edotMSAcc[mhalo](*+edotTOAcc[mhalo]*))/((*mdotAcc[mhalo]+*)mdotForm[mhalo])]
+vweffStar[mhalo_]:=Sqrt[2 (edotMSForm[mhalo]+edotTOForm[mhalo](*edotMSAcc[mhalo]*)(*+edotTOAcc[mhalo]*))/((*mdotAcc[mhalo]+*)mdotForm[mhalo])]
 
 \[Eta][mhalo_]:=mdot[mhalo]/mstarTot[mhalo] th
 (*Energy injected by MS stars in impulsive limit--note that unlike the continuous star formation limit here we have the mass and energy injected per star. Maybe make the impulsive and the continuous limits more consistent.*)
