@@ -175,7 +175,7 @@ rateIaSpecific[t_?NumericQ, mhalo_]:=NIntegrate[DTD[t1]*dSdtForm[z[t1],mhalo], {
 /NIntegrate[dSdtForm[z[t1],mhalo], {t1,  Max[t,tmin], tL[zu]}]
 (*Total Ia rate from in situ star formation and then accreted stars*)
 rateIaFormTot[mhalo_]:=rateIaSpecific[0., mhalo]*mstarTotForm[mhalo]
-rateIaAccTot[mhalo_]:=NIntegrate[rateIaSpecific[t1, mhalo]*dSdtAcc[t1, mhalo], {t1, 0., tL[3.]}]
+rateIaAccTot[mhalo_]:=NIntegrate[rateIaSpecific[t1, mhalo]*dSdtAcc[z[t1], mhalo], {t1, 0., tL[3.]}]
 rateIa[mhalo_]:=(rateIaFormTot[mhalo]+rateIaAccTot[mhalo])/mstarTot[mhalo]
 
 (*Ia rate within the impulsive limit*)
