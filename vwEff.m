@@ -212,12 +212,18 @@ I1=NIntegrate[enStar[Mstar], {Mstar,0.1*MS,MS}];
 edotTOSpecific[t_?NumericQ, mhalo_]:=NIntegrate[dNdtForm[z[t1], mhalo]*edotWR[t1], {t1, t, tL[zu]} ]/NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]} ]
 edotMSSpecific[t_?NumericQ, mhalo_]:=NIntegrate[dNdtForm[z[t1], mhalo]*enStarInt[Mt0Fit[t1]], {t1, t, tL[zu]}]\
 /NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]} ]
+edotMSSpecificMC[t_?NumericQ, mhalo_]:=NIntegrate[dNdtForm[z[t1], mhalo]*enStarInt[Mt0Fit[t1]], {t1, t, tL[zu]}, Method->"AdaptiveMonteCarlo"]\
+/NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]} ]
 (*Turnoff and main sequence contributions to energy injection.*)
 edotTOForm[mhalo_]:= edotTOSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0., tL[zu]} ]
 edotMSForm[mhalo_]:= edotMSSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0., tL[zu]} ]
 (*Energy injection per accreted star for stars accreted at look-back time t*)
 edotTOAcc[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotTOSpecific[t, mhalo], {t, 0., tL[zu]} ]
-edotMSAcc[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpecific[t, mhalo], {t, 0., tL[zu]} ]
+
+edotMSAccMC[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpecificMC[t, mhalo], {t, 0., tL[zu]} ]
+edotMSAccMC2[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpecificMC[t, mhalo], {t, 0., tL[zu]}, Method->"DoubleExponential" ]
+edotMSAccMC3[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpecific[t, mhalo], {t, 0., tL[zu]}, Method->"AdaptiveMonteCarlo" ]
+edotMSAccMC4[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpecific[t, mhalo], {t, 0., tL[zu]}, Method->"AdaptiveQuasiMonteCarlo"]
 (*edotMSAcc[mhalo_]:=0.5 NIntegrate[dNdtForm[z[t], mhalo]mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2, {t,0., tL[zu]},{Mstar, 0.1 MS ,MS}]\
 +0.5 NIntegrate[dNdtForm[z[t], mhalo]mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2, {t,0., tL[zu]},{Mstar ,MS, Mt0Fit[t]}];*)
 
