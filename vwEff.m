@@ -170,9 +170,14 @@ mdotVoss[t_]:=If[t> 4. 10^6 year, 1./(nVoss/100.) 10.^-6.1 (t/(4. 10^6 year))^-1
 
 (*Ia properties*)
 DTD[t_]:=0.03((t/(10.^8 year))^(-1.12 ))*(1./(10.^10 MS))*(1/year)
-(*Ia rate per stellar mass--from star formed with galay*)
-rateIa[mhalo_]:=NIntegrate[DTD[t]*dSdtForm[z[t],mhalo], {t,  tmin, tL[zu]}]\
-/NIntegrate[dSdtForm[z[t],mhalo], {t,  tmin, tL[zu]}]
+(*Ia rate per stellar mass--from star formed within galaxty*)
+rateIaSpecific[t_?NumericQ, mhalo_]:=NIntegrate[DTD[t1]*dSdtForm[z[t1],mhalo], {t1,  Max[t,tmin], tL[zu]}]\
+/NIntegrate[dSdtForm[z[t1],mhalo], {t1,  Max[t,tmin], tL[zu]}]
+(*Total Ia rate from in situ star formation and then accreted stars*)
+rateIaFormTot[mhalo_]:=rateIaSpecific[0., mhalo]*mstarTotForm[mhalo]
+rateIaAccTot[mhalo_]:=NIntegrate[rateIaSpecific[t1, mhalo]*dSdtAcc[t1, mhalo], {t1, 0., tL[3.]}]
+rateIa[mhalo_]:=(rateIaFormTot[mhalo]+rateIaAccTot[mhalo])/mstarTot[mhalo]
+
 (*Ia rate within the impulsive limit*)
 rateIaImp[t_]:=DTD[t]
 fracII=NIntegrate[\[Mu]sal[mstar], {mstar, 8.MS, 100.MS}];
