@@ -220,6 +220,9 @@ edotMSForm[mhalo_]:= edotMSSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo],
 (*Energy injection per accreted star for stars accreted at look-back time t*)
 edotTOAcc[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotTOSpecific[t, mhalo], {t, 0., tL[zu]} ]
 
+edotMSAcc[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpecific[t, mhalo], {t, 0., tL[zu]} ]
+edotMSAcc2[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpecific[t, mhalo], {t, 0., tL[zu]}, Method->"Trapezoidal"]
+edotMSAcc3[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpecific[t, mhalo], {t, 0., tL[zu]}, Method->"DoubleExponential"]
 edotMSAccMC[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpecificMC[t, mhalo], {t, 0., tL[zu]} ]
 edotMSAccMC2[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpecificMC[t, mhalo], {t, 0., tL[zu]}, Method->"DoubleExponential" ]
 edotMSAccMC3[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpecific[t, mhalo], {t, 0., tL[zu]}, Method->"AdaptiveMonteCarlo" ]
