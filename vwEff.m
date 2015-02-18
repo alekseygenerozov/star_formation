@@ -198,7 +198,7 @@ mdotImp[t_]:=Abs[Mt0Fit'[t]] \[CapitalDelta]M[t] \[Mu]sal[Mt0Fit[t]]
 mdotSpecific[t_?NumericQ, mhalo_]:=NIntegrate[dNdtForm[z[t1], mhalo]Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[Mt0Fit[t1]], {t1,  t, tL[zu]}, Method->"DoubleExponential"]\
 /NIntegrate[dNdtForm[z[tl], mhalo], {tl, t, tL[zu]}]
 mdotForm[mhalo_]:=mdotSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0, tL[zu]}]
-mdotAcc[mhalo_]:=NIntegrate[mdotSpecific[t1, mhalo]*dNdtAcc[z[t1], mhalo], {t1, 0., 3.}]
+mdotAcc[mhalo_]:=NIntegrate[mdotSpecific[t1, mhalo]*dNdtAcc[z[t1], mhalo], {t1, 0., tL[3.]}]
 mdot[mhalo_]:=mdotAcc[mhalo]+mdotForm[mhalo]
 
 (*lookup table for computing heating from main sequence stellar winds*)
@@ -216,8 +216,8 @@ edotMSSpecific[t_?NumericQ, mhalo_]:=NIntegrate[dNdtForm[z[t1], mhalo]*enStarInt
 edotTOForm[mhalo_]:= edotTOSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0., tL[zu]} ]
 edotMSForm[mhalo_]:= edotMSSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0., tL[zu]} ]
 (*Energy injection per accreted star for stars accreted at look-back time t*)
-edotTOAcc[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotTOSpecific[t, mhalo], {t, 0., 3.} ]
-edotMSAcc[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpecific[t, mhalo], {t, 0., 3.} ]
+edotTOAcc[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotTOSpecific[t, mhalo], {t, 0., tL[3.]} ]
+edotMSAcc[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpecific[t, mhalo], {t, 0., tL[3.]} ]
 (*edotMSAcc[mhalo_]:=0.5 NIntegrate[dNdtForm[z[t], mhalo]mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2, {t,0., tL[zu]},{Mstar, 0.1 MS ,MS}]\
 +0.5 NIntegrate[dNdtForm[z[t], mhalo]mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2, {t,0., tL[zu]},{Mstar ,MS, Mt0Fit[t]}];*)
 
