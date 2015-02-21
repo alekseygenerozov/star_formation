@@ -287,6 +287,7 @@ rhoStarRs[mbh_, vw_, \[CapitalGamma]_:1.]:=mbh/((4.*\[Pi]) rinf[mbh]^3)*(2.-\[Ca
 mencRs[mbh_,vw_, \[CapitalGamma]_:1.]:=mbh*(rs[mbh,vw]/rinf[mbh])^(2.-\[CapitalGamma])
 
 (*accretion rate onto BH for a given solution, assuming eta=1*)
+LEdd[mbh_]:=(4 \[Pi] G mbh me c)/(\[Sigma]Thomson);
 mdotEdd[mbh_]:=(4 \[Pi] G mbh me )/(\[Sigma]Thomson 0.1 c);
 mdotsol[mbh_, vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=\[Eta] mencRs[mbh,vw,\[CapitalGamma]]/th
 mdotIA[mbh_, rIa_, \[CapitalGamma]_:1., \[Eta]_:1.]:=\[Eta] mbh/th (rIa/rinf[mbh])^(2.-\[CapitalGamma])
@@ -308,8 +309,4 @@ hc[mbh_,vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=heatingRs[mbh,vw, \[CapitalGamma]
 eddrMaxCool[mbh_, \[CapitalGamma]_:1, \[Eta]_:1, hcCrit_:1]:=6.58 10^-5 0.43^(3.7-6.29/(3.7 - \[CapitalGamma])) (\[Eta]/0.02)^(1.7/(3.7-\[CapitalGamma])) (mbh/(10.^8 MS))^((1.36-0.68 \[CapitalGamma])/(3.7-\[CapitalGamma])) (675.938-337.969\[CapitalGamma])^(-((2 (2-\[CapitalGamma]))/(-7.4+2 \[CapitalGamma]))) hcCrit^((2 (2-\[CapitalGamma]))/(-7.4`+ 2.` \[CapitalGamma]))
 
 
-
 EndPackage[]
-
-
-

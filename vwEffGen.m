@@ -27,21 +27,20 @@ vweffTotsCore = tmp[[1 ;; All,3]];
 \[Eta]s = \[Eta] /@ mhalos; 
 mdots = Table[mdotsol[mbhs[[i]], vweffTots[[i]], 0.8, \[Eta]s[[i]]], 
     {i, 1, Length[mbhs]}]; 
-mdotsCore = Table[mdotsol[mbhs[[i]], vweffTotsCore[[i]], 0.1, \[Eta]s[[i]]], 
+mdotCores = Table[mdotsol[mbhs[[i]], vweffTotsCore[[i]], 0.1, \[Eta]s[[i]]], 
     {i, 1, Length[mbhs]}]; 
 mdotEdds = mdotEdd /@ mbhs; 
-eddrs = mdots/mdotEdds; 
-eddrsCore = mdotsCore/mdotEdds; 
+LEdds=LEdd/@mbhs;
 
 
 radiiIa = Table[radiusIa[mbhs[[i]], mhalos[[i]]], {i, 1, Length[mbhs]}]; 
 mdotIas = Table[mdotIA[mbhs[[i]], radiiIa[[i]], 0.8, \[Eta]s[[i]]], 
     {i, 1, Length[\[Eta]s]}]; 
-eddrIas = mdotIas/mdotEdds; 
 mdotInfs = (\[Eta]s*mbhs)/th; 
-eddrInfs = mdotInfs/mdotEdds; 
-eddrMaxCools = Table[eddrMaxCool[mbhs[[i]], 0.8, \[Eta]s[[i]]], 
-    {i, 1, Length[\[Eta]s]}]; 
+mdotMaxCools = Table[eddrMaxCool[mbhs[[i]], 0.8, \[Eta]s[[i]]], 
+    {i, 1, Length[\[Eta]s]}]*mdotEdds; 
+rhoCusps=Table[rhoRs[mbhs[[i]], vweffTots[[i]], 0.8, etas[[i]]],{i, 1, Length[mbhs]}]
+rhoCores=Table[rhoRs[mbhs[[i]], vweffTots[[i]], 0.1, etas[[i]]],{i, 1, Length[mbhs]}]
 
 
 stags = Table[rs[mbhs[[i]], vweffTots[[i]]], {i, 1, Length[mbhs]}]; 
@@ -70,7 +69,9 @@ Export["Ia.csv", Transpose[{mbhs/MS, radiiIa, stags}], "TableHeadings" -> {"Mbh"
 Export["eta.csv", Transpose[{mbhs/MS, \[Eta]s}], "TableHeadings" -> {"Mbh", "eta"}]
 Export["etaImp.csv", Transpose[{timeImps/year, \[Eta]Imps}], "TableHeadings" -> {"time", "eta"}]
 Export["vweffStarImps.csv", Transpose[{timeImps/year, vweffStarImps}], "TableHeadings" -> {"time", "vw"}]
-Export["eddrs.csv", Transpose[{mbhs/MS, eddrs, eddrsCore}], "TableHeadings" -> {"Mbh", "Cusp", "Core"}]
-Export["eddrIas.csv", Transpose[{mbhs/MS, eddrIas}], "TableHeadings" -> {"Mbh", "Cusp"}]
-Export["eddrInfs.csv", Transpose[{mbhs/MS, eddrInfs}], "TableHeadings" -> {"Mbh", "Cusp"}]
-Export["eddrMaxCools.csv", Transpose[{mbhs/MS, eddrMaxCools}], "TableHeadings" -> {"Mbh", "Cusp"}]
+Export["mdots.csv", Transpose[{mbhs/MS, mdots, mdotCores, mdotIas, mdotInfs, mdotMaxCools, LEdds}],\
+ "TableHeadings" -> {"Mbh", "Cusp", "Core", "Ia", "Inf", "MaxCools","LEdds"}]
+Export["mdots.csv", Transpose[{mbhs/MS, rhoCusps, rhoCores}],\
+ "TableHeadings" -> {"Mbh", "Cusp", "Core"}]
+
+
