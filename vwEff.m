@@ -53,8 +53,6 @@ MbhMbulge[mbulge_]:=10.^8.46 (mbulge/(10.^11 MS))^1.05 MS
 rinf[mbh_]:=14*(mbh/(10.^8 MS))^0.6 pc
 
 
-
-
 (*IMF*)
 m0=0.1MS;
 \[Alpha]=2.35;
@@ -279,12 +277,12 @@ vwIa0=vweffIaImp[t, \[Epsilon]Ia];
 \[Chi][mbh_,vw_]:=(1+0.12(mbh/(10.^8 MS))^0.39 (vw/(5. 10^7))^-2)^(1/2)
 (*Halo-MBH relation from Bandara et al. 2009*)
 
-rs[mbh_,vw_]:=3.5 G mbh/(vw^2 \[Chi][mbh,vw]^2)
+densSlope[\[CapitalGamma]_]:=-(1./6.*(1.-4.*(1+\[CapitalGamma])))
+rs[mbh_,vw_,\[CapitalGamma]_:1]:=2.5*G mbh/(vw^2*densSlope[\[CapitalGamma]])
+tempRs[mbh_,vw_]:=(ad-1)/ad*\[Mu]*mp*(7./5.)*vw^2/(2.*kb)
 
-tempRs[mbh_,vw_]:=(ad-1)/ad*\[Mu]*mp*vw^2*\[Chi][mbh,vw]^2./kb
-
-rhoStarRs[mbh_, vw_, \[CapitalGamma]_:1.]:=mbh/((4.*\[Pi]) rinf[mbh]^3)*(2.-\[CapitalGamma])*(rs[mbh,vw]/rinf[mbh])^(-1.-\[CapitalGamma])
-mencRs[mbh_,vw_, \[CapitalGamma]_:1.]:=mbh*(rs[mbh,vw]/rinf[mbh])^(2.-\[CapitalGamma])
+rhoStarRs[mbh_, vw_, \[CapitalGamma]_:1.]:=mbh/((4.*\[Pi]) rinf[mbh]^3)*(2.-\[CapitalGamma])*(rs[mbh,vw, \[CapitalGamma]]/rinf[mbh])^(-1.-\[CapitalGamma])
+mencRs[mbh_,vw_, \[CapitalGamma]_:1.]:=mbh*(rs[mbh,vw, \[CapitalGamma]]/rinf[mbh])^(2.-\[CapitalGamma])
 
 (*accretion rate onto BH for a given solution, assuming eta=1*)
 LEdd[mbh_]:=(4 \[Pi] G mbh me c)/(\[Sigma]Thomson);
@@ -292,13 +290,11 @@ mdotEdd[mbh_]:=(4 \[Pi] G mbh me )/(\[Sigma]Thomson 0.1 c);
 mdotsol[mbh_, vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=\[Eta] mencRs[mbh,vw,\[CapitalGamma]]/th
 mdotIA[mbh_, rIa_, \[CapitalGamma]_:1., \[Eta]_:1.]:=\[Eta] mbh/th (rIa/rinf[mbh])^(2.-\[CapitalGamma])
 
-mdotsolHalo[mbh_, mhalo_,\[CapitalGamma]_:1]:=mdotsol[mbh, vweffTot[mhalo], \[CapitalGamma], \[Eta][mhalo]]
+(*mdotsolHalo[mbh_, mhalo_,\[CapitalGamma]_:1]:=mdotsol[mbh, vweffTot[mhalo], \[CapitalGamma], \[Eta][mhalo]]*)
 
-qRs[mbh_,vw_,  \[CapitalGamma]_:1, \[Eta]_:1]:=\[Eta] rhoStarRs[mbh,vw, \[CapitalGamma]]/th
-
+qRs[mbh_,vw_,  \[CapitalGamma]_:1, \[Eta]_:1]:=\[Eta] rhoStarRs[mbh,vw,\[CapitalGamma]]/th
 tff[r_, mbh_]:=r^1.5/(G*mbh)^0.5
-
-rhoRs[mbh_,vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=mdotsol[mbh,vw, \[CapitalGamma]]*tff[rs[mbh,vw], mbh]/(4.\[Pi]/3.*rs[mbh,vw]^3.)
+rhoRs[mbh_,vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=mdotsol[mbh,vw, \[CapitalGamma]]*tff[rs[mbh,vw,\[CapitalGamma]], mbh]/(4.\[Pi]/3.*rs[mbh,vw,\[CapitalGamma]]^3.)
 
 
 heatingRs[mbh_,vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=0.5 qRs[mbh,vw, \[CapitalGamma],\[Eta]] vw^2  \[Chi][mbh,vw]^2
