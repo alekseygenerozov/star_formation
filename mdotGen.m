@@ -1,5 +1,3 @@
-(* ::Package:: *)
-
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -16,14 +14,15 @@ mbhs=etaf[[;;,1]]*MS;
 \[Eta]s=etaf[[;;,2]];
 (*Total vwEff*)
 vweffTots=Import["vwSources.csv", "HeaderLines"->1][[;;,-1]]*10.^5;
+vweffTotsCore=Import["vwSourcesCore.csv", "HeaderLines"->1][[;;,-1]]*10.^5;
 (*Ia radius*)
 radiiIa=Import["Ia.csv", "HeaderLines"->1][[;;,2]];
 
 
 mdots = Table[mdotsol[mbhs[[i]], vweffTots[[i]], 0.8, \[Eta]s[[i]]], 
     {i, 1, Length[mbhs]}]; 
-(*mdotCores = Table[mdotsol[mbhs[[i]], vweffTotsCore[[i]], 0.1, \[Eta]s[[i]]], 
-    {i, 1, Length[mbhs]}]; *)
+mdotCores = Table[mdotsol[mbhs[[i]], vweffTotsCore[[i]], 0.1, \[Eta]s[[i]]], 
+    {i, 1, Length[mbhs]}]; 
 
 mdotEdds = mdotEdd /@ mbhs; 
 LEdds=LEdd/@mbhs;
@@ -55,5 +54,5 @@ hcs = Table[hc[mbhs[[i]], vweffTots[[i]], 0.8, \[Eta]s[[i]]],
 
 Export["hc.csv", Transpose[{mbhs/MS, hcs}], "TableHeadings" -> {"Mbh", "Cusp"}]
 
-Export["mdots.csv", Transpose[{mbhs/MS, mdots, (*mdotCores,*) mdotIas, mdotIasCore, mdotInfs, mdotMaxCools, mdotMaxCoolsCore, LEdds}],TableHeadings->{"Mbh","Cusp", (*"Core",*) "Ia","IaCore","Inf", "MaxCools","MaxCoolsCore","LEdds"}]
+Export["mdots.csv", Transpose[{mbhs/MS, mdots, mdotCores, mdotIas, mdotIasCore, mdotInfs, mdotMaxCools, mdotMaxCoolsCore, LEdds}],TableHeadings->{"Mbh","Cusp","Core","Ia","IaCore","Inf","MaxCools","MaxCoolsCore","LEdds"}]
 
