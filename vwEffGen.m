@@ -6,7 +6,8 @@ Needs["vwEff`"]
 
 mhalos=10.^Range[10.8, 14.,0.2] MS;
 mstarTots=mstarTot/@mhalos;
-mbhs=MbhMbulge/@mstarTots
+mbhs=MbhMbulge/@mstarTots;
+\[CapitalGamma]s=\[CapitalGamma]fitM/@mbhs;
 
 
 vweffStars = vweffStar /@ mhalos; 
@@ -23,6 +24,11 @@ tmp = Table[vweffTot[mbhs[[i]], mhalos[[i]], 0.1], {i, 1, Length[mhalos]}]
 vwcCore = tmp[[1 ;; All,1]]; 
 vweffIasCoreCorrected = tmp[[1 ;; All,2]]; 
 vweffTotsCore = tmp[[1 ;; All,3]];
+
+tmp = Table[vweffTot[mbhs[[i]], mhalos[[i]], \[CapitalGamma]s[[i]]], {i, 1, Length[mhalos]}]
+vwcGamma = tmp[[1 ;; All,1]]; 
+vweffIasGammaCorrected = tmp[[1 ;; All,2]]; 
+vweffTotsGamma = tmp[[1 ;; All,3]];
 
 
 \[Eta]s = \[Eta] /@ mhalos; 
@@ -44,10 +50,13 @@ eddrImps = Table[mdotsol[mbhsSparse[[j]], vweffStarImps[[i]], 0.8, \[Eta]Imps[[i
 
 
 SetDirectory["/Users/aleksey/Second_Year_Project/star_formation"]
-Export["vwSources.csv", Transpose[{mbhs*(10.^5/MS), vweffIas, vweffStars, vweffMSPs, vwc, vweffTots}/10.^5], 
-  "TableHeadings" -> {"Mbh", "Ias", "Stars", "MSPs", "Compton", "Total"}]
-Export["vwSourcesCore.csv", Transpose[{mbhs*(10.^5/MS), vweffIas, vweffStars, vweffMSPs, vwcCore, vweffTotsCore}/10.^5], 
-  "TableHeadings" -> {"Mbh", "Ias", "Stars", "MSPs", "Compton", "Total"}]
+Export["vwSources.csv", Transpose[{mbhs*(10.^5/MS), vweffIas, vweffIasCorrected, vweffStars, vweffMSPs, vwc, vweffTots}/10.^5], 
+  "TableHeadings" -> {"Mbh", "Ias", "IaCorrected", "Stars", "MSPs", "Compton", "Total"}]
+Export["vwSourcesCore.csv", Transpose[{mbhs*(10.^5/MS), vweffIasCoreCorrected, vwcCore, vweffTotsCore}/10.^5], 
+  "TableHeadings" -> {"IaCorrected", "Compton", "Total"}]
+Export["vwSourcesGamma.csv", Transpose[{mbhs*(10.^5/MS), vweffIasGammaCorrected, vwcGamma, vweffTotsGamma}/10.^5], 
+  "TableHeadings" -> {"Compton", "Total"}]
+
 Export["Ia.csv", Transpose[{mbhs/MS, radiiIa}], "TableHeadings" -> {"Mbh", "rIa"}]
 
 Export["eta.csv", Transpose[{mbhs/MS, \[Eta]s}], "TableHeadings" -> {"Mbh", "eta"}]

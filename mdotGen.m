@@ -37,14 +37,14 @@ mdotInfs = (\[Eta]s*mbhs)/th;
 
 mdotMaxCoolsCore = Table[eddrMaxCool[mbhs[[i]], 0.1, \[Eta]s[[i]]], 
     {i, 1, Length[\[Eta]s]}]*mdotEdds;
-mdotMaxCoolsCore = Table[eddrMaxCool[mbhs[[i]], 0.8, \[Eta]s[[i]]], 
+mdotMaxCools = Table[eddrMaxCool[mbhs[[i]], 0.8, \[Eta]s[[i]]], 
     {i, 1, Length[\[Eta]s]}]*mdotEdds;
 
 (*rhoCusps=Table[rhoRs[mbhs[[i]], vweffTots[[i]], 0.8, etas[[i]]],{i, 1, Length[mbhs]}]
   rhoCores=Table[rhoRs[mbhs[[i]], vweffTots[[i]], 0.1, etas[[i]]],{i, 1, Length[mbhs]}]*)
 
 
-
+mdotMaxCoolsCore/mdotMaxCools
 
 
 hcs = Table[hc[mbhs[[i]], vweffTots[[i]], 0.8, \[Eta]s[[i]]], 
