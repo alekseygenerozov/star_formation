@@ -278,7 +278,7 @@ vwIa0=vweffIaImp[t, \[Epsilon]Ia];
 (*Halo-MBH relation from Bandara et al. 2009*)
 
 densSlope[\[CapitalGamma]_]:=-(1./6.*(1.-4.*(1+\[CapitalGamma])))
-rs[mbh_,vw_,\[CapitalGamma]_:1]:=2.5*G mbh/(vw^2*densSlope[\[CapitalGamma]])
+rs[mbh_,vw_,\[CapitalGamma]_:1]:=(*2.5*G mbh/(vw^2*densSlope[\[CapitalGamma]])*)3.5*G mbh/(vw^2*\[Chi][mbh, vw]^2)
 tempRs[mbh_,vw_]:=(ad-1)/ad*\[Mu]*mp*(7./5.)*vw^2/(2.*kb)
 
 rhoStarRs[mbh_, vw_, \[CapitalGamma]_:1.]:=mbh/((4.*\[Pi]) rinf[mbh]^3)*(2.-\[CapitalGamma])*(rs[mbh,vw, \[CapitalGamma]]/rinf[mbh])^(-1.-\[CapitalGamma])
@@ -297,7 +297,7 @@ tff[r_, mbh_]:=r^1.5/(G*mbh)^0.5
 rhoRs[mbh_,vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=mdotsol[mbh,vw, \[CapitalGamma]]*tff[rs[mbh,vw,\[CapitalGamma]], mbh]/(4.\[Pi]/3.*rs[mbh,vw,\[CapitalGamma]]^3.)
 
 
-heatingRs[mbh_,vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=0.5 qRs[mbh,vw, \[CapitalGamma],\[Eta]] vw^2  \[Chi][mbh,vw]^2
+heatingRs[mbh_,vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=0.5 qRs[mbh,vw, \[CapitalGamma],\[Eta]] (7./5.)*vw^2 
 coolingRs[mbh_, vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=(rhoRs[mbh, vw, \[CapitalGamma], \[Eta]]/(\[Mu]*mp))^2*lambdaC[tempRs[mbh, vw]]
 hc[mbh_,vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=heatingRs[mbh,vw, \[CapitalGamma], \[Eta]]/coolingRs[mbh,vw,\[CapitalGamma], \[Eta]]
 
