@@ -250,10 +250,10 @@ vweffMSPImp[t_, \[Epsilon]msp_:0.1,Lsd_:10.^34]:=3. 10^6 (\[Epsilon]msp/0.1)^0.5
 (*Total vweff including Compton heating--note that for now I have adopted a fixed efficiency of 10^-2. Note that this Ia heating is not included, even without the Compton heating the stagation radius is generally inside of the Ia radius across our parameter space. Note that we need a more consistent convention for Mbh vs. Mhalo as function arguments.*)
 vwCompton[M_,vw_, \[CapitalGamma]_:1., \[Epsilon]_:0.01, Tc_:10.^9]:=Module[{mbh, Tc1},
 mbh=Mbh[M];
-3.14 10^7*0.43^(0.5*(5.-\[CapitalGamma])) (mbh/10.^8/MS)^(-0.60+0.2*(5. -\[CapitalGamma])) Sqrt[Tc/10.^9] (vw*\[Chi][mbh,vw]/(5. 10^7))^(-1.5+\[CapitalGamma]) Sqrt[\[Epsilon]/10.^-2] Sqrt[\[Eta][M]/0.02]/Sqrt[2.-\[CapitalGamma]]
+3.14 10^7*0.43^(0.5*(5.-\[CapitalGamma])) (mbh/10.^8/MS)^(-0.60+0.2*(5. -\[CapitalGamma])) Sqrt[Tc/10.^9] (vw/(5. 10^7))^(-1.5+\[CapitalGamma]) Sqrt[\[Epsilon]/10.^-2] Sqrt[\[Eta][M]/0.02]/Sqrt[2.-\[CapitalGamma]]
 ]
 vwComptonImp[Mbh_,t_,vw_, \[CapitalGamma]_:1., \[Epsilon]_:0.01, Tc_:10.^9]:=Module[{ Tc1},
-3.14 10^7*0.43^(0.5*(5.-\[CapitalGamma])) (Mbh/10.^8/MS)^(-0.60+0.2*(5. -\[CapitalGamma])) Sqrt[Tc/10.^9] (vw*\[Chi][Mbh,vw]/(5. 10^7))^(-1.5+\[CapitalGamma]) Sqrt[\[Epsilon]/10.^-2] Sqrt[\[Eta]Imp[t]/0.02]/Sqrt[2.-\[CapitalGamma]]
+3.14 10^7*0.43^(0.5*(5.-\[CapitalGamma])) (Mbh/10.^8/MS)^(-0.60+0.2*(5. -\[CapitalGamma])) Sqrt[Tc/10.^9] (vw/(5. 10^7))^(-1.5+\[CapitalGamma]) Sqrt[\[Epsilon]/10.^-2] Sqrt[\[Eta]Imp[t]/0.02]/Sqrt[2.-\[CapitalGamma]]
 ]
 
 
@@ -278,7 +278,7 @@ vwIa0=vweffIaImp[t, \[Epsilon]Ia];
 (*Halo-MBH relation from Bandara et al. 2009*)
 
 densSlope[\[CapitalGamma]_]:=-(1./6.*(1.-4.*(1+\[CapitalGamma])))
-rs[mbh_,vw_,\[CapitalGamma]_:1]:=(*2.5*G mbh/(vw^2*densSlope[\[CapitalGamma]])*)3.5*G mbh/(vw^2*\[Chi][mbh, vw]^2)
+rs[mbh_,vw_,\[CapitalGamma]_:1]:=2.5*G mbh/(vw^2*densSlope[\[CapitalGamma]])
 tempRs[mbh_,vw_]:=(ad-1)/ad*\[Mu]*mp*(7./5.)*vw^2/(2.*kb)
 
 rhoStarRs[mbh_, vw_, \[CapitalGamma]_:1.]:=mbh/((4.*\[Pi]) rinf[mbh]^3)*(2.-\[CapitalGamma])*(rs[mbh,vw, \[CapitalGamma]]/rinf[mbh])^(-1.-\[CapitalGamma])
