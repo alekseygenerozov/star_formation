@@ -1,3 +1,5 @@
+(* ::Package:: *)
+
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -54,9 +56,9 @@ mdotMaxCoolsGamma = Table[mdotMaxCool[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[
 \[Epsilon]rad=0.01
 TempC=10.^9
 
-mdotComptonsCore = Table[mdotMaxCool[mbhs[[i]], 0.1, \[Eta]s[[i]], \[Epsilon]rad, TempC], 
+mdotComptonsCore = Table[mdotCompton[mbhs[[i]], 0.1, \[Eta]s[[i]], \[Epsilon]rad, TempC], 
     {i, 1, Length[\[Eta]s]}];
-mdotComptons = Table[mdotMaxCool[mbhs[[i]], 0.8, \[Eta]s[[i]], \[Epsilon]rad, TempC], 
+mdotComptons = Table[mdotCompton[mbhs[[i]], 0.8, \[Eta]s[[i]], \[Epsilon]rad, TempC], 
     {i, 1, Length[\[Eta]s]}];
 mdotComptonsGamma = Table[mdotMaxCool[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]], \[Epsilon]rad, TempC], 
     {i, 1, Length[\[Eta]s]}];

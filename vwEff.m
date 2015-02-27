@@ -278,7 +278,7 @@ vwIa0=vweffIaImp[t, \[Epsilon]Ia];
 
 densSlope[\[CapitalGamma]_]:=-(1./6.*(1.-4.*(1+\[CapitalGamma])))
 \[CapitalGamma]fitM[mbh_]:=0.3*(mbh/10.^8/MS)^-0.24
-rs[mbh_,vw_,\[CapitalGamma]_:1]:=3.5*G mbh/vw^2(*densSlope[\[CapitalGamma]])*)
+rs[mbh_,vw_,\[CapitalGamma]_:1]:=2.5*G mbh/vw^2/densSlope[\[CapitalGamma]]
 tempRs[mbh_,vw_]:=(ad-1)/ad*\[Mu]*mp*(7./5.)*vw^2/(2.*kb)
 
 rhoStarRs[mbh_, vw_, \[CapitalGamma]_:1.]:=mbh/((4.*\[Pi]) rinf[mbh]^3)*(2.-\[CapitalGamma])*(rs[mbh,vw, \[CapitalGamma]]/rinf[mbh])^(-1.-\[CapitalGamma])
