@@ -53,26 +53,26 @@ mdotMaxCoolsGamma = Table[mdotMaxCool[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[
     {i, 1, Length[\[Eta]s]}];
 
 
-\[Epsilon]rad=0.01
-TempC=10.^9
+\[Epsilon]rad=0.01;
+TempC=10.^9;
 
 mdotComptonsCore = Table[mdotCompton[mbhs[[i]], 0.1, \[Eta]s[[i]], \[Epsilon]rad, TempC], 
     {i, 1, Length[\[Eta]s]}];
 mdotComptons = Table[mdotCompton[mbhs[[i]], 0.8, \[Eta]s[[i]], \[Epsilon]rad, TempC], 
     {i, 1, Length[\[Eta]s]}];
-mdotComptonsGamma = Table[mdotMaxCool[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]], \[Epsilon]rad, TempC], 
+mdotComptonsGamma = Table[mdotCompton[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]], \[Epsilon]rad, TempC], 
     {i, 1, Length[\[Eta]s]}];
 
 
 hcs = Table[hc[mbhs[[i]], vweffTots[[i]], 0.8, \[Eta]s[[i]]], 
     {i, 1, Length[mbhs]}];
-(*hcsCore = Table[hc[mbhs[[i]], vweffTotsCore[[i]], 0.1, \[Eta]s[[i]]], 
-  {i, 1, Length[mbhs]}]; *)
+hcsCore = Table[hc[mbhs[[i]], vweffTotsCore[[i]], 0.1, \[Eta]s[[i]]], 
+  {i, 1, Length[mbhs]}]; 
 
 
 Needs["SigFig`"]
 
-Export["hc.csv", Transpose[{mbhs/MS, hcs}], "TableHeadings" -> {"Mbh", "Cusp"}]
+Export["hc.csv", Transpose[{mbhs/MS, hcs, hcsCore}], "TableHeadings" -> {"Mbh", "Cusp","Core"}]
 
 mdotsAll=Map[OutputForm[SigForm[#,3, scientific->True]]&\
 ,Transpose[{mbhs/MS, mdots, mdotsCore, mdotsGamma, mdotIas, mdotIasCore,\
