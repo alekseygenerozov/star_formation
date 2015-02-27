@@ -303,10 +303,10 @@ heatingRs[mbh_,vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=0.5 qRs[mbh,vw, \[CapitalGam
 coolingRs[mbh_, vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=(rhoRs[mbh, vw, \[CapitalGamma], \[Eta]]/(\[Mu]*mp))^2*lambdaC[tempRs[mbh, vw]]
 hc[mbh_,vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=heatingRs[mbh,vw, \[CapitalGamma], \[Eta]]/coolingRs[mbh,vw,\[CapitalGamma], \[Eta]]
 
-(*Maximum Eddington ratio which may be achieved before we obtain thermal instability assuming a critical heating to cooling ratio of of hcCrit*) 
-(*eddrMaxCool[mbh_, \[CapitalGamma]_:1, \[Eta]_:1, hcCrit_:1]:=6.58 10^-5 0.43^(3.7-6.29/(3.7 - \[CapitalGamma])) (\[Eta]/0.02)^(1.7/(3.7-\[CapitalGamma])) (mbh/(10.^8 MS))^((1.36-0.68 \[CapitalGamma])/(3.7-\[CapitalGamma])) (675.938-337.969\[CapitalGamma])^(-((2 (2-\[CapitalGamma]))/(-7.4+2 \[CapitalGamma]))) hcCrit^((2 (2-\[CapitalGamma]))/(-7.4`+ 2.` \[CapitalGamma]))*)
+(*Maximum Mdot befor thermal instability sets in*)
 vwMaxCool[mbh_, \[CapitalGamma]_:1, \[Eta]_:1, hcCrit_:1]:=vw1/.FindRoot[hc[mbh, vw1, \[CapitalGamma], \[Eta]]==hcCrit, {vw1,2.*10^7}]
 mdotMaxCool[mbh_, \[CapitalGamma]_:1, \[Eta]_:1, hcCrit_:1]:=mdotsol[mbh, vwMaxCool[mbh, \[CapitalGamma], \[Eta], hcCrit], \[CapitalGamma], \[Eta]]
+mdotCompton[mbh_, \[CapitalGamma]_:1., \[Eta]_:1., \[Epsilon]_:0.01, Tc_:10.^9]:=mdotsol[mbh, vwComptonDom[mbh, \[CapitalGamma], \[Eta], \[Epsilon], Tc], \[CapitalGamma], \[Eta]]
 
 
 EndPackage[]
