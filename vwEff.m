@@ -247,28 +247,27 @@ vweffIaImp[t_, \[Epsilon]Ia_:0.4]:=Sqrt[(2. th rateIaImp[t] \[Epsilon]Ia 10.^51)
 
 vweffMSP[mhalo_, \[Epsilon]msp_:0.1,Lsd_:10.^34]:=3. 10^6 (\[Epsilon]msp/0.1)^0.5 (Lsd/10.^34)^(1/2) (\[Eta][mhalo]/0.02)^(-1/2)
 vweffMSPImp[t_, \[Epsilon]msp_:0.1,Lsd_:10.^34]:=3. 10^6 (\[Epsilon]msp/0.1)^0.5 (Lsd/10.^34)^(1/2) (\[Eta]Imp[t]/0.02)^(-1/2)
-(*Total vweff including Compton heating--note that for now I have adopted a fixed efficiency of 10^-2. Note that this Ia heating is not included, even without the Compton heating the stagation radius is generally inside of the Ia radius across our parameter space. Note that we need a more consistent convention for Mbh vs. Mhalo as function arguments.*)
-vwCompton[M_,vw_, \[CapitalGamma]_:1., \[Epsilon]_:0.01, Tc_:10.^9]:=Module[{mbh, Tc1},
-mbh=Mbh[M];
-3.14 10^7*0.43^(0.5*(5.-\[CapitalGamma])) (mbh/10.^8/MS)^(-0.60+0.2*(5. -\[CapitalGamma])) Sqrt[Tc/10.^9] (Sqrt[7./5.]vw/(5. 10^7))^(-1.5+\[CapitalGamma]) Sqrt[\[Epsilon]/10.^-2] Sqrt[\[Eta][M]/0.02]/Sqrt[2.-\[CapitalGamma]]
-]
-vwComptonImp[Mbh_,t_,vw_, \[CapitalGamma]_:1., \[Epsilon]_:0.01, Tc_:10.^9]:=Module[{ Tc1},
-3.14 10^7*0.43^(0.5*(5.-\[CapitalGamma])) (Mbh/10.^8/MS)^(-0.60+0.2*(5. -\[CapitalGamma])) Sqrt[Tc/10.^9] (Sqrt[7./5.]vw/(5. 10^7))^(-1.5+\[CapitalGamma]) Sqrt[\[Epsilon]/10.^-2] Sqrt[\[Eta]Imp[t]/0.02]/Sqrt[2.-\[CapitalGamma]]
-]
+
+edotCompton[mbh_, vw_, \[CapitalGamma]_:1, \[Eta]_:1, \[Epsilon]_:0.01, Tc_:10.^9]:=4.1*10^-35*nRs[mbh, vw, \[CapitalGamma], \[Eta]]^2 (\[Epsilon] mdotsol[mbh, vw, \[CapitalGamma], \[Eta]] c^2)/(nRs[mbh, vw, \[CapitalGamma], \[Eta]] rs[mbh, vw, \[CapitalGamma]]^2)*(Tc)
+vwComptonGen[mbh_,vw_, \[CapitalGamma]_:1., \[Eta]_:1, \[Epsilon]_:0.01, Tc_:10.^9]:=Sqrt[ ((2. th edotCompton[mbh, vw, \[CapitalGamma], \[Eta], \[Epsilon], Tc])/(\[Eta] rhoStarRs[mbh, vw, \[CapitalGamma]]))]
+vwCompton[mbh_, mhalo_, vw_, \[CapitalGamma]_:1., \[Epsilon]_:0.01, Tc_:10.^9]:=vwComptonGen[mbh, vw, \[Eta][mhalo], \[CapitalGamma], \[Epsilon], Tc]
+vwComptonImp[mbh_, t_, vw_, \[CapitalGamma]_:1., \[Epsilon]_:0.01, Tc_:10.^9]:=vwComptonGen[mbh, vw, \[Eta]Imp[t], \[CapitalGamma], \[Epsilon], Tc]
+
+vwComptonDom[mbh_, \[CapitalGamma]_:1., \[Eta]_:1., \[Epsilon]_:0.01, Tc_:10.^9]:=vw1/.FindRoot[vwComptonGen[mbh, vw1, \[CapitalGamma], \[Eta], \[Epsilon], Tc]==vw1, {vw1, 5.*10^7}]
 
 
 vweffTot[mbh_, mhalo_,\[CapitalGamma]_:1,  \[Epsilon]msp_:0.1,Lsd_:10.^34, \[Epsilon]Ia_:0.4, \[Epsilon]_:0.01 , Tc_:10.^9]:=Module[{vw0,  rs1, \[Eta]1,vwIa0, vwc, vwIa},
 vw0=(vweffStar[mhalo]^2+vweffMSP[mhalo,\[Epsilon]msp, Lsd]^2)^(1/2);
 vwIa0=vweffIa[mhalo, \[Epsilon]Ia];
 
-{vwc, vwIa, Sqrt[vw0^2+vwIa^2+vwc^2]}/.FindRoot[{vwc==vwCompton[mhalo, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Epsilon], Tc], vwIa==vwIa0 E^(-radiusIa[mbh, mhalo]/rs[mbh,Sqrt[vw0^2+vwc^2+vwIa^2]])}, {vwc,vw0}, {vwIa, vwIa0}]
+{vwc, vwIa, Sqrt[vw0^2+vwIa^2+vwc^2]}/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta][mhalo],  \[Epsilon], Tc], vwIa==vwIa0 E^(-radiusIa[mbh, mhalo]/rs[mbh,Sqrt[vw0^2+vwc^2+vwIa^2]])}, {vwc,vw0}, {vwIa, vwIa0}]
 
  ]
 vweffTotImp[mbh_, t_,\[CapitalGamma]_:1,  \[Epsilon]msp_:0.1,Lsd_:10.^34, \[Epsilon]Ia_:0.4, \[Epsilon]_:0.01 , Tc_:10.^9]:=Module[{vw0,  rs1, \[Eta]1,vwIa0, vwc, vwIa},
 vw0=(vweffStarImp[t]^2+vweffMSPImp[t,\[Epsilon]msp, Lsd]^2)^(1/2);
 vwIa0=vweffIaImp[t, \[Epsilon]Ia];
 
-{vwc, vwIa, Sqrt[vw0^2+vwIa^2+vwc^2], (vwIa-vwIa0 E^(-radiusIaImp[mbh, t]/rs[mbh,Sqrt[vw0^2+vwc^2+vwIa^2]]))/vwIa}/.FindRoot[{vwc==vwComptonImp[mbh,t, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Epsilon], Tc], vwIa==vwIa0 E^(-radiusIaImp[mbh, t]/rs[mbh,Sqrt[vw0^2+vwc^2+vwIa^2]])}, {vwc,vw0}, {vwIa, vwIa0}]
+{vwc, vwIa, Sqrt[vw0^2+vwIa^2+vwc^2], (vwIa-vwIa0 E^(-radiusIaImp[mbh, t]/rs[mbh,Sqrt[vw0^2+vwc^2+vwIa^2]]))/vwIa}/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta]Imp[mhalo], \[Epsilon], Tc], vwIa==vwIa0 E^(-radiusIaImp[mbh, t]/rs[mbh,Sqrt[vw0^2+vwc^2+vwIa^2]])}, {vwc,vw0}, {vwIa, vwIa0}]
 
  ]
 
@@ -279,7 +278,7 @@ vwIa0=vweffIaImp[t, \[Epsilon]Ia];
 
 densSlope[\[CapitalGamma]_]:=-(1./6.*(1.-4.*(1+\[CapitalGamma])))
 \[CapitalGamma]fitM[mbh_]:=0.3*(mbh/10.^8/MS)^-0.24
-rs[mbh_,vw_,\[CapitalGamma]_:1]:=2.5*G mbh/(vw^2*densSlope[\[CapitalGamma]])
+rs[mbh_,vw_,\[CapitalGamma]_:1]:=3.5*G mbh/vw^2(*densSlope[\[CapitalGamma]])*)
 tempRs[mbh_,vw_]:=(ad-1)/ad*\[Mu]*mp*(7./5.)*vw^2/(2.*kb)
 
 rhoStarRs[mbh_, vw_, \[CapitalGamma]_:1.]:=mbh/((4.*\[Pi]) rinf[mbh]^3)*(2.-\[CapitalGamma])*(rs[mbh,vw, \[CapitalGamma]]/rinf[mbh])^(-1.-\[CapitalGamma])
@@ -295,7 +294,9 @@ mdotIA[mbh_, rIa_, \[CapitalGamma]_:1., \[Eta]_:1.]:=\[Eta] mbh/th (rIa/rinf[mbh
 
 qRs[mbh_,vw_,  \[CapitalGamma]_:1, \[Eta]_:1]:=\[Eta] rhoStarRs[mbh,vw,\[CapitalGamma]]/th
 tff[r_, mbh_]:=r^1.5/(G*mbh)^0.5
-rhoRs[mbh_,vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=mdotsol[mbh,vw, \[CapitalGamma]]*tff[rs[mbh,vw,\[CapitalGamma]], mbh]/(4.\[Pi]/3.*rs[mbh,vw,\[CapitalGamma]]^3.)
+
+rhoRs[mbh_,vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=mdotsol[mbh,vw, \[CapitalGamma], \[Eta]]*tff[rs[mbh,vw,\[CapitalGamma]], mbh]/(4.\[Pi]/3.*rs[mbh,vw,\[CapitalGamma]]^3.)
+nRs[mbh_,vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=rhoRs[mbh,vw, \[CapitalGamma], \[Eta]]/(\[Mu]*mp)
 
 
 heatingRs[mbh_,vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=0.5 qRs[mbh,vw, \[CapitalGamma],\[Eta]] (7./5.)*vw^2 
@@ -303,7 +304,9 @@ coolingRs[mbh_, vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=(rhoRs[mbh, vw, \[Capital
 hc[mbh_,vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=heatingRs[mbh,vw, \[CapitalGamma], \[Eta]]/coolingRs[mbh,vw,\[CapitalGamma], \[Eta]]
 
 (*Maximum Eddington ratio which may be achieved before we obtain thermal instability assuming a critical heating to cooling ratio of of hcCrit*) 
-eddrMaxCool[mbh_, \[CapitalGamma]_:1, \[Eta]_:1, hcCrit_:1]:=6.58 10^-5 0.43^(3.7-6.29/(3.7 - \[CapitalGamma])) (\[Eta]/0.02)^(1.7/(3.7-\[CapitalGamma])) (mbh/(10.^8 MS))^((1.36-0.68 \[CapitalGamma])/(3.7-\[CapitalGamma])) (675.938-337.969\[CapitalGamma])^(-((2 (2-\[CapitalGamma]))/(-7.4+2 \[CapitalGamma]))) hcCrit^((2 (2-\[CapitalGamma]))/(-7.4`+ 2.` \[CapitalGamma]))
+(*eddrMaxCool[mbh_, \[CapitalGamma]_:1, \[Eta]_:1, hcCrit_:1]:=6.58 10^-5 0.43^(3.7-6.29/(3.7 - \[CapitalGamma])) (\[Eta]/0.02)^(1.7/(3.7-\[CapitalGamma])) (mbh/(10.^8 MS))^((1.36-0.68 \[CapitalGamma])/(3.7-\[CapitalGamma])) (675.938-337.969\[CapitalGamma])^(-((2 (2-\[CapitalGamma]))/(-7.4+2 \[CapitalGamma]))) hcCrit^((2 (2-\[CapitalGamma]))/(-7.4`+ 2.` \[CapitalGamma]))*)
+vwMaxCool[mbh_, \[CapitalGamma]_:1, \[Eta]_:1, hcCrit_:1]:=vw1/.FindRoot[hc[mbh, vw1, \[CapitalGamma], \[Eta]]==hcCrit, {vw1,2.*10^7}]
+mdotMaxCool[mbh_, \[CapitalGamma]_:1, \[Eta]_:1, hcCrit_:1]:=mdotsol[mbh, vwMaxCool[mbh, \[CapitalGamma], \[Eta], hcCrit], \[CapitalGamma], \[Eta]]
 
 
 EndPackage[]

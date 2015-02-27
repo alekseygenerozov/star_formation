@@ -1,5 +1,3 @@
-(* ::Package:: *)
-
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -44,12 +42,12 @@ mdotIasGamma = Table[mdotIA[mbhs[[i]], radiiIa[[i]], \[CapitalGamma]s[[i]], \[Et
 
 mdotInfs = (\[Eta]s*mbhs)/th; 
 
-mdotMaxCoolsCore = Table[eddrMaxCool[mbhs[[i]], 0.1, \[Eta]s[[i]]], 
-    {i, 1, Length[\[Eta]s]}]*mdotEdds;
-mdotMaxCools = Table[eddrMaxCool[mbhs[[i]], 0.8, \[Eta]s[[i]]], 
-    {i, 1, Length[\[Eta]s]}]*mdotEdds;
-mdotMaxCoolsGamma = Table[eddrMaxCool[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]]], 
-    {i, 1, Length[\[Eta]s]}]*mdotEdds;
+mdotMaxCoolsCore = Table[mdotMaxCool[mbhs[[i]], 0.1, \[Eta]s[[i]]], 
+    {i, 1, Length[\[Eta]s]}];
+mdotMaxCools = Table[mdotMaxCool[mbhs[[i]], 0.8, \[Eta]s[[i]]], 
+    {i, 1, Length[\[Eta]s]}];
+mdotMaxCoolsGamma = Table[mdotMaxCool[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]]], 
+    {i, 1, Length[\[Eta]s]}];
 
 (*rhoCusps=Table[rhoRs[mbhs[[i]], vweffTots[[i]], 0.8, etas[[i]]],{i, 1, Length[mbhs]}]
   rhoCores=Table[rhoRs[mbhs[[i]], vweffTots[[i]], 0.1, etas[[i]]],{i, 1, Length[mbhs]}]*)
@@ -67,12 +65,9 @@ Export["hc.csv", Transpose[{mbhs/MS, hcs}], "TableHeadings" -> {"Mbh", "Cusp"}]
 
 mdotsAll=Map[OutputForm[SigForm[#,3, scientific->True]]&\
 ,Transpose[{mbhs/MS, mdots, mdotsCore, mdotsGamma, mdotIas, mdotIasCore,\
- mdotIasGamma, mdotInfs, mdotMaxCools, mdotMaxCoolsCore, mdotMaxCoolsGamma, LEdds}],2]
+ mdotIasGamma, mdotInfs, mdotMaxCools, mdotMaxCoolsCore, mdotMaxCoolsGamma, LEdds}],{2}]
 
 Export["mdots.csv", mdotsAll, TableHeadings->
 {"Mbh","Cusp","Core","Gamma",\
  "Ia","IaCore","IaGamma","Inf","MaxCools","MaxCoolsCore","MaxCoolsGamma","LEdds"}]
-
-
-
 
