@@ -1,3 +1,5 @@
+(* ::Package:: *)
+
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -37,16 +39,44 @@ vweffTotsGamma = tmp[[1 ;; All,3]];
 radiiIa = Table[radiusIa[mbhs[[i]], mhalos[[i]]], {i, 1, Length[mbhs]}]; 
 
 
-stags = Table[rs[mbhs[[i]], vweffTots[[i]]], {i, 1, Length[mbhs]}];
+rsCore = Table[rs[mbhs[[i]], vweffTots[[i]], 0.1], {i, 1, Length[mbhs]}];
+rsCusp = Table[rs[mbhs[[i]], vweffTots[[i]], 0.8], {i, 1, Length[mbhs]}];
 
 
-timeImps = 10.^Range[6.6, 10., 0.2]*year; 
-vweffStarImps = vweffStarImp /@ timeImps; 
-\[Eta]Imps = \[Eta]Imp /@ timeImps; 
-mbhsSparse = 10.^Range[6., 9., 1.]*MS; 
-eddrImps = Table[mdotsol[mbhsSparse[[j]], vweffStarImps[[i]], 0.8, \[Eta]Imps[[i]]]/
-     mdotEdd[mbhsSparse[[j]]], {i, 1, Length[timeImps]}, 
-    {j, 1, Length[mbhsSparse]}]; 
+mbh=10.^6 MS;
+timeImps=10.^Range[6.6,10.,0.2]*year;
+\[Eta]Imps=\[Eta]Imp/@timeImps;
+tmp=vweffTotImp[mbh, #,0.8]&/@timeImps;
+(*heating from different sources in the impulsive limit*)
+vwcImps=tmp[[;;,1]];
+vweffIaImps=tmp[[;;, 2]];
+vweffTotImps=tmp[[;;, 3]];
+vweffStarImps=vweffStarImp/@timeImps;
+vweffMSPImps=vweffMSPImp/@timeImps;
+vweffNoBHImps=Sqrt[vweffTotImps^2-vwcImps^2];
+(*Heating over cooling ratio*)
+hcImps=Table[hc[mbh,vweffNoBHImps[[i]], 0.8, \[Eta]Imps[[i]]], {i, 1, Length[timeImps]}];
+
+Transpose[{timeImps/year*10.^5, vweffIaImps, vweffStarImps, vweffMSPImps, vwcImps, vweffNoBHImps}/10.^5]//Export["/Users/aleksey/Second_Year_Project/star_formation/vwSourcesImps6.csv", #, TableHeadings->{"Time","Ias", "Stars", "MSPs", "Compton", "Total"}]&;
+Transpose[{timeImps/year, hcImps}]//Export["/Users/aleksey/Second_Year_Project/star_formation/hcImps6.csv", #, TableHeadings->{"Time", "Cusp"}]&;
+
+
+mbh=10.^8 MS;
+timeImps=10.^Range[6.6,10.,0.2]*year;
+\[Eta]Imps=\[Eta]Imp/@timeImps;
+tmp=vweffTotImp[mbh, #,0.8]&/@timeImps;
+(*heating from different sources in the impulsive limit*)
+vwcImps=tmp[[;;,1]];
+vweffIaImps=tmp[[;;, 2]];
+vweffTotImps=tmp[[;;, 3]];
+vweffStarImps=vweffStarImp/@timeImps;
+vweffMSPImps=vweffMSPImp/@timeImps;
+vweffNoBHImps=Sqrt[vweffTotImps^2-vwcImps^2];
+(*Heating over cooling ratio*)
+hcImps=Table[hc[mbh,vweffNoBHImps[[i]], 0.8, \[Eta]Imps[[i]]], {i, 1, Length[timeImps]}]
+
+Transpose[{timeImps*10.^5/year, vweffIaImps, vweffStarImps, vweffMSPImps, vwcImps, vweffNoBHImps}/10.^5]//Export["/Users/aleksey/Second_Year_Project/star_formation/vwSourcesImps8.csv", #, TableHeadings->{"Time","Ias", "Stars", "MSPs", "Compton", "Total"}]&;
+Transpose[{timeImps/year, hcImps}]//Export["/Users/aleksey/Second_Year_Project/star_formation/hcImps8.csv", #, TableHeadings->{"Time", "Cusp"}]&;
 
 
 SetDirectory["/Users/aleksey/Second_Year_Project/star_formation"]
@@ -57,8 +87,7 @@ Export["vwSourcesCore.csv", Transpose[{mbhs*(10.^5/MS), vweffIasCoreCorrected, v
 Export["vwSourcesGamma.csv", Transpose[{mbhs*(10.^5/MS), vweffIasGammaCorrected, vwcGamma, vweffTotsGamma}/10.^5], 
   "TableHeadings" -> {"Compton", "Total"}]
 
-Export["Ia.csv", Transpose[{mbhs/MS, radiiIa}], "TableHeadings" -> {"Mbh", "rIa"}]
-
+Export["Ia.csv", Transpose[{mbhs/MS, radiiIa, rsCusp, rsCore}], "TableHeadings" -> {"Mbh", "rIa", "rsCusp", "rsCore"}]
 Export["eta.csv", Transpose[{mbhs/MS, \[Eta]s}], "TableHeadings" -> {"Mbh", "eta"}]
 Export["etaImp.csv", Transpose[{timeImps/year, \[Eta]Imps}], "TableHeadings" -> {"time", "eta"}]
 Export["vweffStarImps.csv", Transpose[{timeImps/year, vweffStarImps}], "TableHeadings" -> {"time", "vw"}]
