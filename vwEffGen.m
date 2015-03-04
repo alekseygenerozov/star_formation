@@ -1,6 +1,9 @@
+(* ::Package:: *)
+
 #!/usr/local/bin/MathematicaScript/ -script
 
 
+AppendTo[$Path,"/Users/aleksey/code/mathematica/star_formation_code"];
 Needs["vwEff`"]
 
 
@@ -8,6 +11,13 @@ mhalos=10.^Range[10.8, 14.,0.2] MS;
 mstarTots=mstarTot/@mhalos;
 mbhs=MbhMbulge/@mstarTots;
 \[CapitalGamma]s=\[CapitalGamma]fitM/@mbhs;
+
+
+(*edotTOForm[mhalos[[1]]]*)
+edotMSForm[mhalos[[1]]]
+
+
+?vweffStar
 
 
 vweffStars = vweffStar /@ mhalos; 

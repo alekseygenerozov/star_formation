@@ -75,7 +75,7 @@ Mt0Fit1[t_]:=MS 10.^(Mt0FitGen/.x-> Log10[t/(10.^9  year)])
 tt0Fit1[Mt0_]:=t/.FindRoot[Mt0Fit1[t]==Mt0,{t, 10.^7 year}];
 (*Have a floor on the stallar lifetime--this should be around 3 Myr. In the generalized fitting formula for Mt0 above this is approximately (though not exactly) the lifetime of a 100 solar mass star. I find the exact value (tmin) for the 100 MS lifetime below, 
 assuming our fiting formula*)
-tmin=t/.FindRoot[Mt0Fit1[t]==100.MS, {t, 3. 10^6 year}];
+tmin=t/.FindRoot[Mt0Fit1[t]/MS==100., {t, 3. 10^6 year}];
 (*If time is lass than tmin above then return 100 MS for the turnoff mass, since the derivative of the turnoff mass is 0, this ensures that the mass return rate from evolved stars for the first 3 Myr is 0.*)
 
 Mt0Fit[t_]:=Piecewise[{{100MS,t<tmin}}, Mt0Fit1[t]];
@@ -90,8 +90,6 @@ dMt0dt=Mt0Fit';
 \[CapitalDelta]M1[t_]:=(0.945 Mt0Fit[t]-0.503 MS );
 ttrans=tt0Fit1[9. MS];
 \[CapitalDelta]M[t_]:=Piecewise[{{Mt0Fit[t]-1.4 MS,t<=ttrans}},\[CapitalDelta]M1[t] ];
-
-
 
 
 (*Fits from Moster et al. 2012*)
@@ -121,9 +119,10 @@ g21=0.098;
 g12=-0.806;
 g22=-0.797;
 
+mhaloAcc=10.^13.*MS
 g1[mhalo_]:=g10*((mhalo/(10.^12.5  MS))^g11+(mhalo/(10.^12.5 MS))^g12)^-1
 g2[mhalo_]:=g20+g21 (mhalo/(10.^12 MS))^g22
-dSdtAcc[z_, mhalo_]:=If[mhalo>10.^13*MS, g1[mhalo] Exp[-z/g2[mhalo]],0.]
+dSdtAcc[z_, mhalo_]:=If[mhalo>mhaloAcc, g1[mhalo] Exp[-z/g2[mhalo]],0.]
 dNdtAcc[z_, mhalo_]:=dSdtAcc[z, mhalo]/mavg
 
 
@@ -134,8 +133,10 @@ To find the total stellar mass at present one would have to account for stars dy
 However, to compute this requires a more computationally intensive double integral 
 and to a good approximation the total stellar mass at present is the total stellar mass
  formed.*)
+mstarTotAcc[M_]:=mavg If[M>mhaloAcc, NIntegrate[Abs[dNdtAcc[z[t], M]], {t, 0., tL[zu]}, Method->"DoubleExponential"], 0.]
 mstarTotForm[M_]:=mavg NIntegrate[Abs[dNdtForm[z[t], M]], {t, 0., tL[zu]}, Method->"DoubleExponential"]
-mstarTot[M_]:=mavg NIntegrate[Abs[dNdt[z[t], M]], {t, 0., tL[zu]}, Method->"DoubleExponential"]
+mstarTot[M_]:=mstarTotAcc[M]+mstarTotForm[M]
+(*mstarTot[M_]:=mavg NIntegrate[Abs[dNdt[z[t], M]], {t, 0., tL[zu]}, Method->"DoubleExponential"]*)
 
 
 (*Stellar properties*)
@@ -201,7 +202,7 @@ mdotImp[t_]:=Abs[Mt0Fit'[t]] \[CapitalDelta]M[t] \[Mu]sal[Mt0Fit[t]]
 mdotSpecific[t_?NumericQ, mhalo_]:=NIntegrate[dNdtForm[z[t1], mhalo]Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[Mt0Fit[t1]], {t1,  t, tL[zu]}, Method->"DoubleExponential"]\
 /NIntegrate[dNdtForm[z[tl], mhalo], {tl, t, tL[zu]}]
 mdotForm[mhalo_]:=mdotSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0, tL[zu]}]
-mdotAcc[mhalo_]:=NIntegrate[mdotSpecific[t1, mhalo]*dNdtAcc[z[t1], mhalo], {t1, 0., tL[3.]}]
+mdotAcc[mhalo_]:=If[mhalo>mhaloAcc, NIntegrate[mdotSpecific[t1, mhalo]*dNdtAcc[z[t1], mhalo], {t1, 0., tL[3.]}],0]
 mdot[mhalo_]:=mdotAcc[mhalo]+mdotForm[mhalo]
 
 (*lookup table for computing heating from main sequence stellar winds*)
@@ -219,8 +220,8 @@ edotMSSpecific[t_?NumericQ, mhalo_]:=NIntegrate[dNdtForm[z[t1], mhalo]*enStarInt
 edotTOForm[mhalo_]:= edotTOSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0., tL[zu]} ]
 edotMSForm[mhalo_]:= edotMSSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0., tL[zu]} ]
 (*Energy injection per accreted star for stars accreted at look-back time t*)
-edotTOAcc[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotTOSpecific[t, mhalo], {t, 0., tL[3.]} ]
-edotMSAcc[mhalo_]:= NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpecific[t, mhalo], {t, 0., tL[3.]} ]
+edotTOAcc[mhalo_]:= If[mhalo>mhaloAcc, NIntegrate[dNdtAcc[z[t], mhalo] edotTOSpecific[t, mhalo], {t, 0., tL[3.]} ],0.]
+edotMSAcc[mhalo_]:= If[mhalo>mhaloAcc, NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpecific[t, mhalo], {t, 0., tL[3.]} ],0.]
 (*edotMSAcc[mhalo_]:=0.5 NIntegrate[dNdtForm[z[t], mhalo]mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2, {t,0., tL[zu]},{Mstar, 0.1 MS ,MS}]\
 +0.5 NIntegrate[dNdtForm[z[t], mhalo]mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2, {t,0., tL[zu]},{Mstar ,MS, Mt0Fit[t]}];*)
 
@@ -248,7 +249,7 @@ vweffIaImp[t_, \[Epsilon]Ia_:0.4]:=Sqrt[(2. th rateIaImp[t] \[Epsilon]Ia 10.^51)
 vweffMSP[mhalo_, \[Epsilon]msp_:0.1,Lsd_:10.^34]:=3. 10^6 (\[Epsilon]msp/0.1)^0.5 (Lsd/10.^34)^(1/2) (\[Eta][mhalo]/0.02)^(-1/2)
 vweffMSPImp[t_, \[Epsilon]msp_:0.1,Lsd_:10.^34]:=3. 10^6 (\[Epsilon]msp/0.1)^0.5 (Lsd/10.^34)^(1/2) (\[Eta]Imp[t]/0.02)^(-1/2)
 
-edotCompton[mbh_, vw_, \[CapitalGamma]_:1, \[Eta]_:1, Tc_:10.^9]:=4.1*10^-35*nRs[mbh, vw, \[CapitalGamma], \[Eta]]^2 (10.*(mdotsol[mbh, vw, \[CapitalGamma], \[Eta]]^2/mdotEdd[mbh]) c^2)/(nRs[mbh, vw, \[CapitalGamma], \[Eta]] rs[mbh, vw, \[CapitalGamma]]^2)*(Tc)
+edotCompton[mbh_, vw_, \[CapitalGamma]_:1, \[Eta]_:1, Tc_:10.^9]:=4.1*10^-35*nRs[mbh, vw, \[CapitalGamma], \[Eta]]^2 (0.1*(mdotsol[mbh, vw, \[CapitalGamma], \[Eta]]^2/mdotEdd[mbh]) c^2)/(nRs[mbh, vw, \[CapitalGamma], \[Eta]] rs[mbh, vw, \[CapitalGamma]]^2)*(Tc)
 vwComptonGen[mbh_,vw_, \[CapitalGamma]_:1., \[Eta]_:1, Tc_:10.^9]:=Sqrt[ ((2. th edotCompton[mbh, vw, \[CapitalGamma], \[Eta], Tc])/(\[Eta] rhoStarRs[mbh, vw, \[CapitalGamma]]))]
 
 vwComptonDom[mbh_, \[CapitalGamma]_:1., \[Eta]_:1., Tc_:10.^9]:=vw1/.FindRoot[vwComptonGen[mbh, vw1, \[CapitalGamma], \[Eta], Tc]==vw1, {vw1, 5.*10^7}]
