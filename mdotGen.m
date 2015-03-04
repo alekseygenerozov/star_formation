@@ -51,14 +51,14 @@ mdotMaxCoolsGamma = Table[mdotMaxCool[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[
     {i, 1, Length[\[Eta]s]}];
 
 
-\[Epsilon]rad=0.01;
+
 TempC=10.^9;
 
-mdotComptonsCore = Table[mdotCompton[mbhs[[i]], 0.1, \[Eta]s[[i]], \[Epsilon]rad, TempC], 
+mdotComptonsCore = Table[mdotCompton[mbhs[[i]], 0.1, \[Eta]s[[i]], TempC], 
     {i, 1, Length[\[Eta]s]}];
-mdotComptons = Table[mdotCompton[mbhs[[i]], 0.8, \[Eta]s[[i]], \[Epsilon]rad, TempC], 
+mdotComptons = Table[mdotCompton[mbhs[[i]], 0.8, \[Eta]s[[i]], TempC], 
     {i, 1, Length[\[Eta]s]}];
-mdotComptonsGamma = Table[mdotCompton[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]], \[Epsilon]rad, TempC], 
+mdotComptonsGamma = Table[mdotCompton[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]],  TempC], 
     {i, 1, Length[\[Eta]s]}];
 
 
