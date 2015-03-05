@@ -1,5 +1,3 @@
-(* ::Package:: *)
-
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -14,7 +12,7 @@ mbhs=MbhMbulge/@mstarTots;
 
 
 (*edotTOForm[mhalos[[1]]]*)
-edotMSForm[mhalos[[1]]]
+edotMSSpecific[0,mhalos[[1]]]
 
 
 ?vweffStar
