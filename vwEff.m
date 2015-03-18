@@ -51,6 +51,8 @@ vcirc[mhalo_]:=2. 10^7 10.0^((Log10[mhalo/(10.^12 MS)]-0.15)/3.32)
 MbhMbulge[mbulge_]:=10.^8.46 (mbulge/(10.^11 MS))^1.05 MS
 (*Influence radius*)
 rinf[mbh_]:=14*(mbh/(10.^8 MS))^0.6 pc
+(*Scaling relation for the break radius for cores*)
+rb[mbh_]:=106*(mbh/(10.^8 MS))^0.39*pc
 
 
 (*IMF*)
