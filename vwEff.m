@@ -154,7 +154,8 @@ vwMS[Mstar_]:=4.3 10^7 Sqrt[(Mstar/MS)/(Rstar[Mstar]/Rsun)]
 (*Number of stars in stellar population from Voss--100 stars with stellar masses between 8 and 120 Msun with a Salpeter IMF. Should resolve slight discrepancy between upper mass limit in Voss and the one used here.*)
 nVoss=100./NIntegrate[\[Mu]sal[Mstar],{Mstar, 8. MS, 100. MS}];
 (*Wind power Voss et al. 2009--energy budget is actually dominated by Wolf-Rayet stars.*)
-edotWR[t_]:=Piecewise[{{ 10.^36.1/(nVoss/100.),t<4.0 10^6 year}}, 10.^36.1/(nVoss/100.)*(t/(4. 10^6 year))^-3.73]
+twrcut=10.^8*year;
+edotWR[t_]:=Piecewise[{{ 10.^36.1/(nVoss/100.),t<4.0 10^6 year}, {0.,t>twrcut}}, 10.^36.1/(nVoss/100.)*(t/(4. 10^6 year))^-3.73]
 
 (*Reimers' prescription for stellar mass loss return rate. Notice that this would significantly overestimate the mass return rate for the sun, although from observation there is a very wide scatter about this relation. Even an individual star could show orders of magnitude variability in mdot.*)
 mdotStarReimers[Mstar_]:=4 10^-13 (Mstar/MS)^-1 (Lstar[Mstar]/Lsun)(Rstar[Mstar]/Rsun) MS/year
@@ -214,18 +215,20 @@ lookupTable=NIntegrate[enStar[ms], {ms, 0.1*MS, #}]&/@lookupTableOrds;
 enStarIntInterp=Transpose[{Log10[lookupTableOrds], Log10[lookupTable]}]//Interpolation;
 enStarInt[mt0_]:=10.^enStarIntInterp[Log10[mt0]]
 
+
 I1=NIntegrate[enStar[Mstar], {Mstar,0.1*MS,MS}];
 (*Turnoff and main sequence energy injection per star for Moster star formation histories truncated at time t.*)
 edotTOSpecific[t_?NumericQ, mhalo_]:=NIntegrate[dNdtForm[z[t1], mhalo]*edotWR[t1], {t1, t, tL[zu]} ]/NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]} ]
-edotMSSpecific2[t_?NumericQ, mhalo_]:=(NIntegrate[dNdtForm[z[t1], mhalo]*enStarInt[Mt0Fit[t1]], {t1, 0., tL[zu]}])\
-/NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]} ]
-edotMSSpecific[t_?NumericQ, mhalo_]:=(enStarInt[100.*MS]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0, tmin}]+NIntegrate[dNdtForm[z[t1], mhalo]*enStarInt[Mt0Fit[t1]], {t1, tmin, tL[zu]}])\
-/NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]} ]
+(*edotMSSpecific2[t_?NumericQ, mhalo_]:=(NIntegrate[dNdtForm[z[t1], mhalo]*enStarInt[Mt0Fit[t1]], {t1, 0., tL[zu]}])\
+/NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]} ]*)
+edotMSSpecific[t_?NumericQ, mhalo_]:=(enStarInt[100.*MS]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0, tmin}]+NIntegrate[dNdtForm[z[t1], mhalo]*enStarInt[Mt0Fit[t1]], {t1, tmin, tL[zu]},\
+Method->{"InterpolationPointsSubdivision","MaxSubregions"->1+Length[First@enStarInt["Coordinates"]]}])\
+/NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]}]
 (*Turnoff and main sequence contributions to energy injection.*)
 edotTOForm[mhalo_]:= edotTOSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0., tL[zu]} ]
 edotMSForm[mhalo_]:= edotMSSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0., tL[zu]} ]
 (*Energy injection per accreted star for stars accreted at look-back time t*)
-edotTOAcc[mhalo_]:= If[mhalo>mhaloAcc, NIntegrate[dNdtAcc[z[t], mhalo] edotTOSpecific[t, mhalo], {t, 0., tL[3.]} ],0.]
+edotTOAcc[mhalo_]:= If[mhalo>mhaloAcc, NIntegrate[dNdtAcc[z[t], mhalo] edotTOSpecific[t, mhalo], {t, 0., 0.99*twrcut} ],0.]
 edotMSAcc[mhalo_]:= If[mhalo>mhaloAcc, NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpecific[t, mhalo], {t, 0., tL[3.]} ],0.]
 (*edotMSAcc[mhalo_]:=0.5 NIntegrate[dNdtForm[z[t], mhalo]mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2, {t,0., tL[zu]},{Mstar, 0.1 MS ,MS}]\
 +0.5 NIntegrate[dNdtForm[z[t], mhalo]mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2, {t,0., tL[zu]},{Mstar ,MS, Mt0Fit[t]}];*)
