@@ -203,7 +203,7 @@ mdotImp[t_]:=Abs[Mt0Fit'[t]] \[CapitalDelta]M[t] \[Mu]sal[Mt0Fit[t]]
 (*Mass shed by turn-off stars*)
 (*Mass injection per star for Moster star formation history truncated at lookback time t.*) 
 mdotSpecific[t_?NumericQ, mhalo_]:=(NIntegrate[dNdtForm[z[t1],mhalo] Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[Mt0Fit[t1]],{t1,tmin,ttrans}, Method->"AdaptiveQuasiMonteCarlo"]+\
-NIntegrate[dNdtForm[z[t1],mhalo] Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[Mt0Fit[t1]],{t1,ttrans, tL[zu]}, Method->"AdaptiveQuasiMonteCarlo"])\
+NIntegrate[dNdtForm[z[t1],mhalo] Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[Mt0Fit[t1]],{t1,ttrans, t}, Method->"AdaptiveQuasiMonteCarlo"])\
 /NIntegrate[dNdtForm[z[tl], mhalo], {tl, t, tL[zu]}]
 mdotForm[mhalo_]:=mdotSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0, tL[zu]}]
 mdotAcc[mhalo_]:=If[mhalo>mhaloAcc, NIntegrate[mdotSpecific[t1, mhalo]*dNdtAcc[z[t1], mhalo], {t1, 0., tL[3.]}],0]

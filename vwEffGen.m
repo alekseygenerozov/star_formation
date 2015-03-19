@@ -1,3 +1,5 @@
+(* ::Package:: *)
+
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -9,10 +11,6 @@ mhalos=10.^Range[10.8, 14.,0.2] MS;
 mstarTots=mstarTot/@mhalos;
 mbhs=MbhMbulge/@mstarTots;
 \[CapitalGamma]s=\[CapitalGamma]fitM/@mbhs;
-
-
-(*edotTOForm[mhalos[[1]]]*)
-edotMSSpecific[0,mhalos[[1]]]
 
 
 vweffStars = vweffStar /@ mhalos; 
