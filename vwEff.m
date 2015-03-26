@@ -300,14 +300,10 @@ vwIa0=vweffIaImp[t, \[Epsilon]Ia];
  ]
 
 
-(*Generozov's law and gas properties at rs*)
-\[Chi][mbh_,vw_]:=(1+0.12(mbh/(10.^8 MS))^0.39 (vw/(5. 10^7))^-2)^(1/2)
-(*Halo-MBH relation from Bandara et al. 2009*)
-
 densSlope[\[CapitalGamma]_]:=-(1./6.*(1.-4.*(1+\[CapitalGamma])))
 \[CapitalGamma]fitM[mbh_]:=0.3*(mbh/10.^8/MS)^-0.24
-rs[mbh_,vw_,\[CapitalGamma]_:1]:=(3.5-densSlope[\[CapitalGamma]])*G mbh/vw^2/densSlope[\[CapitalGamma]]
-tempRs[vw_, \[CapitalGamma]_:1]:=(ad-1)/ad*\[Mu]*mp*((3.5)/(3.5-densSlope[\[CapitalGamma]]))*vw^2/(2.*kb)
+rs[mbh_,vw_,\[CapitalGamma]_:1]:=((13.+8.\[CapitalGamma])/(4.+2.\[CapitalGamma])-densSlope[\[CapitalGamma]]*(3./(2.+\[CapitalGamma])))G mbh/vw^2/densSlope[\[CapitalGamma]]
+tempRs[vw_, \[CapitalGamma]_:1]:=(ad-1)/ad*\[Mu]*mp*((3.+8.*\[CapitalGamma])/(3.+8.*\[CapitalGamma]-6.*densSlope[\[CapitalGamma]]))*vw^2/(2.*kb)
 
 rhoStarRs[mbh_, vw_, \[CapitalGamma]_:1.]:=mbh/((4.*\[Pi]) rinf[mbh]^3)*(2.-\[CapitalGamma])*(rs[mbh,vw, \[CapitalGamma]]/rinf[mbh])^(-1.-\[CapitalGamma])
 mencRs[mbh_,vw_, \[CapitalGamma]_:1.]:=mbh*(rs[mbh,vw, \[CapitalGamma]]/rinf[mbh])^(2.-\[CapitalGamma])
