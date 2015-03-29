@@ -1,3 +1,5 @@
+(* ::Package:: *)
+
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -22,11 +24,16 @@ radiiIa=Import["Ia.csv", "HeaderLines"->1][[;;,2]];
 \[CapitalGamma]s=\[CapitalGamma]fitM/@mbhs;
 
 
-mdots = Table[mdotsol[mbhs[[i]], vweffTots[[i]], 0.8, \[Eta]s[[i]]], 
+rbrinfs=rbrinf[#]&/@mbhs;
+rbrinfsCore=rbrinfCore[#]&/@mbhs;
+rbrinfsGamma=Table[rbrinfGen[mbhs[[i]], \[CapitalGamma]s[[i]]], {i, 1, Length[mbhs]}];
+
+
+mdots = Table[mdotsol[mbhs[[i]], vweffTots[[i]], 0.8, \[Eta]s[[i]], rbrinfs[[i]]], 
     {i, 1, Length[mbhs]}]; 
-mdotsCore = Table[mdotsol[mbhs[[i]], vweffTotsCore[[i]], 0.1, \[Eta]s[[i]]], 
+mdotsCore = Table[mdotsol[mbhs[[i]], vweffTotsCore[[i]], 0.1, \[Eta]s[[i]], rbrinfsCore[[i]]], 
     {i, 1, Length[mbhs]}]; 
-mdotsGamma = Table[mdotsol[mbhs[[i]], vweffTotsGamma[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]]], 
+mdotsGamma = Table[mdotsol[mbhs[[i]], vweffTotsGamma[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]], rbrinfsGamma[[i]]], 
     {i, 1, Length[mbhs]}]; 
 
 
@@ -41,7 +48,6 @@ mdotIas = Table[mdotIA[mbhs[[i]], radiiIa[[i]], 0.8, \[Eta]s[[i]]],
 mdotIasGamma = Table[mdotIA[mbhs[[i]], radiiIa[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]]], 
     {i, 1, Length[\[Eta]s]}];
 
-mdotInfs = (\[Eta]s*mbhs)/th; 
 
 mdotMaxCoolsCore = Table[mdotMaxCool[mbhs[[i]], 0.1, \[Eta]s[[i]]], 
     {i, 1, Length[\[Eta]s]}];
@@ -49,7 +55,6 @@ mdotMaxCools = Table[mdotMaxCool[mbhs[[i]], 0.8, \[Eta]s[[i]]],
     {i, 1, Length[\[Eta]s]}];
 mdotMaxCoolsGamma = Table[mdotMaxCool[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]]], 
     {i, 1, Length[\[Eta]s]}];
-
 
 
 TempC=10.^9;
@@ -74,9 +79,9 @@ Export["hc.csv", Transpose[{mbhs/MS, hcs, hcsCore}], "TableHeadings" -> {"Mbh", 
 
 mdotsAll=Map[OutputForm[SigForm[#,3, scientific->True]]&\
 ,Transpose[{mbhs/MS, mdots, mdotsCore, mdotsGamma, mdotIas, mdotIasCore,\
-	    mdotIasGamma, mdotInfs, mdotMaxCools, mdotMaxCoolsCore, mdotMaxCoolsGamma, mdotComptons, mdotComptonsCore, mdotComptonsGamma, LEdds}],{2}]
+	    mdotIasGamma, mdotMaxCools, mdotMaxCoolsCore, mdotMaxCoolsGamma, mdotComptons, mdotComptonsCore, mdotComptonsGamma, LEdds}],{2}];
 
 Export["mdots.csv", mdotsAll, TableHeadings->
 {"Mbh","Cusp","Core","Gamma",\
- "Ia","IaCore","IaGamma","Inf","MaxCools","MaxCoolsCore","MaxCoolsGamma", "mdotComptons", "mdotComptonsCore", "mdotComptonsGamma", "LEdds"}]
+ "Ia","IaCore","IaGamma","MaxCools","MaxCoolsCore","MaxCoolsGamma", "mdotComptons", "mdotComptonsCore", "mdotComptonsGamma", "LEdds"}];
 
