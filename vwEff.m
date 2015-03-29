@@ -52,7 +52,9 @@ MbhMbulge[mbulge_]:=10.^8.46 (mbulge/(10.^11 MS))^1.05 MS
 (*Influence radius*)
 rinf[mbh_]:=14*(mbh/(10.^8 MS))^0.6 pc
 (*Scaling relation for the break radius for cores*)
-rb[mbh_]:=106*(mbh/(10.^8 MS))^0.39*pc
+rbCore[mbh_]:=106*(mbh/(10.^8 MS))^0.39*pc
+(*ratio of break radius to influence radius for core galaxies*)
+rbCorerinf[mbh_]:=rbCore[mbh]/rinf[mbh]
 
 
 (*IMF*)
@@ -232,15 +234,6 @@ enStarInt[mt0_]:=10.^enStarIntInterp[Log10[mt0]]
 I1=NIntegrate[enStar[Mstar], {Mstar,0.1*MS,MS}];
 (*Turnoff and main sequence energy injection per star for Moster star formation histories truncated at time t.*)
 edotTOSpecific[t_?NumericQ, mhalo_]:=NIntegrate[dNdtForm[z[t1], mhalo]*edotWR[t1], {t1, t, tL[zu]} ]/NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]} ]
-
-(*edotMSSpecific2[t_?NumericQ, mhalo_]:=(NIntegrate[dNdtForm[z[t1], mhalo]*enStarInt[Mt0Fit[t1]], {t1, t, tL[zu]}]) \
-/NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]}]
-edotMSSpecific3[t_?NumericQ, mhalo_]:=(enStarInt[100.*MS]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tmin}]+NIntegrate[dNdtForm[z[t1], mhalo]*enStarInt[Mt0Fit[t1]], {t1, tmin, tL[zu]}])\
-/NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]}]
-*)
-(*edotMSSpecific[t_?NumericQ, mhalo_]:=(NIntegrate[dNdtForm[z[t1], mhalo]*enStarInt[Mt0Fit[t1]], {t1, t, tL[zu]},\
-Method->{"InterpolationPointsSubdivision","MaxSubregions"->1+Length[First@enStarInt["Coordinates"]]}])\
-/NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]}]*)
 edotMSSpecific[t_?NumericQ, mhalo_]:=(NIntegrate[dNdtForm[z[t1], mhalo]*enStarInt[Mt0Fit[t1]], {t1, t, tmin, tL[zu]},\
 Method->{"InterpolationPointsSubdivision","MaxSubregions"->1+Length[First@enStarInt["Coordinates"]]}])\
 /NIntegrate[dNdtForm[z[t1], mhalo], {t1, t, tL[zu]}]
@@ -300,9 +293,25 @@ vwIa0=vweffIaImp[t, \[Epsilon]Ia];
  ]
 
 
+(*estimate for the gas density slope at rs*)
 densSlope[\[CapitalGamma]_]:=-(1./6.*(1.-4.*(1+\[CapitalGamma])))
 \[CapitalGamma]fitM[mbh_]:=0.3*(mbh/10.^8/MS)^-0.24
-rs[mbh_,vw_,\[CapitalGamma]_:1]:=((13.+8.\[CapitalGamma])/(4.+2.\[CapitalGamma])-densSlope[\[CapitalGamma]]*(3./(2.+\[CapitalGamma])))G mbh/vw^2/densSlope[\[CapitalGamma]]
+(*normalized heating rate and critical value of this parameter beyond which rs approaches rb*)
+zeta[mbh_,vw_]:=(vw^2.+3*sigma[mbh]^2.)^0.5/(3.**0.5*sigma[mbh])
+zetac[rbrinf_, \[CapitalGamma]_]:=(rbrinf)^(0.5*(1.-\[CapitalGamma]))
+(**)
+(*result for stagnation radius--follows generozov's law unless we are below critical
+heating rate.*)
+rs[mbh_,vw_,\[CapitalGamma]_:1, rbrinf_:1]:=Module[{zc, z},
+	zc=zetc[rbrinf, \[CapitalGamma]];
+	z=zeta[mbh, vw];
+
+	If[z>=zc, ((13.+8.\[CapitalGamma])/(4.+2.\[CapitalGamma])-densSlope[\[CapitalGamma]]*(3./(2.+\[CapitalGamma])))G mbh/vw^2/densSlope[\[CapitalGamma]], 
+	(rbrinf)*rinf[mbh]
+	]
+]
+(*temperature at the stagnation radius accounting for the velocity dispersion of the black 
+hole.*)
 tempRs[vw_, \[CapitalGamma]_:1]:=(ad-1)/ad*\[Mu]*mp*((3.+8.*\[CapitalGamma])/(3.+8.*\[CapitalGamma]-6.*densSlope[\[CapitalGamma]]))*vw^2/(2.*kb)
 
 rhoStarRs[mbh_, vw_, \[CapitalGamma]_:1.]:=mbh/((4.*\[Pi]) rinf[mbh]^3)*(2.-\[CapitalGamma])*(rs[mbh,vw, \[CapitalGamma]]/rinf[mbh])^(-1.-\[CapitalGamma])
