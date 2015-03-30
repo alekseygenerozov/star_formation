@@ -24,16 +24,11 @@ radiiIa=Import["Ia.csv", "HeaderLines"->1][[;;,2]];
 \[CapitalGamma]s=\[CapitalGamma]fitM/@mbhs;
 
 
-rbrinfs=rbrinf[#]&/@mbhs;
-rbrinfsCore=rbrinfCore[#]&/@mbhs;
-rbrinfsGamma=Table[rbrinfGen[mbhs[[i]], \[CapitalGamma]s[[i]]], {i, 1, Length[mbhs]}];
-
-
-mdots = Table[mdotsol[mbhs[[i]], vweffTots[[i]], 0.8, \[Eta]s[[i]], rbrinfs[[i]]], 
+mdots = Table[mdotsol[mbhs[[i]], vweffTots[[i]], 0.8, \[Eta]s[[i]]], 
     {i, 1, Length[mbhs]}]; 
-mdotsCore = Table[mdotsol[mbhs[[i]], vweffTotsCore[[i]], 0.1, \[Eta]s[[i]], rbrinfsCore[[i]]], 
+mdotsCore = Table[mdotsol[mbhs[[i]], vweffTotsCore[[i]], 0.1, \[Eta]s[[i]]], 
     {i, 1, Length[mbhs]}]; 
-mdotsGamma = Table[mdotsol[mbhs[[i]], vweffTotsGamma[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]], rbrinfsGamma[[i]]], 
+mdotsGamma = Table[mdotsol[mbhs[[i]], vweffTotsGamma[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]]], 
     {i, 1, Length[mbhs]}]; 
 
 

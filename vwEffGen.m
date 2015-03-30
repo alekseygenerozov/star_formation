@@ -18,9 +18,6 @@ vweffMSPs = vweffMSP /@ mhalos;
 vweffIas = vweffIa /@ mhalos;
 
 
-vweffIa[mhalos[[1]]]
-
-
 tmp = Table[vweffTot[mbhs[[i]], mhalos[[i]], 0.8], {i, 1, Length[mhalos]}]
 vwc = tmp[[1 ;; All,1]]; 
 vweffIasCorrected = tmp[[1 ;; All,2]]; 
