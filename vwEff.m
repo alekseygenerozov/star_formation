@@ -165,7 +165,7 @@ edotWR[t_]:=Piecewise[{{ 10.^36.1/(nVoss/100.),t<4.0 10^6 year}, {0.,t>twrcut}},
 mdotStarReimers[Mstar_]:=4 10^-13 (Mstar/MS)^-1 (Lstar[Mstar]/Lsun)(Rstar[Mstar]/Rsun) MS/year
 (*Improved prescription from Schroder & Cuntz 2005*)
 mdotStar[Mstar_]:=mdotStarReimers[Mstar]
-mdotStar[Mstar_]:=8 10^-14 (Mstar/MS)^-1 (Lstar[Mstar]/Lsun)(Rstar[Mstar]/Rsun)(Teff[Mstar]/4000.)^3.5 (1+gsun/(4300. gstar[MS])) MS/year
+(*mdotStar[Mstar_]:=8 10^-14 (Mstar/MS)^-1 (Lstar[Mstar]/Lsun)(Rstar[Mstar]/Rsun)(Teff[Mstar]/4000.)^3.5 (1+gsun/(4300. gstar[MS])) MS/year*)
 enStar[Mstar_]:=0.5*mdotStar[Mstar]*\[Mu]sal[Mstar]*vwMS[Mstar]^2
 (*Fitting formula to mass-loss rate per star from Voss 2009*)
 mdotVoss[t_]:=If[t> 4. 10^6 year, 1./(nVoss/100.) 10.^-6.1 (t/(4. 10^6 year))^-1.8 MS/year, 1./(nVoss/100.) 10.^-6.1 MS/year]
