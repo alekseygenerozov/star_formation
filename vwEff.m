@@ -181,7 +181,7 @@ rateIaSpecific[t_?NumericQ, mhalo_]:=NIntegrate[DTD[t1]*dSdtForm[z[t1],mhalo], {
 /NIntegrate[dSdtForm[z[t1],mhalo], {t1,  Max[t,tmin], tL[zu]}]
 (*Total Ia rate from in situ star formation and then accreted stars*)
 rateIaFormTot[mhalo_]:=rateIaSpecific[0., mhalo]*mstarTotForm[mhalo]
-rateIaAccTot[mhalo_]:=NIntegrate[rateIaSpecific[t1, mhalo]*dSdtAcc[z[t1], mhalo], {t1, 0., tL[3.]}]
+rateIaAccTot[mhalo_]:=If[mhalo>mhaloAcc, NIntegrate[rateIaSpecific[t1, mhalo]*dSdtAcc[z[t1], mhalo], {t1, 0., tL[3.]}],0.]
 rateIa[mhalo_]:=(rateIaFormTot[mhalo]+rateIaAccTot[mhalo])/mstarTot[mhalo]
 
 (*Ia rate within the impulsive limit*)
@@ -204,18 +204,7 @@ radiusII[mbh_, \[CapitalGamma]_:1]:=radiusII[mbh, RIIsp[Mhalo[mbh]], \[CapitalGa
 
 (*Mass and energy injectiuon as a function of Halo mass*)
 mdotImp[t_]:=Abs[Mt0Fit'[t]] \[CapitalDelta]M[t] \[Mu]sal[Mt0Fit[t]]
-(*Mass shed by turn-off stars*)
-(*Mass injection per star for Moster star formation history truncated at lookback time t.*) 
-(*mdotSpecific4[t_?NumericQ, mhalo_]:=NIntegrate[dNdtForm[z[t1],mhalo] Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[Mt0Fit[t1]],{t1,t,tmin,ttrans,tL[zu]}]\
-/NIntegrate[dNdtForm[z[tl], mhalo], {tl, t, tL[zu]}]
-(*mdotSpecific[t_?NumericQ, mhalo_]:=NIntegrate[dNdtForm[z[t1],mhalo] Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[Mt0Fit[t1]],{t1,t,tmin,ttrans,tL[zu]}]\
-/NIntegrate[dNdtForm[z[tl], mhalo], {tl, t, tL[zu]}]*)
-mdotSpecific2[t_?NumericQ, mhalo_]:=NIntegrate[dNdtForm[z[t1],mhalo] Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[Mt0Fit[t1]],{t1,t,tL[zu]}]\
-/NIntegrate[dNdtForm[z[tl], mhalo], {tl, t, tL[zu]}]
-mdotSpecific3[t_?NumericQ, mhalo_]:=(NIntegrate[dNdtForm[z[t1],mhalo] Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[Mt0Fit[t1]],{t1,t,ttrans}(*, Method->"AdaptiveMonteCarlo"*)]+\
-NIntegrate[dNdtForm[z[t1],mhalo] Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[Mt0Fit[t1]],{t1,ttrans, tL[zu]}(*, Method->"AdaptiveMonteCarlo"*)])\
-/NIntegrate[dNdtForm[z[tl], mhalo], {tl, t, tL[zu]}]
-*)
+
 mdotSpecific[t_?NumericQ, mhalo_]:=Piecewise[{{NIntegrate[dNdtForm[z[t1],mhalo] Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[Mt0Fit[t1]],{t1,t,tmin,ttrans,tL[zu]}]\
 , t<=tmin}, {NIntegrate[dNdtForm[z[t1],mhalo] Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[Mt0Fit[t1]],{t1,t,ttrans,tL[zu]}], t>tmin&&t<=ttrans}},\
 NIntegrate[dNdtForm[z[t1],mhalo] Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[Mt0Fit[t1]],{t1,t,ttrans,tL[zu]}]]/NIntegrate[dNdtForm[z[tl], mhalo], {tl, t, tL[zu]}]
@@ -252,30 +241,28 @@ edotMSAcc[mhalo_]:= If[mhalo>mhaloAcc, NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpe
 (*Contribution of main sequence stars to energy injected*)
 (*Overall effective wind velocity.*)
 vweffStar[mhalo_]:=Sqrt[2 (edotMSForm[mhalo]+edotTOForm[mhalo]+edotMSAcc[mhalo]+edotTOAcc[mhalo])/(mdotAcc[mhalo]+mdotForm[mhalo])]
-
 \[Eta][mhalo_]:=(mdotForm[mhalo]+mdotAcc[mhalo])/mstarTot[mhalo] th
+
 (*Energy injected by MS stars in impulsive limit--note that unlike the continuous star formation limit here we have the mass and energy injected per star. Maybe make the impulsive and the continuous limits more consistent.*)
 edotMSImp[t_?NumericQ]:=0.5 NIntegrate[enStar[Mstar],{Mstar, 0.1 , Mt0Fit[t]}]
 edotTOImp[t_]:=edotWR[t]
-
 mdotMSImp[t_?NumericQ]:= NIntegrate[mdotStar[Mstar]\[Mu]sal[Mstar],{Mstar, 0.1 , Mt0Fit[t]}]
-
 vweffStarImp[t_]:=Sqrt[2 (edotMSImp[t]+edotTOImp[t])/mdotImp[t]]
-vweffStarImp2[t_]:=Sqrt[2 (edotMSImp[t]+edotTOImp[t])/(mdotImp[t]+mdotMSImp[t])]
+(*vweffStarImp2[t_]:=Sqrt[2 (edotMSImp[t]+edotTOImp[t])/(mdotImp[t]+mdotMSImp[t])]*)
 \[Eta]Imp[t_]:=mdotImp[t]/mavg th
 
 (*Effective vws for different heating sources for different star formation histories*)
 vweffIa[mhalo_, \[Epsilon]Ia_:0.4]:=Sqrt[(2.th rateIa[mhalo] \[Epsilon]Ia 10.^51)/\[Eta][mhalo]]
-
 (*Effective wind velocity for Ias in the impulsive star formation limit*)
 vweffIaImp[t_, \[Epsilon]Ia_:0.4]:=Sqrt[(2. th rateIaImp[t] \[Epsilon]Ia 10.^51)/\[Eta]Imp[t]]
 
+(*wind velocity associated with MSPs*)
 vweffMSP[mhalo_, \[Epsilon]msp_:0.1,Lsd_:10.^34]:=3. 10^6 (\[Epsilon]msp/0.1)^0.5 (Lsd/10.^34)^(1/2) (\[Eta][mhalo]/0.02)^(-1/2)
 vweffMSPImp[t_, \[Epsilon]msp_:0.1,Lsd_:10.^34]:=3. 10^6 (\[Epsilon]msp/0.1)^0.5 (Lsd/10.^34)^(1/2) (\[Eta]Imp[t]/0.02)^(-1/2)
 
+(*wind velocity associated with compton*)
 edotCompton[mbh_, vw_, \[CapitalGamma]_:1, \[Eta]_:1, Tc_:10.^9]:=4.1*10^-35*nRs[mbh, vw, \[CapitalGamma], \[Eta]]^2 (10.*(mdotsol[mbh, vw, \[CapitalGamma], \[Eta]]^2/mdotEdd[mbh]) c^2)/(nRs[mbh, vw, \[CapitalGamma], \[Eta]] rs[mbh, vw, \[CapitalGamma]]^2)*(Tc)
 vwComptonGen[mbh_,vw_, \[CapitalGamma]_:1., \[Eta]_:1, Tc_:10.^9]:=Sqrt[ ((2. th edotCompton[mbh, vw, \[CapitalGamma], \[Eta], Tc])/(\[Eta] rhoStarRs[mbh, vw, \[CapitalGamma]]))]
-
 vwComptonDom[mbh_, \[CapitalGamma]_:1., \[Eta]_:1., Tc_:10.^9]:=vw1/.FindRoot[vwComptonGen[mbh, vw1, \[CapitalGamma], \[Eta], Tc]==vw1, {vw1, 5.*10^7}]
 
 

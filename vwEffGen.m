@@ -1,3 +1,5 @@
+(* ::Package:: *)
+
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -14,6 +16,9 @@ mbhs=MbhMbulge/@mstarTots;
 vweffStars = vweffStar /@ mhalos; 
 vweffMSPs = vweffMSP /@ mhalos; 
 vweffIas = vweffIa /@ mhalos;
+
+
+vweffIa[mhalos[[1]]]
 
 
 tmp = Table[vweffTot[mbhs[[i]], mhalos[[i]], 0.8], {i, 1, Length[mhalos]}]
