@@ -282,55 +282,36 @@ vwIa0=vweffIaImp[t, \[Epsilon]Ia];
  ]
 
 
-(*estimate for the gas density slope at rs*)
-densSlope[\[CapitalGamma]_]:=-(1./6.*(1.-4.*(1+\[CapitalGamma])))
 \[CapitalGamma]fitM[mbh_]:=0.3*(mbh/10.^8/MS)^-0.24
-(*normalized heating rate and critical value of this parameter beyond which rs approaches rb*)
-zeta[mbh_,vw_]:=(vw^2.+3*\[Sigma][mbh]^2.)^0.5/(3.^0.5*\[Sigma][mbh])
-zetac[rbrinf_, \[CapitalGamma]_]:=(rbrinf)^(0.5*(1.-\[CapitalGamma]))
-(*result for stagnation radius--follows generozov's law unless we are below critical
-heating rate.*)
-rs[mbh_,vw_,\[CapitalGamma]_:1, rbrinf_:1]:=Module[{zc, z},
-	zc=zetac[rbrinf, \[CapitalGamma]];
-	z=zeta[mbh, vw];
-
-	If[z>=zc, ((13.+8.\[CapitalGamma])/(4.+2.\[CapitalGamma])-densSlope[\[CapitalGamma]]*(3./(2.+\[CapitalGamma])))G mbh/vw^2/densSlope[\[CapitalGamma]], 
-	(rbrinf)*rinf[mbh]
-	]
-]
-(*temperature at the stagnation radius accounting for the velocity dispersion of the black 
-hole.*)
+(*Properties at the stagnation radius rs*)
+densSlope[\[CapitalGamma]_]:=-(1./6.*(1.-4.*(1+\[CapitalGamma])))
+rs[mbh_,vw_,\[CapitalGamma]_:1]:=((13.+8.\[CapitalGamma])/(4.+2.\[CapitalGamma])-densSlope[\[CapitalGamma]]*(3./(2.+\[CapitalGamma])))G mbh/vw^2/densSlope[\[CapitalGamma]]
 tempRs[vw_, \[CapitalGamma]_:1]:=(ad-1)/ad*\[Mu]*mp*((3.+8.*\[CapitalGamma])/(3.+8.*\[CapitalGamma]-6.*densSlope[\[CapitalGamma]]))*vw^2/(2.*kb)
-
-rhoStarRs[mbh_, vw_, \[CapitalGamma]_:1., rbrinf_:1.]:=mbh/((4.*\[Pi]) rinf[mbh]^3)*(2.-\[CapitalGamma])*(rs[mbh,vw, \[CapitalGamma],rbrinf]/rinf[mbh])^(-1.-\[CapitalGamma])
-mencRs[mbh_, vw_, \[CapitalGamma]_:1., rbrinf_:1.]:=mbh*(rs[mbh,vw,\[CapitalGamma],rbrinf]/rinf[mbh])^(2.-\[CapitalGamma])
+rhoStarRs[mbh_, vw_, \[CapitalGamma]_:1.]:=mbh/((4.*\[Pi]) rinf[mbh]^3)*(2.-\[CapitalGamma])*(rs[mbh,vw, \[CapitalGamma]]/rinf[mbh])^(-1.-\[CapitalGamma])
+mencRs[mbh_,vw_, \[CapitalGamma]_:1.]:=mbh*(rs[mbh,vw, \[CapitalGamma]]/rinf[mbh])^(2.-\[CapitalGamma])
 
 (*accretion rate onto BH for a given solution, assuming eta=1*)
 LEdd[mbh_]:=(4 \[Pi] G mbh me c)/(\[Sigma]Thomson);
 mdotEdd[mbh_]:=(4 \[Pi] G mbh me )/(\[Sigma]Thomson 0.1 c);
-mdotsol[mbh_, vw_, \[CapitalGamma]_:1., \[Eta]_:1., rbrinf_:1.]:=\[Eta] mencRs[mbh,vw,\[CapitalGamma],rbrinf]/th
+mdotsol[mbh_, vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=\[Eta] mencRs[mbh,vw,\[CapitalGamma]]/th
 mdotIA[mbh_, rIa_, \[CapitalGamma]_:1., \[Eta]_:1.]:=\[Eta] mbh/th (rIa/rinf[mbh])^(2.-\[CapitalGamma])
 
-(*mdotsolHalo[mbh_, mhalo_,\[CapitalGamma]_:1]:=mdotsol[mbh, vweffTot[mhalo], \[CapitalGamma], \[Eta][mhalo]]*)
 
-qRs[mbh_,vw_,  \[CapitalGamma]_:1, \[Eta]_:1, rbrinf_:1]:=\[Eta] rhoStarRs[mbh,vw,\[CapitalGamma],rbrinf]/th
+qRs[mbh_,vw_,  \[CapitalGamma]_:1, \[Eta]_:1]:=\[Eta] rhoStarRs[mbh,vw,\[CapitalGamma]]/th
 tff[r_, mbh_]:=r^1.5/(G*mbh)^0.5
 
-rhoRs[mbh_, vw_, \[CapitalGamma]_:1, \[Eta]_:1, rbrinf_:1.]:=Module[{rs1},
-	rs1=rs[mbh,vw,\[CapitalGamma],rbrinf];
-	mdotsol[mbh,vw, \[CapitalGamma], \[Eta], rbrinf]*tff[rs1, mbh]/(4.\[Pi]/3.*rs1^3.)
-]
-nRs[mbh_, vw_, \[CapitalGamma]_:1., \[Eta]_:1., rbrinf_:1.]:=rhoRs[mbh,vw, \[CapitalGamma], \[Eta], rbrinf]/(\[Mu]*mp)
+rhoRs[mbh_,vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=mdotsol[mbh,vw, \[CapitalGamma], \[Eta]]*tff[rs[mbh,vw,\[CapitalGamma]], mbh]/(4.\[Pi]/3.*rs[mbh,vw,\[CapitalGamma]]^3.)
+nRs[mbh_,vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=rhoRs[mbh,vw, \[CapitalGamma], \[Eta]]/(\[Mu]*mp)
 
 
-heatingRs[mbh_,vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=0.5 qRs[mbh,vw, \[CapitalGamma],\[Eta]]*((3.5)/(3.5-densSlope[\[CapitalGamma]]))*vw^2 
+heatingRs[mbh_,vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=0.5*qRs[mbh, vw, \[CapitalGamma], \[Eta]]*vwtildeRs[vw, \[CapitalGamma]]
 coolingRs[mbh_, vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=(rhoRs[mbh, vw, \[CapitalGamma], \[Eta]]/(\[Mu]*mp))^2*lambdaC[tempRs[vw, \[CapitalGamma]]]
-hc[mbh_,vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=heatingRs[mbh,vw, \[CapitalGamma], \[Eta]]/coolingRs[mbh,vw,\[CapitalGamma], \[Eta]]
+hc[mbh_,vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=heatingRs[mbh,vw, \[CapitalGamma], \[Eta]]/coolingRs[mbh, vw, \[CapitalGamma], \[Eta]]
 
 (*Maximum Mdot befor thermal instability sets in*)
 vwMaxCool[mbh_, \[CapitalGamma]_:1, \[Eta]_:1, hcCrit_:1]:=vw1/.FindRoot[hc[mbh, vw1, \[CapitalGamma], \[Eta]]==hcCrit, {vw1,3.*10^7.}]
-mdotMaxCool[mbh_, \[CapitalGamma]_:1, \[Eta]_:1, hcCrit_:1, rbrinf_:1.]:=mdotsol[mbh, vwMaxCool[mbh, \[CapitalGamma], \[Eta], hcCrit], \[CapitalGamma], \[Eta], rbrinf]
-mdotCompton[mbh_, \[CapitalGamma]_:1., \[Eta]_:1., Tc_:10.^9, rbrinf_:1.]:=mdotsol[mbh, vwComptonDom[mbh, \[CapitalGamma], \[Eta], Tc], \[CapitalGamma], \[Eta], rbrinf]
+mdotMaxCool[mbh_, \[CapitalGamma]_:1, \[Eta]_:1, hcCrit_:1]:=mdotsol[mbh, vwMaxCool[mbh, \[CapitalGamma], \[Eta], hcCrit], \[CapitalGamma], \[Eta]]
+mdotCompton[mbh_, \[CapitalGamma]_:1., \[Eta]_:1., Tc_:10.^9]:=mdotsol[mbh, vwComptonDom[mbh, \[CapitalGamma], \[Eta], Tc], \[CapitalGamma], \[Eta]]
 
 
 EndPackage[]
