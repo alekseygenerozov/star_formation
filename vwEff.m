@@ -286,6 +286,7 @@ vwIa0=vweffIaImp[t, \[Epsilon]Ia];
 (*Properties at the stagnation radius rs*)
 densSlope[\[CapitalGamma]_]:=-(1./6.*(1.-4.*(1+\[CapitalGamma])))
 rs[mbh_,vw_,\[CapitalGamma]_:1]:=((13.+8.\[CapitalGamma])/(4.+2.\[CapitalGamma])-densSlope[\[CapitalGamma]]*(3./(2.+\[CapitalGamma])))G mbh/vw^2/densSlope[\[CapitalGamma]]
+vwtildeRs[vw_?NumericQ, \[CapitalGamma]_:1]:=((3.+8.*\[CapitalGamma])/(3.+8.*\[CapitalGamma]-6.*densSlope[\[CapitalGamma]]))^0.5*vw
 tempRs[vw_, \[CapitalGamma]_:1]:=(ad-1)/ad*\[Mu]*mp*((3.+8.*\[CapitalGamma])/(3.+8.*\[CapitalGamma]-6.*densSlope[\[CapitalGamma]]))*vw^2/(2.*kb)
 rhoStarRs[mbh_, vw_, \[CapitalGamma]_:1.]:=mbh/((4.*\[Pi]) rinf[mbh]^3)*(2.-\[CapitalGamma])*(rs[mbh,vw, \[CapitalGamma]]/rinf[mbh])^(-1.-\[CapitalGamma])
 mencRs[mbh_,vw_, \[CapitalGamma]_:1.]:=mbh*(rs[mbh,vw, \[CapitalGamma]]/rinf[mbh])^(2.-\[CapitalGamma])
@@ -296,15 +297,13 @@ mdotEdd[mbh_]:=(4 \[Pi] G mbh me )/(\[Sigma]Thomson 0.1 c);
 mdotsol[mbh_, vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=\[Eta] mencRs[mbh,vw,\[CapitalGamma]]/th
 mdotIA[mbh_, rIa_, \[CapitalGamma]_:1., \[Eta]_:1.]:=\[Eta] mbh/th (rIa/rinf[mbh])^(2.-\[CapitalGamma])
 
-
 qRs[mbh_,vw_,  \[CapitalGamma]_:1, \[Eta]_:1]:=\[Eta] rhoStarRs[mbh,vw,\[CapitalGamma]]/th
 tff[r_, mbh_]:=r^1.5/(G*mbh)^0.5
-
 rhoRs[mbh_,vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=mdotsol[mbh,vw, \[CapitalGamma], \[Eta]]*tff[rs[mbh,vw,\[CapitalGamma]], mbh]/(4.\[Pi]/3.*rs[mbh,vw,\[CapitalGamma]]^3.)
 nRs[mbh_,vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=rhoRs[mbh,vw, \[CapitalGamma], \[Eta]]/(\[Mu]*mp)
 
 
-heatingRs[mbh_,vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=0.5*qRs[mbh, vw, \[CapitalGamma], \[Eta]]*vwtildeRs[vw, \[CapitalGamma]]
+heatingRs[mbh_, vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=0.5*qRs[mbh, vw, \[CapitalGamma], \[Eta]]*vwtildeRs[vw, \[CapitalGamma]]^2.
 coolingRs[mbh_, vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=(rhoRs[mbh, vw, \[CapitalGamma], \[Eta]]/(\[Mu]*mp))^2*lambdaC[tempRs[vw, \[CapitalGamma]]]
 hc[mbh_,vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=heatingRs[mbh,vw, \[CapitalGamma], \[Eta]]/coolingRs[mbh, vw, \[CapitalGamma], \[Eta]]
 
