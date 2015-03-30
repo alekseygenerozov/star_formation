@@ -20,17 +20,14 @@ vweffIas = vweffIa /@ mhalos;
 
 tmp = Table[vweffTot[mbhs[[i]], mhalos[[i]], 0.8], {i, 1, Length[mhalos]}]
 vwc = tmp[[1 ;; All,1]]; 
-vweffIasCorrected = tmp[[1 ;; All,2]]; 
 vweffTots = tmp[[1 ;; All,3]]; 
 
 tmp = Table[vweffTot[mbhs[[i]], mhalos[[i]], 0.1], {i, 1, Length[mhalos]}]
 vwcCore = tmp[[1 ;; All,1]]; 
-vweffIasCoreCorrected = tmp[[1 ;; All,2]]; 
 vweffTotsCore = tmp[[1 ;; All,3]];
 
 tmp = Table[vweffTot[mbhs[[i]], mhalos[[i]], \[CapitalGamma]s[[i]]], {i, 1, Length[mhalos]}]
 vwcGamma = tmp[[1 ;; All,1]]; 
-vweffIasGammaCorrected = tmp[[1 ;; All,2]]; 
 vweffTotsGamma = tmp[[1 ;; All,3]];
 
 
@@ -44,6 +41,7 @@ rsCore = Table[rs[mbhs[[i]], vweffTots[[i]], 0.1], {i, 1, Length[mbhs]}];
 rsCusp = Table[rs[mbhs[[i]], vweffTots[[i]], 0.8], {i, 1, Length[mbhs]}];
 
 
+(*Impulsive limit mbh=10^6 msun...*)
 mbh=10.^6 MS;
 timeImps=10.^Range[6.6,10.,0.2]*year;
 \[Eta]Imps=\[Eta]Imp/@timeImps;
@@ -62,6 +60,7 @@ Transpose[{timeImps/year*10.^5, vweffIaImps, vweffStarImps, vweffMSPImps, vwcImp
 Transpose[{timeImps/year, hcImps}]//Export["/Users/aleksey/Second_Year_Project/star_formation/hcImps6.csv", #, TableHeadings->{"Time", "Cusp"}]&;
 
 
+(*Impulsive limit mbh=10^8 msun...*)
 mbh=10.^8 MS;
 timeImps=10.^Range[6.6,10.,0.2]*year;
 \[Eta]Imps=\[Eta]Imp/@timeImps;
@@ -81,11 +80,11 @@ Transpose[{timeImps/year, hcImps}]//Export["/Users/aleksey/Second_Year_Project/s
 
 
 SetDirectory["/Users/aleksey/Second_Year_Project/star_formation"]
-Export["vwSources.csv", Transpose[{mbhs*(10.^5/MS), vweffIas, vweffIasCorrected, vweffStars, vweffMSPs, vwc, vweffTots}/10.^5], 
-  "TableHeadings" -> {"Mbh", "Ias", "IaCorrected", "Stars", "MSPs", "Compton", "Total"}]
-Export["vwSourcesCore.csv", Transpose[{mbhs*(10.^5/MS), vweffIasCoreCorrected, vwcCore, vweffTotsCore}/10.^5], 
+Export["vwSources.csv", Transpose[{mbhs*(10.^5/MS), vweffIas, vweffStars, vweffMSPs, vwc, vweffTots}/10.^5], 
+  "TableHeadings" -> {"Mbh", "Ias", "Stars", "MSPs", "Compton", "Total"}]
+Export["vwSourcesCore.csv", Transpose[{mbhs*(10.^5/MS), vwcCore, vweffTotsCore}/10.^5], 
   "TableHeadings" -> {"IaCorrected", "Compton", "Total"}]
-Export["vwSourcesGamma.csv", Transpose[{mbhs*(10.^5/MS), vweffIasGammaCorrected, vwcGamma, vweffTotsGamma}/10.^5], 
+Export["vwSourcesGamma.csv", Transpose[{mbhs*(10.^5/MS), vwcGamma, vweffTotsGamma}/10.^5], 
   "TableHeadings" -> {"Compton", "Total"}]
 
 Export["Ia.csv", Transpose[{mbhs/MS, radiiIa, rsCusp, rsCore}], "TableHeadings" -> {"Mbh", "rIa", "rsCusp", "rsCore"}]
