@@ -125,7 +125,7 @@ g21=0.098;
 g12=-0.806;
 g22=-0.797;
 
-mhaloAcc=10.^13.*MS
+mhaloAcc=10.^12.5*MS
 g1[mhalo_]:=g10*((mhalo/(10.^12.5  MS))^g11+(mhalo/(10.^12.5 MS))^g12)^-1
 g2[mhalo_]:=g20+g21 (mhalo/(10.^12 MS))^g22
 dSdtAcc[z_, mhalo_]:=If[mhalo>mhaloAcc, g1[mhalo] Exp[-z/g2[mhalo]],0.]
