@@ -286,8 +286,8 @@ vwIa0=vweffIaImp[t, \[Epsilon]Ia];
 (*Properties at the stagnation radius rs*)
 densSlope[\[CapitalGamma]_]:=-(1./6.*(1.-4.*(1+\[CapitalGamma])))
 rs[mbh_,vw_,\[CapitalGamma]_:1]:=((13.+8.\[CapitalGamma])/(4.+2.\[CapitalGamma])-densSlope[\[CapitalGamma]]*(3./(2.+\[CapitalGamma])))G mbh/vw^2/densSlope[\[CapitalGamma]]
-vwtildeRs[vw_?NumericQ, \[CapitalGamma]_:1]:=((3.+8.*\[CapitalGamma])/(3.+8.*\[CapitalGamma]-6.*densSlope[\[CapitalGamma]]))^0.5*vw
-tempRs[vw_, \[CapitalGamma]_:1]:=(ad-1)/ad*\[Mu]*mp*((3.+8.*\[CapitalGamma])/(3.+8.*\[CapitalGamma]-6.*densSlope[\[CapitalGamma]]))*vw^2/(2.*kb)
+vwtildeRs[vw_?NumericQ, \[CapitalGamma]_:1]:=((13.+8.*\[CapitalGamma])/(13.+8.*\[CapitalGamma]-6.*densSlope[\[CapitalGamma]]))^0.5*vw
+tempRs[vw_, \[CapitalGamma]_:1]:=(ad-1)/ad*\[Mu]*mp*((13.+8.*\[CapitalGamma])/(13.+8.*\[CapitalGamma]-6.*densSlope[\[CapitalGamma]]))*vw^2/(2.*kb)
 rhoStarRs[mbh_, vw_, \[CapitalGamma]_:1.]:=mbh/((4.*\[Pi]) rinf[mbh]^3)*(2.-\[CapitalGamma])*(rs[mbh,vw, \[CapitalGamma]]/rinf[mbh])^(-1.-\[CapitalGamma])
 mencRs[mbh_,vw_, \[CapitalGamma]_:1.]:=mbh*(rs[mbh,vw, \[CapitalGamma]]/rinf[mbh])^(2.-\[CapitalGamma])
 
