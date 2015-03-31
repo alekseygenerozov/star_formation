@@ -1,5 +1,3 @@
-(* ::Package:: *)
-
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -91,6 +89,3 @@ Export["Ia.csv", Transpose[{mbhs/MS, radiiIa, rsCusp, rsCore}], "TableHeadings" 
 Export["eta.csv", Transpose[{mbhs/MS, \[Eta]s}], "TableHeadings" -> {"Mbh", "eta"}]
 Export["etaImp.csv", Transpose[{timeImps/year, \[Eta]Imps}], "TableHeadings" -> {"time", "eta"}]
 Export["vweffStarImps.csv", Transpose[{timeImps/year, vweffStarImps}], "TableHeadings" -> {"time", "vw"}]
-
-
-SessionTime[]
