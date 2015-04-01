@@ -126,6 +126,7 @@ g12=-0.806;
 g22=-0.797;
 
 mhaloAcc=10.^12.5*MS
+zacc=4.
 g1[mhalo_]:=g10*((mhalo/(10.^12.5  MS))^g11+(mhalo/(10.^12.5 MS))^g12)^-1
 g2[mhalo_]:=g20+g21 (mhalo/(10.^12 MS))^g22
 dSdtAcc[z_, mhalo_]:=If[mhalo>mhaloAcc, g1[mhalo] Exp[-z/g2[mhalo]],0.]
@@ -181,7 +182,7 @@ rateIaSpecific[t_?NumericQ, mhalo_]:=NIntegrate[DTD[t1]*dSdtForm[z[t1],mhalo], {
 /NIntegrate[dSdtForm[z[t1],mhalo], {t1,  Max[t,tmin], tL[zu]}]
 (*Total Ia rate from in situ star formation and then accreted stars*)
 rateIaFormTot[mhalo_]:=rateIaSpecific[0., mhalo]*mstarTotForm[mhalo]
-rateIaAccTot[mhalo_]:=If[mhalo>mhaloAcc, NIntegrate[rateIaSpecific[t1, mhalo]*dSdtAcc[z[t1], mhalo], {t1, 0., tL[3.]}],0.]
+rateIaAccTot[mhalo_]:=If[mhalo>mhaloAcc, NIntegrate[rateIaSpecific[t1, mhalo]*dSdtAcc[z[t1], mhalo], {t1, 0., tL[zacc]}],0.]
 rateIa[mhalo_]:=(rateIaFormTot[mhalo]+rateIaAccTot[mhalo])/mstarTot[mhalo]
 
 (*Ia rate within the impulsive limit*)
@@ -211,8 +212,8 @@ NIntegrate[dNdtForm[z[t1],mhalo] Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[M
 
 
 mdotForm[mhalo_]:=mdotSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0, tL[zu]}]
-mdotAcc[mhalo_]:=If[mhalo>mhaloAcc, NIntegrate[mdotSpecific[t1, mhalo]*dNdtAcc[z[t1], mhalo], {t1, 0., tL[3.]}],0]
-(*mdotAcc2[mhalo_]:=If[mhalo>mhaloAcc, NIntegrate[mdotSpecific2[t1, mhalo]*dNdtAcc[z[t1], mhalo], {t1, 0., tL[3.]}],0]*)
+mdotAcc[mhalo_]:=If[mhalo>mhaloAcc, NIntegrate[mdotSpecific[t1, mhalo]*dNdtAcc[z[t1], mhalo], {t1, 0., tL[zacc]}],0]
+(*mdotAcc2[mhalo_]:=If[mhalo>mhaloAcc, NIntegrate[mdotSpecific2[t1, mhalo]*dNdtAcc[z[t1], mhalo], {t1, 0., tL[zacc]}],0]*)
 mdot[mhalo_]:=mdotAcc[mhalo]+mdotForm[mhalo]
 
 (*lookup table for computing heating from main sequence stellar winds*)
@@ -234,7 +235,7 @@ edotTOForm[mhalo_]:= edotTOSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo],
 edotMSForm[mhalo_]:= edotMSSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0., tL[zu]} ]
 (*Energy injection per accreted star for stars accreted at look-back time t*)
 edotTOAcc[mhalo_]:= If[mhalo>mhaloAcc, NIntegrate[dNdtAcc[z[t], mhalo] edotTOSpecific[t, mhalo], {t, 0., 0.99*twrcut} ],0.]
-edotMSAcc[mhalo_]:= If[mhalo>mhaloAcc, NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpecific[t, mhalo], {t, 0., tL[3.]} ],0.]
+edotMSAcc[mhalo_]:= If[mhalo>mhaloAcc, NIntegrate[dNdtAcc[z[t], mhalo] edotMSSpecific[t, mhalo], {t, 0., tL[zacc]} ],0.]
 (*edotMSAcc[mhalo_]:=0.5 NIntegrate[dNdtForm[z[t], mhalo]mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2, {t,0., tL[zu]},{Mstar, 0.1 MS ,MS}]\
 +0.5 NIntegrate[dNdtForm[z[t], mhalo]mdotStar[Mstar]\[Mu]sal[Mstar] vwMS[Mstar]^2, {t,0., tL[zu]},{Mstar ,MS, Mt0Fit[t]}];*)
 
