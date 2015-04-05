@@ -1,3 +1,5 @@
+(* ::Package:: *)
+
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -58,6 +60,12 @@ mdotComptons = Table[mdotCompton[mbhs[[i]], 0.8, \[Eta]s[[i]], TempC],
     {i, 1, Length[\[Eta]s]}];
 mdotComptonsGamma = Table[mdotCompton[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]],  TempC], 
     {i, 1, Length[\[Eta]s]}];
+
+
+vwcs1=Table[vwComptonDom[mbhs[[i]], 0.1, \[Eta]s[[i]], TempC], {i, 1, Length[\[Eta]s]}]
+
+
+vwcs2=Table[vwComptonDom2[mbhs[[i]], 0.1, \[Eta]s[[i]], TempC], {i, 1, Length[\[Eta]s]}]
 
 
 hcs = Table[hc[mbhs[[i]], vweffTots[[i]], 0.8, \[Eta]s[[i]]], 
