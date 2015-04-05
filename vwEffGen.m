@@ -1,3 +1,5 @@
+(* ::Package:: *)
+
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -9,6 +11,9 @@ mhalos=10.^Range[10.8, 14.,0.2] MS;
 mstarTots=mstarTot/@mhalos;
 mbhs=MbhMbulge/@mstarTots;
 \[CapitalGamma]s=\[CapitalGamma]fitM/@mbhs;
+
+
+vweffTot[mbhs[[1]], mhalos[[1]],0.8]
 
 
 Transpose[{mbhs/MS,mhalos/MS}]
@@ -51,13 +56,15 @@ tmp=vweffTotImp[mbh, #,0.8]&/@timeImps;
 vwcImps=tmp[[;;,1]];
 vweffIaImps=tmp[[;;, 2]];
 vweffTotImps=tmp[[;;, 3]];
+vweffIaImps2=tmp[[;;, 4]];
+
 vweffStarImps=vweffStarImp/@timeImps;
 vweffMSPImps=vweffMSPImp/@timeImps;
 vweffNoBHImps=Sqrt[vweffTotImps^2-vwcImps^2];
 (*Heating over cooling ratio*)
 hcImps=Table[hc[mbh,vweffNoBHImps[[i]], 0.8, \[Eta]Imps[[i]]], {i, 1, Length[timeImps]}];
 
-Transpose[{timeImps/year*10.^5, vweffIaImps, vweffStarImps, vweffMSPImps, vwcImps, vweffNoBHImps}/10.^5]//Export["/Users/aleksey/Second_Year_Project/star_formation/vwSourcesImps6.csv", #, TableHeadings->{"Time","Ias", "Stars", "MSPs", "Compton", "Total"}]&;
+Transpose[{timeImps/year*10.^5, vweffIaImps, vweffIaImps2, vweffStarImps, vweffMSPImps, vwcImps, vweffNoBHImps}/10.^5]//Export["/Users/aleksey/Second_Year_Project/star_formation/vwSourcesImps6.csv", #, TableHeadings->{"Time","Ias", "IasCorrected", "Stars", "MSPs", "Compton", "Total"}]&;
 Transpose[{timeImps/year, hcImps}]//Export["/Users/aleksey/Second_Year_Project/star_formation/hcImps6.csv", #, TableHeadings->{"Time", "Cusp"}]&;
 
 
@@ -70,13 +77,15 @@ tmp=vweffTotImp[mbh, #,0.8]&/@timeImps;
 vwcImps=tmp[[;;,1]];
 vweffIaImps=tmp[[;;, 2]];
 vweffTotImps=tmp[[;;, 3]];
+vweffIaImps2=tmp[[;;, 4]];
+
 vweffStarImps=vweffStarImp/@timeImps;
 vweffMSPImps=vweffMSPImp/@timeImps;
 vweffNoBHImps=Sqrt[vweffTotImps^2-vwcImps^2];
 (*Heating over cooling ratio*)
 hcImps=Table[hc[mbh,vweffNoBHImps[[i]], 0.8, \[Eta]Imps[[i]]], {i, 1, Length[timeImps]}]
 
-Transpose[{timeImps*10.^5/year, vweffIaImps, vweffStarImps, vweffMSPImps, vwcImps, vweffNoBHImps}/10.^5]//Export["/Users/aleksey/Second_Year_Project/star_formation/vwSourcesImps8.csv", #, TableHeadings->{"Time","Ias", "Stars", "MSPs", "Compton", "Total"}]&;
+Transpose[{timeImps*10.^5/year, vweffIaImps, vweffIaImps2,  vweffStarImps, vweffMSPImps, vwcImps, vweffNoBHImps}/10.^5]//Export["/Users/aleksey/Second_Year_Project/star_formation/vwSourcesImps8.csv", #, TableHeadings->{"Time","Ias", "IasCorrected", "Stars", "MSPs", "Compton", "Total"}]&;
 Transpose[{timeImps/year, hcImps}]//Export["/Users/aleksey/Second_Year_Project/star_formation/hcImps8.csv", #, TableHeadings->{"Time", "Cusp"}]&;
 
 
