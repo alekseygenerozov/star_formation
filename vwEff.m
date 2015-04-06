@@ -325,11 +325,21 @@ nRs[mbh_,vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=rhoRs[mbh,vw, \[CapitalGamma], \[E
 heatingRs[mbh_, vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=0.5*qRs[mbh, vw, \[CapitalGamma], \[Eta]]*vwtildeRs[vw, \[CapitalGamma]]^2.
 coolingRs[mbh_, vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=(rhoRs[mbh, vw, \[CapitalGamma], \[Eta]]/(\[Mu]*mp))^2*lambdaC[tempRs[vw, \[CapitalGamma]]]
 hc[mbh_,vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=heatingRs[mbh,vw, \[CapitalGamma], \[Eta]]/coolingRs[mbh, vw, \[CapitalGamma], \[Eta]]
-
 (*Maximum Mdot befor thermal instability sets in*)
 vwMaxCool[mbh_, \[CapitalGamma]_:1, \[Eta]_:1, hcCrit_:1]:=vw1/.FindRoot[hc[mbh, vw1, \[CapitalGamma], \[Eta]]==hcCrit, {vw1,3.*10^7.}]
 mdotMaxCool[mbh_, \[CapitalGamma]_:1, \[Eta]_:1, hcCrit_:1]:=mdotsol[mbh, vwMaxCool[mbh, \[CapitalGamma], \[Eta], hcCrit], \[CapitalGamma], \[Eta]]
 mdotCompton[mbh_, \[CapitalGamma]_:1., \[Eta]_:1., Tc_:10.^9]:=mdotsol[mbh, vwComptonDom[mbh, \[CapitalGamma], \[Eta], Tc], \[CapitalGamma], \[Eta]]
+
+
+(*gas properties at the Ia radius*)
+rhostarIa[mbh_, vw_, rIa_ \[CapitalGamma]_:1.]:=mbh/((4.*\[Pi]) rinf[mbh]^3)*(2.-\[CapitalGamma])*(rIa/rinf[mbh])^(-1.-\[CapitalGamma])
+qIa[mbh_, vw_, rIa_ \[CapitalGamma]_:1., \[Eta]_:1.]:=\[Eta] rhostarIa[mbh, vw, rIa, \[CapitalGamma]]/th
+rhoIa[mbh_, vw_, rIa_ \[CapitalGamma]_:1., \[Eta]_:1.]:=3. qIa[mbh, vw, rIa, \[CapitalGamma], \[Eta]] tff[rIa, mbh]/(2.-\[CapitalGamma])
+tempIa[vw_]:=(ad-1)/ad*\[Mu]*mp*vw^2/(2.*kb)
+
+heatingIa[mbh_, vw_, rIa_, \[CapitalGamma]_:1, \[Eta]_:1]:=0.5 qIa[mbh, vw, rIa, \[CapitalGamma], \[Eta]] vw^2
+coolingIa[mbh_, vw_, rIa_, \[CapitalGamma]_:1, \[Eta]_:1]:=(rhoIa[mbh, vw, rIa, \[CapitalGamma], \[Eta]]/(\[Mu]*mp))^2 lambdaC[tempIa[vw]]
+hcIa[mbh_, vw_, rIa_, \[CapitalGamma]_:1., \[Eta]_:1.]:=heatingIa[mbh, vw, rIa, \[CapitalGamma], \[Eta]]/coolingIa[mbh, vw, rIa, \[CapitalGamma], \[Eta]]
 
 
 EndPackage[]
