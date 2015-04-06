@@ -1,3 +1,5 @@
+(* ::Package:: *)
+
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -5,13 +7,10 @@ AppendTo[$Path,"/Users/aleksey/code/mathematica/star_formation_code"];
 Needs["vwEff`"]
 
 
-mhalos=10.^Range[10.8, 14.,0.2] MS;
+mhalos=10.^Range[10.8, 12.,0.2] MS;
 mstarTots=mstarTot/@mhalos;
 mbhs=MbhMbulge/@mstarTots;
 \[CapitalGamma]s=\[CapitalGamma]fitM/@mbhs;
-
-
-Transpose[{mbhs/MS,mhalos/MS}]
 
 
 vweffStars = vweffStar /@ mhalos; 
@@ -19,31 +18,42 @@ vweffMSPs = vweffMSP /@ mhalos;
 vweffIas = vweffIa /@ mhalos;
 
 
-tmp = Table[vweffTot[mbhs[[i]], mhalos[[i]], 0.8], {i, 1, Length[mhalos]}]
+tmp = Table[vweffTot[mbhs[[i]], mhalos[[i]], 0.8], {i, 1, Length[mhalos]}];
 vwc = tmp[[1 ;; All,1]]; 
 vweffTots = tmp[[1 ;; All,3]]; 
 veffIasCorrected= tmp[[1;;All, 4]];
 
-tmp = Table[vweffTot[mbhs[[i]], mhalos[[i]], 0.1], {i, 1, Length[mhalos]}]
+tmp = Table[vweffTot[mbhs[[i]], mhalos[[i]], 0.1], {i, 1, Length[mhalos]}];
 vwcCore = tmp[[1 ;; All,1]]; 
 vweffTotsCore = tmp[[1 ;; All,3]];
-veffIasCoreCorrected= tmp[[1;;All, 4]];
+vweffIasCoreCorrected= tmp[[1;;All, 4]];
 
-tmp = Table[vweffTot[mbhs[[i]], mhalos[[i]], \[CapitalGamma]s[[i]]], {i, 1, Length[mhalos]}]
+tmp = Table[vweffTot[mbhs[[i]], mhalos[[i]], \[CapitalGamma]s[[i]]], {i, 1, Length[mhalos]}];
 vwcGamma = tmp[[1 ;; All,1]]; 
 vweffTotsGamma = tmp[[1 ;; All,3]];
-veffIasGammaCorrected= tmp[[1;;All, 4]];
-
-
-\[Eta]s = \[Eta] /@ mhalos; 
+vweffIasGammaCorrected= tmp[[1;;All, 4]];
 
 
 radiiIa = Table[radiusIa[mbhs[[i]], mhalos[[i]]], {i, 1, Length[mbhs]}]; 
-
-
 rsCusp = Table[rs[mbhs[[i]], Sqrt[vweffTots[[i]]^2-vweffIasCorrected[[i]]^2], 0.8], {i, 1, Length[mbhs]}];
 rsCore = Table[rs[mbhs[[i]], Sqrt[vweffTotsCore[[i]]^2-vweffIasCoreCorrected[[i]]^2], 0.1], {i, 1, Length[mbhs]}];
 rsGamma = Table[rs[mbhs[[i]], Sqrt[vweffTotsGamma[[i]]^2-vweffIasGammaCorrected[[i]]^2], 0.1], {i, 1, Length[mbhs]}];
+
+
+hcs = Table[hc[mbhs[[i]], vweffTots[[i]], 0.8, \[Eta]s[[i]]], 
+    {i, 1, Length[mbhs]}];
+hcsCore = Table[hc[mbhs[[i]], vweffTotsCore[[i]], 0.1, \[Eta]s[[i]]], 
+  {i, 1, Length[mbhs]}]; 
+
+(*Calculating heating/cooling ratio using Ia formalism. Using total heating--
+implicitly assuming heating is dominated by Ia's. Only take this when rs=rIa*)
+hcIas=Table[hcIa[mbhs[[i]], vweffTots[[i]], radiiIa[[i]] 0.8, \[Eta]s[[i]]], 
+    {i, 1, Length[mbhs]}];
+hcIasCore=Table[hcIa[mbhs[[i]], vweffTotsCore[[i]], radiiIa[[i]] 0.1, \[Eta]s[[i]]], 
+    {i, 1, Length[mbhs]}];
+
+
+hcOverall=Table[If[radiiIa[[i]]>rsCusp[[i]], hcIas[[i]], hcs[[i]]], {i, 1, Length[hcs]}]
 
 
 (*Impulsive limit mbh=10^6 msun...*)
