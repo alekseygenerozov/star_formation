@@ -268,7 +268,7 @@ vwComptonGen[mbh_,vw_, \[CapitalGamma]_:1., \[Eta]_:1, Tc_:10.^9]:=Sqrt[ ((2. th
 vwComptonDom[mbh_, \[CapitalGamma]_:1., \[Eta]_:1., Tc_:10.^9]:=6.0723*10^7 E^(-(1.92109/(2.25-1. \[CapitalGamma]))) (mbh/10.^8/MS)^(0.2-0.05/(2.25-1. \[CapitalGamma])) (Tc/10.^9)^(0.25/(2.25-1. \[CapitalGamma])) (2.-\[CapitalGamma])^(-(0.25/(2.25-1. \[CapitalGamma]))) (3+4 \[CapitalGamma])^(-0.5+0.25/(2.25-1. \[CapitalGamma])) (1.+0.5/(2.+1. \[CapitalGamma]))^(0.5-0.25/(2.25-1. \[CapitalGamma])) (\[Eta]/0.02)^(1/(4.5-2. \[CapitalGamma]))
 
 
-vweffTot[mbh_, mhalo_, \[CapitalGamma]_:1, \[Epsilon]msp_:0.1, Lsd_:10.^34, \[Epsilon]Ia_:0.4, Tc_:10.^9]:=Module[{vw0, vwc0  rs1, \[Eta]1, vwIa0, vwIa, vwc, rIa},
+vweffTot[mbh_, mhalo_, \[CapitalGamma]_:1, \[Epsilon]msp_:0.1, Lsd_:10.^34, \[Epsilon]Ia_:0.4, Tc_:10.^9]:=Module[{vw0, vwc0,  rs1, \[Eta]1, vwIa0, vwIa, vwc, rIa},
 
 vw0=(vweffStar[mhalo]^2+vweffMSP[mhalo,\[Epsilon]msp, Lsd]^2)^(1/2);
 vwIa0=vweffIa[mhalo, \[Epsilon]Ia];
@@ -276,15 +276,15 @@ rs1=rs[mbh,vw0,\[CapitalGamma]];
 rIa=radiusIa[mbh, mhalo];
 vwIa=If[rs1>rIa, vwIa0, 0.];
 
-vwc0=vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta][mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6]
+vwc0=(vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta][mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6])
 rs1=rs[mbh,(vw0^2.+vwc0^2.)^0.5,\[CapitalGamma]];
 vwIa=If[rs1>rIa, vwIa0, 0.];
-vwc0=vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta][mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6]
+vwc0=(vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta][mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6])
 
 {vwc0, vwIa, Sqrt[vw0^2+vwIa^2+vwc^2], vwIa}
 
  ]
-vweffTotImp[mbh_, t_,\[CapitalGamma]_:1,  \[Epsilon]msp_:0.1,Lsd_:10.^34, \[Epsilon]Ia_:0.4, Tc_:10.^9]:=Module[{vw0,  rs1, \[Eta]1,vwIa0, vwc, vwc0, rIa, vwIa},
+vweffTotImp[mbh_, t_,\[CapitalGamma]_:1,  \[Epsilon]msp_:0.1,Lsd_:10.^34, \[Epsilon]Ia_:0.4, Tc_:10.^9]:=Module[{vw0,  vwc0, rs1, \[Eta]1, vwIa0, vwc, rIa, vwIa},
 
 vw0=(vweffStarImp[t]^2+vweffMSPImp[t,\[Epsilon]msp, Lsd]^2)^(1/2);
 vwIa0=vweffIaImp[t, \[Epsilon]Ia];
@@ -292,10 +292,10 @@ rs1=rs[mbh,vw0,\[CapitalGamma]];
 rIa=radiusIaImp[mbh, t];
 vwIa=If[rs1>rIa, vwIa0, 0.];
 
-vwc0=vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta][mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6]
+vwc0=(vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta][mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6])
 rs1=rs[mbh,(vw0^2.+vwc0^2.)^0.5,\[CapitalGamma]];
 vwIa=If[rs1>rIa, vwIa0, 0.];
-vwc0=vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta][mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6]
+vwc0=(vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta][mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6])
 
 {vwc0, vwIa, Sqrt[vw0^2+vwIa^2+vwc^2], vwIa}
  ]
