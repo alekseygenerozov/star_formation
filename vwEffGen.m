@@ -43,6 +43,7 @@ radiiIa = Table[radiusIa[mbhs[[i]], mhalos[[i]]], {i, 1, Length[mbhs]}];
 
 rsCusp = Table[rs[mbhs[[i]], Sqrt[vweffTots[[i]]^2-vweffIasCorrected[[i]]^2], 0.8], {i, 1, Length[mbhs]}];
 rsCore = Table[rs[mbhs[[i]], Sqrt[vweffTotsCore[[i]]^2-vweffIasCoreCorrected[[i]]^2], 0.1], {i, 1, Length[mbhs]}];
+rsGamma = Table[rs[mbhs[[i]], Sqrt[vweffTotsGamma[[i]]^2-vweffIasGammaCorrected[[i]]^2], 0.1], {i, 1, Length[mbhs]}];
 
 
 (*Impulsive limit mbh=10^6 msun...*)
@@ -97,7 +98,7 @@ Export["vwSourcesCore.csv", Transpose[{mbhs*(10.^5/MS), vwcCore, vweffTotsCore}/
 Export["vwSourcesGamma.csv", Transpose[{mbhs*(10.^5/MS), vwcGamma, vweffTotsGamma}/10.^5], 
   "TableHeadings" -> {"mbh", "Compton", "Total"}]
 
-Export["Ia.csv", Transpose[{mbhs/MS, radiiIa, rsCusp, rsCore}], "TableHeadings" -> {"Mbh", "rIa", "rsCusp", "rsCore"}]
+Export["Ia.csv", Transpose[{mbhs/MS, radiiIa, rsCusp, rsCore, rsGamma}], "TableHeadings" -> {"Mbh", "rIa", "rsCusp", "rsCore", "rsGamma"}]
 Export["eta.csv", Transpose[{mbhs/MS, \[Eta]s}], "TableHeadings" -> {"Mbh", "eta"}]
 Export["etaImp.csv", Transpose[{timeImps/year, \[Eta]Imps}], "TableHeadings" -> {"time", "eta"}]
 Export["vweffStarImps.csv", Transpose[{timeImps/year, vweffStarImps}], "TableHeadings" -> {"time", "vw"}]
