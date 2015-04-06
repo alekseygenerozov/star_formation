@@ -276,12 +276,12 @@ rs1=rs[mbh,vw0,\[CapitalGamma]];
 rIa=radiusIa[mbh, mhalo];
 vwIa=If[rs1>rIa, vwIa0, 0.];
 
-vwc0=(vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta][mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6])
+vwc0=(vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta][mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6]);
 rs1=rs[mbh,(vw0^2.+vwc0^2.)^0.5,\[CapitalGamma]];
 vwIa=If[rs1>rIa, vwIa0, 0.];
-vwc0=(vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta][mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6])
+vwc0=(vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta][mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6]);
 
-{vwc0, vwIa, Sqrt[vw0^2+vwIa^2+vwc^2], vwIa}
+{vwc0, vwIa0, Sqrt[vw0^2+vwIa^2+vwc0^2], vwIa}
 
  ]
 vweffTotImp[mbh_, t_,\[CapitalGamma]_:1,  \[Epsilon]msp_:0.1,Lsd_:10.^34, \[Epsilon]Ia_:0.4, Tc_:10.^9]:=Module[{vw0,  vwc0, rs1, \[Eta]1, vwIa0, vwc, rIa, vwIa},
@@ -292,12 +292,12 @@ rs1=rs[mbh,vw0,\[CapitalGamma]];
 rIa=radiusIaImp[mbh, t];
 vwIa=If[rs1>rIa, vwIa0, 0.];
 
-vwc0=(vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta][mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6])
+vwc0=(vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta]Imp[mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6]);
 rs1=rs[mbh,(vw0^2.+vwc0^2.)^0.5,\[CapitalGamma]];
 vwIa=If[rs1>rIa, vwIa0, 0.];
-vwc0=(vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta][mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6])
+vwc0=(vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta]Imp[mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6]);
 
-{vwc0, vwIa, Sqrt[vw0^2+vwIa^2+vwc^2], vwIa}
+{vwc0, vwIa0, Sqrt[vw0^2+vwIa^2+vwc0^2], vwIa}
  ]
 
 
