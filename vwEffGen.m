@@ -1,5 +1,3 @@
-(* ::Package:: *)
-
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -11,9 +9,6 @@ mhalos=10.^Range[10.8, 14.,0.2] MS;
 mstarTots=mstarTot/@mhalos;
 mbhs=MbhMbulge/@mstarTots;
 \[CapitalGamma]s=\[CapitalGamma]fitM/@mbhs;
-
-
-vweffTot[mbhs[[1]], mhalos[[1]],0.8]
 
 
 Transpose[{mbhs/MS,mhalos/MS}]

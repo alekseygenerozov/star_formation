@@ -292,10 +292,10 @@ rs1=rs[mbh,vw0,\[CapitalGamma]];
 rIa=radiusIaImp[mbh, t];
 vwIa=If[rs1>rIa, vwIa0, 0.];
 
-vwc0=(vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta]Imp[mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6]);
+vwc0=(vwc0/.FindRoot[{vwc0==vwComptonGen[mbh, Sqrt[vw0^2+vwc0^2+vwIa^2], \[CapitalGamma], \[Eta]Imp[t],  Tc]}, {vwc0,vw0}, PrecisionGoal->6, AccuracyGoal->6]);
 rs1=rs[mbh,(vw0^2.+vwc0^2.)^0.5,\[CapitalGamma]];
 vwIa=If[rs1>rIa, vwIa0, 0.];
-vwc0=(vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta]Imp[mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6]);
+vwc0=(vwc0/.FindRoot[{vwc0==vwComptonGen[mbh, Sqrt[vw0^2+vwc0^2+vwIa^2], \[CapitalGamma], \[Eta]Imp[t],  Tc]}, {vwc0,vw0}, PrecisionGoal->6, AccuracyGoal->6]);
 
 {vwc0, vwIa0, Sqrt[vw0^2+vwIa^2+vwc0^2], vwIa}
  ]
