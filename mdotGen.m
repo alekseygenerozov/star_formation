@@ -19,6 +19,7 @@ vweffTotsGamma=Import["vwSourcesGamma.csv", "HeaderLines"->1][[;;,-1]]*10.^5;
 (*Ia radius*)
 radiiIa=Import["Ia.csv", "HeaderLines"->1][[;;,2]];
 
+
 \[CapitalGamma]s=\[CapitalGamma]fitM/@mbhs;
 
 
@@ -60,10 +61,7 @@ mdotComptonsGamma = Table[mdotCompton[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[
     {i, 1, Length[\[Eta]s]}];
 
 
-vwcs1=Table[vwComptonDom[mbhs[[i]], 0.1, \[Eta]s[[i]], TempC], {i, 1, Length[\[Eta]s]}]
-
-
-vwcs2=Table[vwComptonDom2[mbhs[[i]], 0.1, \[Eta]s[[i]], TempC], {i, 1, Length[\[Eta]s]}]
+vwcs1=Table[vwComptonDom[mbhs[[i]], 0.1, \[Eta]s[[i]], TempC], {i, 1, Length[\[Eta]s]}];
 
 
 hcs = Table[hc[mbhs[[i]], vweffTots[[i]], 0.8, \[Eta]s[[i]]], 
@@ -71,10 +69,17 @@ hcs = Table[hc[mbhs[[i]], vweffTots[[i]], 0.8, \[Eta]s[[i]]],
 hcsCore = Table[hc[mbhs[[i]], vweffTotsCore[[i]], 0.1, \[Eta]s[[i]]], 
   {i, 1, Length[mbhs]}]; 
 
+(*Calculating heating/cooling ratio using Ia formalism. Using total heating--
+implicitly assuming heating is dominated by Ia's. Only take this when rs=rIa*)
+hcIas=Table[hcIa[mbhs[[i]], vweffTots[[i]], radiiIa[[i]] 0.8, \[Eta]s[[i]]], 
+    {i, 1, Length[mbhs]}];
+hcIasCore=Table[hcIa[mbhs[[i]], vweffTotsCore[[i]], radiiIa[[i]] 0.1, \[Eta]s[[i]]], 
+    {i, 1, Length[mbhs]}];
+
 
 Needs["SigFig`"]
 
-Export["hc.csv", Transpose[{mbhs/MS, hcs, hcsCore}], "TableHeadings" -> {"Mbh", "Cusp","Core"}]
+Export["hc.csv", Transpose[{mbhs/MS, hcs, hcsCore, hcIas, hcIasCore}], "TableHeadings" -> {"Mbh", "Cusp","Core", "Ia", "IaCore"}]
 
 mdotsAll=Map[OutputForm[SigForm[#,3, scientific->True]]&\
 ,Transpose[{mbhs/MS, mdots, mdotsCore, mdotsGamma, mdotIas, mdotIasCore,\

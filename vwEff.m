@@ -332,9 +332,9 @@ mdotCompton[mbh_, \[CapitalGamma]_:1., \[Eta]_:1., Tc_:10.^9]:=mdotsol[mbh, vwCo
 
 
 (*gas properties at the Ia radius*)
-rhostarIa[mbh_, vw_, rIa_ \[CapitalGamma]_:1.]:=mbh/((4.*\[Pi]) rinf[mbh]^3)*(2.-\[CapitalGamma])*(rIa/rinf[mbh])^(-1.-\[CapitalGamma])
-qIa[mbh_, vw_, rIa_ \[CapitalGamma]_:1., \[Eta]_:1.]:=\[Eta] rhostarIa[mbh, vw, rIa, \[CapitalGamma]]/th
-rhoIa[mbh_, vw_, rIa_ \[CapitalGamma]_:1., \[Eta]_:1.]:=3. qIa[mbh, vw, rIa, \[CapitalGamma], \[Eta]] tff[rIa, mbh]/(2.-\[CapitalGamma])
+rhostarIa[mbh_, vw_, rIa_, \[CapitalGamma]_:1.]:=mbh/((4.*\[Pi]) rinf[mbh]^3)*(2.-\[CapitalGamma])*(rIa/rinf[mbh])^(-1.-\[CapitalGamma])
+qIa[mbh_, vw_, rIa_, \[CapitalGamma]_:1., \[Eta]_:1.]:=\[Eta] rhostarIa[mbh, vw, rIa, \[CapitalGamma]]/th
+rhoIa[mbh_, vw_, rIa_, \[CapitalGamma]_:1., \[Eta]_:1.]:=3. qIa[mbh, vw, rIa, \[CapitalGamma], \[Eta]] tff[rIa, mbh]/(2.-\[CapitalGamma])
 tempIa[vw_]:=(ad-1)/ad*\[Mu]*mp*vw^2/(2.*kb)
 
 heatingIa[mbh_, vw_, rIa_, \[CapitalGamma]_:1, \[Eta]_:1]:=0.5 qIa[mbh, vw, rIa, \[CapitalGamma], \[Eta]] vw^2
