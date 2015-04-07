@@ -1,6 +1,6 @@
 (* ::Package:: *)
 
-BeginPackage["vwEff`"];
+BeginPackage["vwEffBumpy`"];
 
 
 MS=1.989 10^33;
@@ -112,8 +112,8 @@ f1[mhalo_]:= f10 Exp[-(Log10[mhalo/MS]-f11)^2/(2 f12^2)]
 f2[mhalo_]:=f20 +f21 Log10[(mhalo/MS)/10.^12]
 f3[mhalo_]:=10.^(f30+f31 ((mhalo/MS)/10.^12)^f32)
 (*Note that we divide by the mean stellar mass (in solar masses) to obtain the rate of star formation--in g s^-1*)
-\[Epsilon]Floor=0.001;
-tScale = 10^6*year;
+\[Epsilon]Floor=1.;
+tScale = 10^8*year;
 dSdtForm[z_, mhalo_]:=(f1[mhalo] (1+z)^-f2[mhalo] Exp[f2[mhalo]/f3[mhalo] z/(1+z)])*(\[Epsilon]Floor+2*(1-\[Epsilon]Floor)*ArcTan[tL[z]/tScale]/\[Pi])
 dNdtForm[z_, mhalo_]:=(1/mavg dSdtForm[z,mhalo])
 
@@ -131,6 +131,9 @@ mhaloAcc=10.^12.5*MS
 zacc=4.
 g1[mhalo_]:=g10*((mhalo/(10.^12.5  MS))^g11+(mhalo/(10.^12.5 MS))^g12)^-1
 g2[mhalo_]:=g20+g21 (mhalo/(10.^12 MS))^g22
+
+dSdtAcc[z_, mhalo_]:=If[mhalo>mhaloAcc, g1[mhalo] Exp[-z/g2[mhalo]],0.]*(\[Epsilon]Floor+2*(1-\[Epsilon]Floor)*ArcTan[tL[z]/tScale]/\[Pi])
+dNdtAcc[z_, mhalo_]:=(dSdtAcc[z, mhalo]/mavg)
 (*dSdtAcc[z_, mhalo_]:=If[mhalo>mhaloAcc, g1[mhalo] Exp[-z/g2[mhalo]],0.]
 dNdtAcc[z_, mhalo_]:=dSdtAcc[z, mhalo]/mavg*)
 
