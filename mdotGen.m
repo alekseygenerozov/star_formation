@@ -86,11 +86,11 @@ mdotsGamma = Table[mdotsol[mbhs[[i]], vweffTotsGamma[[i]], \[CapitalGamma]s[[i]]
     {i, 1, Length[mbhs]}]; 
 
 
-mdotsOverallCore = Table[mdotsol[mbhs[[i]], vweffTotsCore[[i]], 0.1, \[Eta]s[[i]]], 
-    {i, 1, Length[mbhs]}]; 
-mdotsOverall = Table[mdotsol[mbhs[[i]], vweffTots[[i]], 0.8, \[Eta]s[[i]]], 
-    {i, 1, Length[mbhs]}]; 
-mdotsOverallGamma = Table[If[rsGamma[[i]]>radiiIa[[i]], mdotsGamma[[i]], mdotIasGamma[[i]]], 
+mdotsOverallCore =  Table[If[rsCore[[i]]<radiiIa[[i]], mdots[[i]], mdotIas[[i]]], 
+    {i, 1, Length[mbhs]}];
+mdotsOverall =  Table[If[rs[[i]]<radiiIa[[i]], mdotsCore[[i]], mdotIasCore[[i]]], 
+    {i, 1, Length[mbhs]}];  
+mdotsOverallGamma = Table[If[rsGamma[[i]]<radiiIa[[i]], mdotsGamma[[i]], mdotIasGamma[[i]]], 
     {i, 1, Length[mbhs]}]; 
 
 
@@ -103,9 +103,10 @@ Export["hc.csv", Transpose[{mbhs/MS, hcs, hcsCore, hcIas, hcIasCore hcOverall, h
 
 mdotsAll=Map[OutputForm[SigForm[#,3, scientific->True]]&\
 ,Transpose[{mbhs/MS, mdots, mdotsCore, mdotsGamma, mdotIas, mdotIasCore,\
-	    mdotIasGamma, mdotMaxCools, mdotMaxCoolsCore, mdotMaxCoolsGamma, mdotComptons, mdotComptonsCore, mdotComptonsGamma, LEdds}],{2}];
+mdotIasGamma, mdotMaxCools, mdotMaxCoolsCore, mdotMaxCoolsGamma, mdotComptons, mdotComptonsCore, mdotComptonsGamma,\
+mdotsOverall, mdotsOverallCore, mdotsOverallGamma,  LEdds}],{2}];
 
 Export["mdots.csv", mdotsAll, TableHeadings->
 {"Mbh","Cusp","Core","Gamma",\
- "Ia","IaCore","IaGamma","MaxCools","MaxCoolsCore","MaxCoolsGamma", "mdotComptons", "mdotComptonsCore", "mdotComptonsGamma", "LEdds"}];
+ "Ia","IaCore","IaGamma","MaxCools","MaxCoolsCore","MaxCoolsGamma", "mdotComptons", "mdotComptonsCore", "mdotComptonsGamma", "overall", "overallCore", "overallGamma", "LEdds"}];
 
