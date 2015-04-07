@@ -1,3 +1,5 @@
+(* ::Package:: *)
+
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -14,10 +16,31 @@ mbhs=etaf[[;;,1]]*MS;
 \[Eta]s=etaf[[;;,2]];
 (*Total vwEff*)
 vweffTots=Import["vwSources.csv", "HeaderLines"->1][[;;,-1]]*10.^5;
+vweffIasCorrected=Import["vwSourcesCore.csv", "HeaderLines"->1][[;;,3]]*10.^5;
+
 vweffTotsCore=Import["vwSourcesCore.csv", "HeaderLines"->1][[;;,-1]]*10.^5;
+vweffIasCoreCorrected=Import["vwSourcesCore.csv", "HeaderLines"->1][[;;,3]]*10.^5;
+
 vweffTotsGamma=Import["vwSourcesGamma.csv", "HeaderLines"->1][[;;,-1]]*10.^5;
 (*Ia radius*)
 radiiIa=Import["Ia.csv", "HeaderLines"->1][[;;,2]];
+
+
+rsCusp = Table[rs[mbhs[[i]], Sqrt[vweffTots[[i]]^2-vweffIasCorrected[[i]]^2], 0.8], {i, 1, Length[mbhs]}];
+rsCore = Table[rs[mbhs[[i]], Sqrt[vweffTotsCore[[i]]^2-vweffIasCoreCorrected[[i]]^2], 0.1], {i, 1, Length[mbhs]}];
+rsGamma = Table[rs[mbhs[[i]], Sqrt[vweffTotsGamma[[i]]^2-vweffIasGammaCorrected[[i]]^2], 0.1], {i, 1, Length[mbhs]}];
+hcs = Table[hc[mbhs[[i]], vweffTots[[i]], 0.8, \[Eta]s[[i]]], 
+    {i, 1, Length[mbhs]}];
+hcsCore = Table[hc[mbhs[[i]], vweffTotsCore[[i]], 0.1, \[Eta]s[[i]]], 
+  {i, 1, Length[mbhs]}]; 
+
+(*Calculating heating/cooling ratio using Ia formalism. Using total heating--
+implicitly assuming heating is dominated by Ia's. Only take this when rs=rIa*)
+hcIas=Table[hcIa[mbhs[[i]], vweffTots[[i]], radiiIa[[i]] 0.8, \[Eta]s[[i]]], 
+    {i, 1, Length[mbhs]}];
+hcIasCore=Table[hcIa[mbhs[[i]], vweffTotsCore[[i]], radiiIa[[i]] 0.1, \[Eta]s[[i]]], 
+    {i, 1, Length[mbhs]}];
+hcOverall=Table[If[radiiIa[[i]]>rsCusp[[i]], hcIas[[i]], hcs[[i]]], {i, 1, Length[hcs]}]
 
 
 \[CapitalGamma]s=\[CapitalGamma]fitM/@mbhs;
