@@ -39,6 +39,12 @@ vweffTotsGamma = tmp[[1 ;; All,5]];
 vweffIasGammaCorrected= tmp[[1;;All,6]];
 
 
+vweffTots-vweffIasCorrected
+
+
+
+
+
 (*Ia radii*)
 radiiIa = Table[radiusIa[mbhs[[i]], mhalos[[i]]], {i, 1, Length[mbhs]}]; 
 
