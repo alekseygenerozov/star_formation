@@ -193,9 +193,9 @@ RII[mhalo_]:=dNdtForm[0, mhalo]fracII
 RIIsp[mhalo_]:=RII[mhalo]/mstarTot[mhalo]
 (*Radius for which time between successive Ias is the same as the dynamical time*)
 radiusIa[mbh_, mhalo_]:=
-Sqrt[G /((3.^0.5)*\[Sigma][mbh] rateIa[mhalo])]
+Sqrt[G /((*(3.^0.5)**)\[Sigma][mbh] rateIa[mhalo])]
 radiusIaImp[mbh_, t_]:=
-Sqrt[G/((3.^0.5)*\[Sigma][mbh]DTD[t])]
+Sqrt[G/((*(3.^0.5)**)\[Sigma][mbh]DTD[t])]
 
 
 (*Consistenncy of convention Mbh vs. M...*)
