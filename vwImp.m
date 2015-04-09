@@ -1,5 +1,3 @@
-(* ::Package:: *)
-
 AppendTo[$Path,"/Users/aleksey/code/mathematica/star_formation_code"];
 Needs["vwEff`"]
 
