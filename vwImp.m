@@ -7,7 +7,7 @@ mbh=10.^6*MS;
 timeImps=10.^Range[6.6,10.,0.2]*year;
 \[Eta]Imps=\[Eta]Imp/@timeImps;
 tmp=vweffTotImp[mbh, #,0.8]&/@timeImps;
-(*heating from diffe}rent sources in the impulsive limit*)
+(*heating from different sources in the impulsive limit*)
 vwcImps=tmp[[;;,1]];
 vweffIaImps=tmp[[;;, 2]];
 vweffTotImps=tmp[[;;, 3]];
@@ -24,7 +24,7 @@ hcImps=Table[hc[mbh,vweffNoBHImps[[i]], 0.8, \[Eta]Imps[[i]]], {i, 1, Length[tim
 hcIaImps=Table[hcIa[mbh,vweffIaImps2[[i]], radiiIa[[i]], 0.8, \[Eta]Imps[[i]]], {i, 1, Length[timeImps]}];
 hcOverall=Table[If[rslist[[i]]>radiiIa[[i]], hcIaImps[[i]], hcImps[[i]]], {i, 1, Length[timeImps]}];
 
- 
+Transpose[{timeImps, \[Eta]Imps}] //Export[#, "/Users/aleksey/Second_Year_Project/star_formation/etaImp.csv"]&;
 Transpose[{timeImps/year*10.^5, vweffIaImps, vweffIaImps2, vweffStarImps, vweffMSPImps, vwcImps, vweffNoBHImps}/10.^5]//Export["/Users/aleksey/Second_Year_Project/star_formation/vwSourcesImps6.csv", #, TableHeadings->{"Time","Ias", "IasCorrected", "Stars", "MSPs", "Compton", "Total"}]&;
 Transpose[{timeImps/year, hcImps, hcIaImps, hcOverall}]//Export["/Users/aleksey/Second_Year_Project/star_formation/hcImps6.csv", #, TableHeadings->{"Time", "Cusp", "Ia", "Overall"}]&;
 
