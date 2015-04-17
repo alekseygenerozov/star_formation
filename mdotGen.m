@@ -1,3 +1,5 @@
+(* ::Package:: *)
+
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -116,3 +118,6 @@ Export["mdots.csv", mdotsAll, TableHeadings->
 
 Export["rs.csv", Transpose[{mbhs/MS, rsOverall, rsOverallCore,rsOverallGamma,radiiIa}], "TableHeadings"->
 {"Mbh", "rsCusp", "rsCore", "rsGamma", "rIa"}]
+
+
+

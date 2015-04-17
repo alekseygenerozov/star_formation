@@ -1,3 +1,5 @@
+(* ::Package:: *)
+
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -38,9 +40,6 @@ vweffIasGammaCorrected= tmp[[1;;All,6]];
 
 
 vweffTots-vweffIasCorrected
-
-
-
 
 
 (*Ia radii*)

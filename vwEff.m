@@ -328,8 +328,8 @@ heatingRs[mbh_, vw_, \[CapitalGamma]_:1, \[Eta]_:1]:=0.5*qRs[mbh, vw, \[CapitalG
 coolingRs[mbh_, vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=(rhoRs[mbh, vw, \[CapitalGamma], \[Eta]]/(\[Mu]*mp))^2*lambdaC[tempRs[vw, \[CapitalGamma]]]
 hc[mbh_,vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=heatingRs[mbh,vw, \[CapitalGamma], \[Eta]]/coolingRs[mbh, vw, \[CapitalGamma], \[Eta]]
 (*Maximum Mdot befor thermal instability sets in*)
-vwMaxCool[mbh_, \[CapitalGamma]_:1, \[Eta]_:1, hcCrit_:1]:=vw1/.FindRoot[hc[mbh, vw1, \[CapitalGamma], \[Eta]]==hcCrit, {vw1,3.*10^7.}]
-mdotMaxCool[mbh_, \[CapitalGamma]_:1, \[Eta]_:1, hcCrit_:1]:=mdotsol[mbh, vwMaxCool[mbh, \[CapitalGamma], \[Eta], hcCrit], \[CapitalGamma], \[Eta]]
+vwMaxCool[mbh_, \[CapitalGamma]_:1, \[Eta]_:1, hcCrit_:10.]:=vw1/.FindRoot[hc[mbh, vw1, \[CapitalGamma], \[Eta]]==hcCrit, {vw1,3.*10^7.}]
+mdotMaxCool[mbh_, \[CapitalGamma]_:1, \[Eta]_:1, hcCrit_:10.]:=mdotsol[mbh, vwMaxCool[mbh, \[CapitalGamma], \[Eta], hcCrit], \[CapitalGamma], \[Eta]]
 mdotCompton[mbh_, \[CapitalGamma]_:1., \[Eta]_:1., Tc_:10.^9]:=mdotsol[mbh, vwComptonDom[mbh, \[CapitalGamma], \[Eta], Tc], \[CapitalGamma], \[Eta]]
 
 

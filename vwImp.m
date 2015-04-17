@@ -1,3 +1,8 @@
+(* ::Package:: *)
+
+#!/usr/local/bin/MathematicaScript/ -script
+
+
 AppendTo[$Path,"/Users/aleksey/code/mathematica/star_formation_code"];
 Needs["vwEff`"]
 
@@ -24,7 +29,8 @@ hcImps=Table[hc[mbh,vweffNoBHImps[[i]], 0.8, \[Eta]Imps[[i]]], {i, 1, Length[tim
 hcIaImps=Table[hcIa[mbh,vweffIaImps2[[i]], radiiIa[[i]], 0.8, \[Eta]Imps[[i]]], {i, 1, Length[timeImps]}];
 hcOverall=Table[If[rslist[[i]]>radiiIa[[i]], hcIaImps[[i]], hcImps[[i]]], {i, 1, Length[timeImps]}];
 
-Transpose[{timeImps, \[Eta]Imps}] //Export[#, "/Users/aleksey/Second_Year_Project/star_formation/etaImp.csv"]&;
+Transpose[{timeImps/year, \[Eta]Imps}] //Export[ "/Users/aleksey/Second_Year_Project/star_formation/etaImp.csv", #,\
+TableHeadings->{"time", "eta"}]&;
 Transpose[{timeImps/year*10.^5, vweffIaImps, vweffIaImps2, vweffStarImps, vweffMSPImps, vwcImps, vweffNoBHImps}/10.^5]//Export["/Users/aleksey/Second_Year_Project/star_formation/vwSourcesImps6.csv", #, TableHeadings->{"Time","Ias", "IasCorrected", "Stars", "MSPs", "Compton", "Total"}]&;
 Transpose[{timeImps/year, hcImps, hcIaImps, hcOverall}]//Export["/Users/aleksey/Second_Year_Project/star_formation/hcImps6.csv", #, TableHeadings->{"Time", "Cusp", "Ia", "Overall"}]&;
 
@@ -56,5 +62,13 @@ Transpose[{timeImps/year*10.^5, vweffIaImps, vweffIaImps2, vweffStarImps, vweffM
 Transpose[{timeImps/year, hcImps, hcIaImps, hcOverall}]//Export["/Users/aleksey/Second_Year_Project/star_formation/hcImps8.csv", #, TableHeadings->{"Time", "Cusp", "Ia", "Overall"}]&;
 
 
-(*Export["etaImp.csv", Transpose[{timeImps/year, \[Eta]Imps}], "TableHeadings" -> {"time", "eta"}]
-Export["vweffStarImps.csv", Transpose[{timeImps/year, vweffStarImps}], "TableHeadings" -> {"time", "vw"}]*)
+0.5*(1-0.8)
+
+
+10.^0.1
+
+
+400./(14.*(0.1)^0.6)
+
+
+100.^0.1
