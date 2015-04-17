@@ -261,8 +261,10 @@ vweffIaImp[t_, \[Epsilon]Ia_:0.4]:=Sqrt[(2. th rateIaImp[t] \[Epsilon]Ia 10.^51)
 vweffMSP[mhalo_, \[Epsilon]msp_:0.1,Lsd_:10.^34]:=3. 10^6 (\[Epsilon]msp/0.1)^0.5 (Lsd/10.^34)^(1/2) (\[Eta][mhalo]/0.02)^(-1/2)
 vweffMSPImp[t_, \[Epsilon]msp_:0.1,Lsd_:10.^34]:=3. 10^6 (\[Epsilon]msp/0.1)^0.5 (Lsd/10.^34)^(1/2) (\[Eta]Imp[t]/0.02)^(-1/2)
 
+
 (*wind velocity associated with compton*)
-edotCompton[mbh_, vw_, \[CapitalGamma]_:1, \[Eta]_:1, Tc_:10.^9]:=4.1*10^-35*nRs[mbh, vw, \[CapitalGamma], \[Eta]]^2 (10.*(mdotsol[mbh, vw, \[CapitalGamma], \[Eta]]^2/mdotEdd[mbh]) c^2)/(nRs[mbh, vw, \[CapitalGamma], \[Eta]] rs[mbh, vw, \[CapitalGamma]]^2)*(Tc)
+epsSharma[eddr_]:=Piecewise[{{7.1*10^-6*(eddr/(10.^-8))^0.9, eddr<10.^-4}, {2.6*10^-2, eddr<10.^-2}}, 0.1]
+edotCompton[mbh_, vw_, \[CapitalGamma]_:1, \[Eta]_:1, Tc_:10.^9]:=4.1*10^-35*nRs[mbh, vw, \[CapitalGamma], \[Eta]]^2*(epsSharma[eddr]*mdotsol[mbh, vw, \[CapitalGamma], \[Eta]]*c^2)/(nRs[mbh, vw, \[CapitalGamma], \[Eta]] rs[mbh, vw, \[CapitalGamma]]^2)*(Tc)
 vwComptonGen[mbh_,vw_, \[CapitalGamma]_:1., \[Eta]_:1, Tc_:10.^9]:=Sqrt[ ((2. th edotCompton[mbh, vw, \[CapitalGamma], \[Eta], Tc])/(\[Eta] rhoStarRs[mbh, vw, \[CapitalGamma]]))]
 (*Effective wind velocity if the Comton heating dominates*)
 vwComptonDom[mbh_, \[CapitalGamma]_:1., \[Eta]_:1., Tc_:10.^9]:=6.0723*10^7 E^(-(1.92109/(2.25-1. \[CapitalGamma]))) (mbh/10.^8/MS)^(0.2-0.05/(2.25-1. \[CapitalGamma])) (Tc/10.^9)^(0.25/(2.25-1. \[CapitalGamma])) (2.-\[CapitalGamma])^(-(0.25/(2.25-1. \[CapitalGamma]))) (3+4 \[CapitalGamma])^(-0.5+0.25/(2.25-1. \[CapitalGamma])) (1.+0.5/(2.+1. \[CapitalGamma]))^(0.5-0.25/(2.25-1. \[CapitalGamma])) (\[Eta]/0.02)^(1/(4.5-2. \[CapitalGamma]))
