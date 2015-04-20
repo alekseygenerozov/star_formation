@@ -1,5 +1,3 @@
-(* ::Package:: *)
-
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -62,13 +60,6 @@ Transpose[{timeImps/year*10.^5, vweffIaImps, vweffIaImps2, vweffStarImps, vweffM
 Transpose[{timeImps/year, hcImps, hcIaImps, hcOverall}]//Export["/Users/aleksey/Second_Year_Project/star_formation/hcImps8.csv", #, TableHeadings->{"Time", "Cusp", "Ia", "Overall"}]&;
 
 
-0.5*(1-0.8)
+mdotsol[10.^6*MS, vweffTotImps[[1]], 0.8, \[Eta]Imps[[1]]]/mdotEdd[10.^6*MS]
 
 
-10.^0.1
-
-
-400./(14.*(0.1)^0.6)
-
-
-100.^0.1
