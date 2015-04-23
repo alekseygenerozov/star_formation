@@ -272,12 +272,12 @@ epsSharma[eddr_]:=Piecewise[{{2.6*10^-2*(eddr/(10.^-4))^0.9, eddr<10.^-4}, {2.6*
 edotCompton[mbh_, vw_, \[CapitalGamma]_:1, \[Eta]_:1, Tc_:10.^9, alpha_:0.1]:=Module[{md,eddr},
 	md=mdotsol[mbh, vw, \[CapitalGamma], \[Eta]];
 	eddr=md/mdotEdd[mbh];
-	4.1*10^-35*nRs[mbh, vw, \[CapitalGamma], \[Eta]]^2*(alpha*epsSharma[eddr]*md*c^2)/(nRs[mbh, vw, \[CapitalGamma], \[Eta]] rs[mbh, vw, \[CapitalGamma]]^2)*(Tc)
+	4.1*10^-35*nRs[mbh, vw, \[CapitalGamma], \[Eta]]^2*(epsSharma[alpha*eddr]*alpha*md*c^2)/(nRs[mbh, vw, \[CapitalGamma], \[Eta]] rs[mbh, vw, \[CapitalGamma]]^2)*(Tc)
 ]
 
 vwComptonGen[mbh_,vw_, \[CapitalGamma]_:1., \[Eta]_:1, Tc_:10.^9]:=Sqrt[ ((2. th edotCompton[mbh, vw, \[CapitalGamma], \[Eta], Tc])/(\[Eta] rhoStarRs[mbh, vw, \[CapitalGamma]]))]
 eddrComptonDom[mbh_, \[CapitalGamma]_:1., \[Eta]_:1., Tc_:10.^9, alpha_:0.1]:=Module[{eps},
-eddr/.FindRoot[eddr*(alpha*epsSharma[eddr])^((\[CapitalGamma]-2.)/(\[CapitalGamma]-2.5))==
+eddr/.FindRoot[eddr*(alpha*epsSharma[alpha*eddr])^((\[CapitalGamma]-2.)/(\[CapitalGamma]-2.5))==
 (8.944119692115282*^-6*0.73745553172813^(10./(-2.5 + \[CapitalGamma]))*
   1.730393149273415^(4./(-2.5 + \[CapitalGamma]))*E^((0.2737754252521307*\[CapitalGamma])/(-2.5 + \[CapitalGamma]))*(mbh/10.^8/MS)^((-0.4 + 0.2*\[CapitalGamma])/
     (-2.5 + \[CapitalGamma]))*(Tc/10.^9)^((2. - 1.*\[CapitalGamma])/(-2.5 + \[CapitalGamma]))*(2. - \[CapitalGamma])^((-2. + 1.*\[CapitalGamma])/(-2.5 + \[CapitalGamma]))*
