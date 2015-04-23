@@ -1,3 +1,5 @@
+(* ::Package:: *)
+
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -95,9 +97,6 @@ mdotsOverall =  Table[If[rsCusp[[i]]<radiiIa[[i]], mdots[[i]], mdotIas[[i]]],
     {i, 1, Length[mbhs]}];  
 mdotsOverallGamma = Table[If[rsGamma[[i]]<radiiIa[[i]], mdotsGamma[[i]], mdotIasGamma[[i]]], 
     {i, 1, Length[mbhs]}]; 
-
-
-vwcs1=Table[vwComptonDom[mbhs[[i]], 0.1, \[Eta]s[[i]], TempC], {i, 1, Length[\[Eta]s]}];
 
 
 Needs["SigFig`"]

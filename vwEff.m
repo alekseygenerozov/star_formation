@@ -272,9 +272,6 @@ edotCompton[mbh_, vw_, \[CapitalGamma]_:1, \[Eta]_:1, Tc_:10.^9, alpha_:0.1]:=Mo
 ]
 
 vwComptonGen[mbh_,vw_, \[CapitalGamma]_:1., \[Eta]_:1, Tc_:10.^9]:=Sqrt[ ((2. th edotCompton[mbh, vw, \[CapitalGamma], \[Eta], Tc])/(\[Eta] rhoStarRs[mbh, vw, \[CapitalGamma]]))]
-(*Effective wind velocity if the Comton heating dominates*)
-vwComptonDom[mbh_, \[CapitalGamma]_:1., \[Eta]_:1., Tc_:10.^9]:=6.0723*10^7 E^(-(1.92109/(2.25-1. \[CapitalGamma]))) (mbh/10.^8/MS)^(0.2-0.05/(2.25-1. \[CapitalGamma])) (Tc/10.^9)^(0.25/(2.25-1. \[CapitalGamma])) (2.-\[CapitalGamma])^(-(0.25/(2.25-1. \[CapitalGamma]))) (3+4 \[CapitalGamma])^(-0.5+0.25/(2.25-1. \[CapitalGamma])) (1.+0.5/(2.+1. \[CapitalGamma]))^(0.5-0.25/(2.25-1. \[CapitalGamma])) (\[Eta]/0.02)^(1/(4.5-2. \[CapitalGamma]))
-
 eddrComptonDom[mbh_, \[CapitalGamma]_:1., \[Eta]_:1., Tc_:10.^9, alpha_:0.1]:=Module[{eps},
 eddr/.FindRoot[eddr*(alpha*epsSharma[eddr])^((\[CapitalGamma]-2.)/(\[CapitalGamma]-2.5))==
 (8.944119692115282*^-6*0.73745553172813^(10./(-2.5 + \[CapitalGamma]))*
@@ -348,7 +345,6 @@ hc[mbh_,vw_, \[CapitalGamma]_:1., \[Eta]_:1.]:=heatingRs[mbh,vw, \[CapitalGamma]
 (*Maximum Mdot befor thermal instability sets in*)
 vwMaxCool[mbh_, \[CapitalGamma]_:1, \[Eta]_:1, hcCrit_:10.]:=vw1/.FindRoot[hc[mbh, vw1, \[CapitalGamma], \[Eta]]==hcCrit, {vw1,3.*10^7.}]
 mdotMaxCool[mbh_, \[CapitalGamma]_:1, \[Eta]_:1, hcCrit_:10.]:=mdotsol[mbh, vwMaxCool[mbh, \[CapitalGamma], \[Eta], hcCrit], \[CapitalGamma], \[Eta]]
-mdotCompton2[mbh_, \[CapitalGamma]_:1., \[Eta]_:1., Tc_:10.^9]:=mdotsol[mbh, vwComptonDom[mbh, \[CapitalGamma], \[Eta], Tc], \[CapitalGamma], \[Eta]]
 mdotCompton[mbh_, \[CapitalGamma]_:1, \[Eta]_:1., Tc_:10.^9]:=eddrComptonDom[mbh, \[CapitalGamma], \[Eta], Tc]*mdotEdd[mbh]
 
 
