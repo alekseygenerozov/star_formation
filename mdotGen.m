@@ -1,3 +1,5 @@
+(* ::Package:: *)
+
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -15,9 +17,11 @@ mbhs=etaf[[;;,1]]*MS;
 (*Total vwEff*)
 vweffTots=Import["vwSources.csv", "HeaderLines"->1][[;;,-1]]*10.^5;
 vweffIasCorrected=Import["vwSources.csv", "HeaderLines"->1][[;;,3]]*10.^5;
+vweffOther=(vweffTots^2.-vweffIasCorrected^2.)^0.5;
 
 vweffTotsCore=Import["vwSourcesCore.csv", "HeaderLines"->1][[;;,-1]]*10.^5;
 vweffIasCoreCorrected=Import["vwSourcesCore.csv", "HeaderLines"->1][[;;,3]]*10.^5;
+vweffOtherCore=(vweffTotsCore^2.-vweffIasCoreCorrected^2.)^0.5;
 
 vweffTotsGamma=Import["vwSourcesGamma.csv", "HeaderLines"->1][[;;,-1]]*10.^5;
 vweffIasGammaCorrected=Import["vwSourcesGamma.csv", "HeaderLines"->1][[;;,3]]*10.^5;
@@ -29,6 +33,11 @@ rsCusp = Table[rs[mbhs[[i]], Sqrt[vweffTots[[i]]^2-vweffIasCorrected[[i]]^2], 0.
 rsCore = Table[rs[mbhs[[i]], Sqrt[vweffTotsCore[[i]]^2-vweffIasCoreCorrected[[i]]^2], 0.1], {i, 1, Length[mbhs]}];
 rsGamma = Table[rs[mbhs[[i]], Sqrt[vweffTotsGamma[[i]]^2-vweffIasGammaCorrected[[i]]^2], 0.1], {i, 1, Length[mbhs]}];
 
+rsCusp2 = Table[rs[mbhs[[i]], vweffTots[[i]], 0.8], {i, 1, Length[mbhs]}];
+rsCore2 = Table[rs[mbhs[[i]], vweffTotsCore[[i]], 0.1], {i, 1, Length[mbhs]}];
+rsGamma2 = Table[rs[mbhs[[i]], vweffTotsGamma[[i]], 0.1], {i, 1, Length[mbhs]}];
+
+
 hcs = Table[hc[mbhs[[i]], vweffTots[[i]], 0.8, \[Eta]s[[i]]], {i, 1, Length[mbhs]}];
 hcsCore = Table[hc[mbhs[[i]], vweffTotsCore[[i]], 0.1, \[Eta]s[[i]]], 
   {i, 1, Length[mbhs]}]; 
@@ -39,8 +48,8 @@ hcIas=Table[hcIa[mbhs[[i]], vweffTots[[i]], radiiIa[[i]], 0.8, \[Eta]s[[i]]],
     {i, 1, Length[mbhs]}];
 hcIasCore=Table[hcIa[mbhs[[i]], vweffTots[[i]], radiiIa[[i]], 0.1, \[Eta]s[[i]]], 
     {i, 1, Length[mbhs]}];
-hcOverall=Table[If[rsCusp[[i]]>radiiIa[[i]], hcIas[[i]], hcs[[i]]], {i, 1, Length[hcs]}]
-hcOverallCore=Table[If[rsCore[[i]]>radiiIa[[i]], hcIasCore[[i]], hcs[[i]]], {i, 1, Length[hcs]}]
+hcOverall=Table[If[(vweffIasCorrected[[i]]>vweffOther[[i]])&&(rsCusp2[[i]]<radiiIa[[i]]), hcIas[[i]], hcs[[i]]], {i, 1, Length[hcs]}]
+hcOverallCore=Table[If[(vweffIasCoreCorrected[[i]]>vweffOtherCore[[i]])&&(rsCore2[[i]]<radiiIa[[i]]), hcIasCore[[i]], hcs[[i]]], {i, 1, Length[hcs]}]
 
 
 rsOverall=Table[If[rsCusp[[i]]>radiiIa[[i]], radiiIa[[i]], rsCusp[[i]]], {i, 1, Length[rsCusp]}];
