@@ -355,7 +355,7 @@ tempIa[vw_]:=(ad-1)/ad*\[Mu]*mp*vw^2/(2.*kb)
 
 heatingIa[mbh_, vw_, rIa_, \[CapitalGamma]_:1, \[Eta]_:1]:=0.5 qIa[mbh, vw, rIa, \[CapitalGamma], \[Eta]] vw^2
 coolingIa[mbh_, vw_, rIa_, \[CapitalGamma]_:1, \[Eta]_:1]:=(rhoIa[mbh, vw, rIa, \[CapitalGamma], \[Eta]]/(\[Mu]*mp))^2 lambdaC[tempIa[vw]]
-hcIa[mbh_, vw_, rIa_, \[CapitalGamma]_:1., \[Eta]_:1.]:=heatingIa[mbh, vw, rIa, \[CapitalGamma], \[Eta]]/coolingIa[mbh, vw, rIa, \[CapitalGamma], \[Eta]]
+hcIa[mbh_, vw_, rIa_, \[CapitalGamma]_:1., \[Eta]_:1.]:=If[vw>0., heatingIa[mbh, vw, rIa, \[CapitalGamma], \[Eta]]/coolingIa[mbh, vw, rIa, \[CapitalGamma], \[Eta]],0.]
 
 
 EndPackage[]
