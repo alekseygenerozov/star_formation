@@ -48,8 +48,8 @@ hcIas=Table[hcIa[mbhs[[i]], vweffTots[[i]], radiiIa[[i]], 0.8, \[Eta]s[[i]]],
     {i, 1, Length[mbhs]}];
 hcIasCore=Table[hcIa[mbhs[[i]], vweffTots[[i]], radiiIa[[i]], 0.1, \[Eta]s[[i]]], 
     {i, 1, Length[mbhs]}];
-hcOverall=Table[If[(vweffIasCorrected[[i]]>vweffOther[[i]])&&(rsCusp2[[i]]<radiiIa[[i]]), hcIas[[i]], hcs[[i]]], {i, 1, Length[hcs]}]
-hcOverallCore=Table[If[(vweffIasCoreCorrected[[i]]>vweffOtherCore[[i]])&&(rsCore2[[i]]<radiiIa[[i]]), hcIasCore[[i]], hcs[[i]]], {i, 1, Length[hcs]}]
+hcOverall=Table[If[(vweffIasCorrected[[i]]>vweffOther[[i]])&&(rsCusp2[[i]]<radiiIa[[i]]), hcIas[[i]], hcs[[i]]], {i, 1, Length[hcs]}];
+hcOverallCore=Table[If[(vweffIasCoreCorrected[[i]]>vweffOtherCore[[i]])&&(rsCore2[[i]]<radiiIa[[i]]), hcIasCore[[i]], hcs[[i]]], {i, 1, Length[hcs]}];
 
 
 rsOverall=Table[If[rsCusp[[i]]>radiiIa[[i]], radiiIa[[i]], rsCusp[[i]]], {i, 1, Length[rsCusp]}];
@@ -122,6 +122,9 @@ Export["mdots.csv", mdotsAll, TableHeadings->
 
 Export["rs.csv", Transpose[{mbhs/MS, rsOverall, rsOverallCore,rsOverallGamma,radiiIa}], "TableHeadings"->
 {"Mbh", "rsCusp", "rsCore", "rsGamma", "rIa"}]
+
+
+
 
 
 
