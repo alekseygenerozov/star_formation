@@ -9,7 +9,7 @@ Needs["vwEff`"]
 
 (*Impulsive limit mbh=10^6 msun...*)
 mbh=10.^6*MS;
-timeImps=10.^Range[6.6,10.,0.2]*year;
+timeImps=10.^Range[6.6,10.,0.1]*year;
 \[Eta]Imps=\[Eta]Imp/@timeImps;
 tmp=vweffTotImp[mbh, #,0.8]&/@timeImps;
 (*heating from different sources in the impulsive limit*)
@@ -37,8 +37,8 @@ Transpose[{timeImps/year, hcImps, hcIaImps, hcOverall}]//Export["/Users/aleksey/
 
 (*Impulsive limit mbh=10^8 msun...*)
 mbh=10.^8 MS;
-gamma=0.1
-timeImps=10.^Range[6.6,10.,0.2]*year;
+gamma=0.8
+timeImps=10.^Range[6.6,10.,0.1]*year;
 \[Eta]Imps=\[Eta]Imp/@timeImps;
 tmp=vweffTotImp[mbh, #, gamma]&/@timeImps;
 (*heating from different sources in the impulsive limit*)
