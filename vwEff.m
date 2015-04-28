@@ -300,7 +300,7 @@ vwc0=(vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalG
 {vwstar, vwmsp, vwc0, vwIa0, Sqrt[vw0^2+vwIa^2+vwc0^2], vwIa}
 
  ]
-vweffTotImp[mbh_, t_,\[CapitalGamma]_,  \[Epsilon]msp_:0.1,Lsd_:10.^34, \[Epsilon]Ia_:0.4, Tc_:10.^9]:=Module[{vw0,  vwc0, rs1, \[Eta]1, vwIa0, vwc, rIa, vwIa},
+vweffTotImp[mbh_, t_, \[CapitalGamma]_,  \[Epsilon]msp_:0.1,Lsd_:10.^34, \[Epsilon]Ia_:0.4, Tc_:10.^9]:=Module[{vw0,  vwc0, rs1, \[Eta]1, vwIa0, vwc, rIa, vwIa},
 
 vw0=(vweffStarImp[t]^2+vweffMSPImp[t,\[Epsilon]msp, Lsd]^2)^(1/2);
 vwIa0=vweffIaImp[t, \[Epsilon]Ia];
