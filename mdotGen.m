@@ -1,8 +1,13 @@
+(* ::Package:: *)
+
 #!/usr/local/bin/MathematicaScript/ -script
 
 
 AppendTo[$Path,"/Users/aleksey/code/mathematica/star_formation_code"];
 Needs["vwEff`"]
+
+
+vwMaxCool[10.^8*MS, 0.1, 0.02,10.]
 
 
 SetDirectory["/Users/aleksey/Second_Year_Project/star_formation"];
