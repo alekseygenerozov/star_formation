@@ -1,3 +1,5 @@
+(* ::Package:: *)
+
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -73,12 +75,16 @@ mdotIasGamma = Table[mdotIA[mbhs[[i]], radiiIa[[i]], \[CapitalGamma]s[[i]], \[Et
     {i, 1, Length[\[Eta]s]}];
 
 
-mdotMaxCoolsCore = Table[mdotMaxCool[mbhs[[i]], 0.1, \[Eta]s[[i]]], 
+
+mdotMaxCoolsCore = Table[mdotMaxCool[mbhs[[i]], 0.1, \[Eta]s[[i]]], rbCore[mbhs[[i]]], 
     {i, 1, Length[\[Eta]s]}];
-mdotMaxCools = Table[mdotMaxCool[mbhs[[i]], 0.8, \[Eta]s[[i]]], 
+mdotMaxCools = Table[mdotMaxCool[mbhs[[i]], 0.8, \[Eta]s[[i]]], 100.*pc,
     {i, 1, Length[\[Eta]s]}];
-mdotMaxCoolsGamma = Table[mdotMaxCool[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]]], 
+mdotMaxCoolsGamma = Table[mdotMaxCool[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]]], rbGen[mbhs[[i]], \[CapitalGamma]s[[i]]], 
     {i, 1, Length[\[Eta]s]}];
+
+
+rbGen
 
 
 TempC=10.^9;

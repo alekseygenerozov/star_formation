@@ -53,6 +53,7 @@ MbhMbulge[mbulge_]:=10.^8.46 (mbulge/(10.^11 MS))^1.05 MS
 rinf[mbh_]:=14*(mbh/(10.^8 MS))^0.6 pc
 (*Scaling relation for the break radius for cores*)
 rbCore[mbh_]:=106*(mbh/(10.^8 MS))^0.39*pc
+rbGen[mbh_, \[CapitalGamma]_]:=If[\[CapitalGamma]<0.3, rbCore[mbh], 100.*pc]
 (*ratio of break radius to influence radius for core galaxies*)
 rbrinf[mbh_]:=(100.*pc/rinf[mbh])
 rbrinfCore[mbh_]:=rbCore[mbh]/rinf[mbh]
@@ -343,8 +344,8 @@ coolingRs[mbh_, vw_, \[CapitalGamma]_, \[Eta]_]:=(rhoRs[mbh, vw, \[CapitalGamma]
 hc[mbh_,vw_, \[CapitalGamma]_, \[Eta]_]:=heatingRs[mbh,vw, \[CapitalGamma], \[Eta]]/coolingRs[mbh, vw, \[CapitalGamma], \[Eta]]
 (*Maximum Mdot befor thermal instability sets in*)
 vwMaxCool[mbh_, \[CapitalGamma]_, \[Eta]_, hcCrit_:10.]:=vw1/.FindRoot[hc[mbh, vw1, \[CapitalGamma], \[Eta]]==hcCrit, {vw1,3.*10^7.}]
-vwCrit[mbh_, rb_, \[CapitalGamma]_]:=(3.)^0.5*sigma[mbh]*(rb/rinf[mbh])^(0.5*(1.-\[CapitalGamma]))
-mdotMaxCool[mbh_, \[CapitalGamma]_, \[Eta]_, hcCrit_:10.]:=mdotsol[mbh, vwMaxCool[mbh, \[CapitalGamma], \[Eta], hcCrit], \[CapitalGamma], \[Eta]]
+vwCrit[mbh_, rb_, \[CapitalGamma]_]:=(3.)^0.5*\[Sigma][mbh]*(rb/rinf[mbh])^(0.5*(1.-\[CapitalGamma]))
+mdotMaxCool[mbh_, \[CapitalGamma]_, \[Eta]_, rb_, hcCrit_:10.]:=mdotsol[mbh, Max[vwCrit[mbh, rb, \[CapitalGamma]], vwMaxCool[mbh, \[CapitalGamma], \[Eta], hcCrit]], \[CapitalGamma], \[Eta]]
 
 mdotCompton[mbh_, \[CapitalGamma]_, \[Eta]_, Tc_:10.^9]:=eddrComptonDom[mbh, \[CapitalGamma], \[Eta], Tc]*mdotEdd[mbh]
 
