@@ -7,9 +7,6 @@ AppendTo[$Path,"/Users/aleksey/code/mathematica/star_formation_code"];
 Needs["vwEff`"]
 
 
-vwMaxCool[10.^8*MS, 0.1, 0.02,10.]
-
-
 SetDirectory["/Users/aleksey/Second_Year_Project/star_formation"];
 (*Reading saved up quantities from file*)
 etaf=Import["eta.csv", "HeaderLines"->1];
@@ -75,16 +72,9 @@ mdotIasGamma = Table[mdotIA[mbhs[[i]], radiiIa[[i]], \[CapitalGamma]s[[i]], \[Et
     {i, 1, Length[\[Eta]s]}];
 
 
-
-mdotMaxCoolsCore = Table[mdotMaxCool[mbhs[[i]], 0.1, \[Eta]s[[i]]], rbCore[mbhs[[i]]], 
-    {i, 1, Length[\[Eta]s]}];
-mdotMaxCools = Table[mdotMaxCool[mbhs[[i]], 0.8, \[Eta]s[[i]]], 100.*pc,
-    {i, 1, Length[\[Eta]s]}];
-mdotMaxCoolsGamma = Table[mdotMaxCool[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]]], rbGen[mbhs[[i]], \[CapitalGamma]s[[i]]], 
-    {i, 1, Length[\[Eta]s]}];
-
-
-rbGen
+mdotMaxCoolsCore = Table[mdotMaxCool[mbhs[[i]], 0.1, \[Eta]s[[i]], rbrinfCore[mbhs[[i]]]], {i, 1, Length[\[Eta]s]}];
+mdotMaxCools = Table[mdotMaxCool[mbhs[[i]], 0.8, \[Eta]s[[i]], rbrinfCusp[mbhs[[i]]]], {i, 1, Length[\[Eta]s]}];
+mdotMaxCoolsGamma = Table[mdotMaxCool[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]], rbrinfGen[mbhs[[i]], \[CapitalGamma]s[[i]]]],{i, 1, Length[\[Eta]s]}];
 
 
 TempC=10.^9;
