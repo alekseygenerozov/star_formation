@@ -1,7 +1,36 @@
+(* ::Package:: *)
+
 #!/usr/local/bin/MathematicaScript/ -script
 
 AppendTo[$Path,"/Users/aleksey/code/mathematica/star_formation_code"];
 Needs["vwEffBumpy`"]
+
+
+AppendTo[$Path,"/Users/aleksey/code/mathematica/star_formation_code"];
+Needs["vwEffBumpy`"]
+
+
+mhalos=10.^Range[10.8,14.,0.2] MS;
+mstarTots=mstarTot/@mhalos;
+mbhs=MbhMbulge/@mstarTots;
+\[CapitalGamma]s=\[CapitalGamma]fitM/@mbhs;
+vwEffBumpy`\[Epsilon]Floor=100.;
+vwEffBumpy`tScale=10.^5*year;
+(*
+Timing[tmp = Table[vweffTot[mbhs[[i]], mhalos[[i]], 0.8], {i, 1, Length[mhalos]}]]
+vweffTotsC= tmp[[1 ;; All,5]]; *)
+
+
+vwEffBumpy`\[Epsilon]Floor=100;
+vwEffBumpy`tScale=1000.*year;
+p1=LogLogPlot[dNdtForm[z[t1*year], mhalos[[1]]], {t1, 10.^6, 10^10}];
+(*vwEffBumpy`\[Epsilon]Floor=1.;
+vwEffBumpy`tScale=10.^5*year;
+p2=LogLogPlot[dNdtForm[z[t1*year], mhalos[[1]]], {t1, 10.^6, 10^10}, PlotStyle\[Rule]Red];
+(*Show[p2]*)*)
+
+
+vweff
 
 
 mhalos=10.^Range[10.8,14.,0.2] MS;

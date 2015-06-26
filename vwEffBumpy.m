@@ -114,7 +114,8 @@ f3[mhalo_]:=10.^(f30+f31 ((mhalo/MS)/10.^12)^f32)
 (*Note that we divide by the mean stellar mass (in solar masses) to obtain the rate of star formation--in g s^-1*)
 \[Epsilon]Floor=1.;
 tScale = 10^8*year;
-dSdtForm[z_, mhalo_]:=(f1[mhalo] (1+z)^-f2[mhalo] Exp[f2[mhalo]/f3[mhalo] z/(1+z)])*(\[Epsilon]Floor+2*(1-\[Epsilon]Floor)*ArcTan[tL[z]/tScale]/\[Pi])
+dSdtAvg[z_, mhalo_]:=f1[mhalo] (1+z)^-f2[mhalo] Exp[f2[mhalo]/f3[mhalo] z/(1+z)]
+dSdtForm[z_, mhalo_]:=dSdtAvg[z, mhalo]*(\[Epsilon]Floor+2*(1-\[Epsilon]Floor)*ArcTan[tL[z]/tScale]/\[Pi])
 dNdtForm[z_, mhalo_]:=(1/mavg dSdtForm[z,mhalo])
 
 
@@ -171,11 +172,13 @@ edotWR[t_]:=Piecewise[{{ 10.^36.1/(nVoss/100.),t<4.0 10^6 year}, {0.,t>twrcut}},
 mdotStarReimers[Mstar_]:=4 10^-13 (Mstar/MS)^-1 (Lstar[Mstar]/Lsun)(Rstar[Mstar]/Rsun) MS/year
 (*Improved prescription from Schroder & Cuntz 2005*)
 mdotStar[Mstar_]:=mdotStarReimers[Mstar]
-(*mdotStar[Mstar_]:=8 10^-14 (Mstar/MS)^-1 (Lstar[Mstar]/Lsun)(Rstar[Mstar]/Rsun)(Teff[Mstar]/4000.)^3.5 (1+gsun/(4300. gstar[MS])) MS/year*)
+mdotStar2[Mstar_]:=8 10^-14 (Mstar/MS)^-1 (Lstar[Mstar]/Lsun)(Rstar[Mstar]/Rsun)(Teff[Mstar]/4000.)^3.5 (1+gsun/(4300. gstar[MS])) MS/year;
 enStar[Mstar_]:=0.5*mdotStar[Mstar]*\[Mu]sal[Mstar]*vwMS[Mstar]^2
 (*Fitting formula to mass-loss rate per star from Voss 2009*)
-mdotVoss[t_]:=If[t> 4. 10^6 year, 1./(nVoss/100.) 10.^-6.1 (t/(4. 10^6 year))^-1.8 MS/year, 1./(nVoss/100.) 10.^-6.1 MS/year]
+mdotVoss[t_]:=Piecewise[{{1./(nVoss/100.) 10.^-5.8 (t/(4. 10^6 year))^-1.8 MS/year,t> 4.*10^6 year}}, 10.^-6.4 MS/year*1./(nVoss/100.)]
 
+
+mdotStar2[100.*MS]/MS*year
 
 
 (*Supernova properties*)
@@ -208,18 +211,25 @@ radiusII[mbh_, rateII_, \[CapitalGamma]_:1]:=(rinf[mbh]^(2-\[CapitalGamma])/(rat
 radiusII[mbh_, \[CapitalGamma]_:1]:=radiusII[mbh, RIIsp[Mhalo[mbh]], \[CapitalGamma]]
 
 
-(*Mass and energy injectiuon as a function of Halo mass*)
-mdotImp[t_]:=Abs[Mt0Fit'[t]] \[CapitalDelta]M[t] \[Mu]sal[Mt0Fit[t]]
+(*lookup table for computing heating from main sequence stellar winds*)
+lookupTableOrds=10.^Range[-0.8,2, 0.2]MS;
+lookupTableMdot=NIntegrate[mdotStar[ms]*\[Mu]sal[ms], {ms, 0.1*MS, #}]&/@lookupTableOrds;
+mdotStarIntInterp=Transpose[{Log10[lookupTableOrds], Log10[lookupTableMdot]}]//Interpolation;
+mdotStarInt[mt0_]:=10.^mdotStarIntInterp[Log10[mt0]]
 
-mdotSpecific[t_?NumericQ, mhalo_]:=Piecewise[{{NIntegrate[dNdtForm[z[t1],mhalo] Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[Mt0Fit[t1]],{t1,t,tmin,ttrans,tL[zu]}]\
-, t<=tmin}, {NIntegrate[dNdtForm[z[t1],mhalo] Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[Mt0Fit[t1]],{t1,t,ttrans,tL[zu]}], t>tmin&&t<=ttrans}},\
-NIntegrate[dNdtForm[z[t1],mhalo] Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[Mt0Fit[t1]],{t1,t,ttrans,tL[zu]}]]/NIntegrate[dNdtForm[z[tl], mhalo], {tl, t, tL[zu]}]
+
+(*Mass and energy injectiuon as a function of Halo mass*)
+mdotImp[t_]:=If[t<=tmin, mdotVoss[t], Abs[Mt0Fit'[t]] \[CapitalDelta]M[t] \[Mu]sal[Mt0Fit[t]]]
+
+mdotSpecific[t_?NumericQ, mhalo_]:=Piecewise[{{NIntegrate[dNdtForm[z[t1],mhalo] mdotImp[t1],{t1,t,tmin,ttrans,tL[zu]}]\
+, t<=tmin}, {NIntegrate[dNdtForm[z[t1],mhalo] mdotImp[t1],{t1,t,ttrans,tL[zu]}], t>tmin&&t<=ttrans}},NIntegrate[dNdtForm[z[t1],mhalo] mdotImp[t1],{t1,t,ttrans,tL[zu]}]]/NIntegrate[dNdtForm[z[tl], mhalo], {tl, t, tL[zu]}]
 
 
 mdotForm[mhalo_]:=mdotSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0, tL[zu]}]
 mdotAcc[mhalo_]:=If[mhalo>mhaloAcc, NIntegrate[mdotSpecific[t1, mhalo]*dNdtAcc[z[t1], mhalo], {t1, 0., tL[zacc]}],0]
 (*mdotAcc2[mhalo_]:=If[mhalo>mhaloAcc, NIntegrate[mdotSpecific2[t1, mhalo]*dNdtAcc[z[t1], mhalo], {t1, 0., tL[zacc]}],0]*)
 mdot[mhalo_]:=mdotAcc[mhalo]+mdotForm[mhalo]
+mdotMS[mhalo_]:=NIntegrate[dNdtForm[z[t1],mhalo]*mdotStarInt[Mt0Fit[t1]], {t1, 0, tL[zu]}]
 
 (*lookup table for computing heating from main sequence stellar winds*)
 lookupTableOrds=10.^Range[-0.8,2, 0.2]MS;
