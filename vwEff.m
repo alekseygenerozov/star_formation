@@ -322,7 +322,7 @@ vwc0=(vwc0/.FindRoot[{vwc0==vwComptonGen[mbh, Sqrt[vw0^2+vwc0^2+vwIa^2], \[Capit
  ]
 
 
-\[CapitalGamma]fitM[mbh_]:=0.3*(mbh/10.^8/MS)^-0.24
+\[CapitalGamma]fitM[mbh_]:=If[mbh<3.*10.^7*MS, 0.8, -0.3*Log10[mbh/(3*10.^7*MS)]+0.8]
 (*Properties at the stagnation radius rs*)
 densSlope[\[CapitalGamma]_]:=-(1./6.*(1.-4.*(1+\[CapitalGamma])))
 rs[mbh_,vw_,\[CapitalGamma]_]:=((13.+8.\[CapitalGamma])/(4.+2.\[CapitalGamma])-densSlope[\[CapitalGamma]]*(3./(2.+\[CapitalGamma])))G mbh/vw^2/densSlope[\[CapitalGamma]]
@@ -346,11 +346,12 @@ nRs[mbh_,vw_, \[CapitalGamma]_, \[Eta]_]:=rhoRs[mbh,vw, \[CapitalGamma], \[Eta]]
 heatingRs[mbh_, vw_, \[CapitalGamma]_, \[Eta]_]:=0.5*qRs[mbh, vw, \[CapitalGamma], \[Eta]]*vwtildeRs[vw, \[CapitalGamma]]^2.
 coolingRs[mbh_, vw_, \[CapitalGamma]_, \[Eta]_]:=(rhoRs[mbh, vw, \[CapitalGamma], \[Eta]]/(\[Mu]*mp))^2*lambdaC[tempRs[vw, \[CapitalGamma]]]
 hc[mbh_,vw_, \[CapitalGamma]_, \[Eta]_]:=heatingRs[mbh,vw, \[CapitalGamma], \[Eta]]/coolingRs[mbh, vw, \[CapitalGamma], \[Eta]]
-(*Maximum Mdot befor thermal instability sets in*)
+(*Maximum Mdot before thermal instability sets in*)
 vwMaxCool[mbh_, \[CapitalGamma]_, \[Eta]_, hcCrit_:10.]:=vw1/.FindRoot[hc[mbh, vw1, \[CapitalGamma], \[Eta]]==hcCrit, {vw1,3.*10^7.}]
-vwCrit[mbh_, \[CapitalGamma]_, rbrinf_]:=(3.)^0.5*\[Sigma][mbh]*(rbrinf)^(0.5*(1.-\[CapitalGamma]))
+vwCrit[mbh_, \[CapitalGamma]_, rbrinf_]:=(3.)^0.5*\[Sigma][mbh]*((rbrinf)^(1.-\[CapitalGamma])-1.)^0.5
 
-mdotMaxCool[mbh_, \[CapitalGamma]_, \[Eta]_, rbrinf_, hcCrit_:10.]:=mdotsol[mbh, vwMaxCool[mbh, \[CapitalGamma], \[Eta], hcCrit], \[CapitalGamma], \[Eta]]
+mdotMaxCool[mbh_, \[CapitalGamma]_, \[Eta]_, hcCrit_:10.]:=mdotsol[mbh,vwMaxCool[mbh, \[CapitalGamma], \[Eta], hcCrit], \[CapitalGamma], \[Eta]]
+mdotMaxCoolComplete[mbh_, \[CapitalGamma]_, \[Eta]_, rbrinf_, hcCrit_:10.]:=mdotsol[mbh,Max[vwMaxCool[mbh, \[CapitalGamma], \[Eta], hcCrit], vwCrit[mbh, \[CapitalGamma], rbrinf]], \[CapitalGamma], \[Eta]]
 mdotCompton[mbh_, \[CapitalGamma]_, \[Eta]_, Tc_:10.^9]:=eddrComptonDom[mbh, \[CapitalGamma], \[Eta], Tc]*mdotEdd[mbh]
 
 

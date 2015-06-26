@@ -1,3 +1,5 @@
+(* ::Package:: *)
+
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -70,9 +72,9 @@ mdotIasGamma = Table[mdotIA[mbhs[[i]], radiiIa[[i]], \[CapitalGamma]s[[i]], \[Et
     {i, 1, Length[\[Eta]s]}];
 
 
-mdotMaxCoolsCore = Table[mdotMaxCool[mbhs[[i]], 0.1, \[Eta]s[[i]], rbrinfCore[mbhs[[i]]]], {i, 1, Length[\[Eta]s]}];
-mdotMaxCools = Table[mdotMaxCool[mbhs[[i]], 0.8, \[Eta]s[[i]], rbrinfCusp[mbhs[[i]]]], {i, 1, Length[\[Eta]s]}];
-mdotMaxCoolsGamma = Table[mdotMaxCool[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]], rbrinfGen[mbhs[[i]], \[CapitalGamma]s[[i]]]],{i, 1, Length[\[Eta]s]}];
+mdotMaxCoolsCore = Table[mdotMaxCool[mbhs[[i]], 0.1, \[Eta]s[[i]]], {i, 1, Length[\[Eta]s]}];
+mdotMaxCools = Table[mdotMaxCool[mbhs[[i]], 0.8, \[Eta]s[[i]]], {i, 1, Length[\[Eta]s]}];
+mdotMaxCoolsGamma = Table[mdotMaxCool[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]]],{i, 1, Length[\[Eta]s]}];
 
 
 TempC=10.^9;
@@ -102,8 +104,6 @@ mdotsOverallGamma = Table[If[rsGamma[[i]]<radiiIa[[i]], mdotsGamma[[i]], mdotIas
 
 
 Needs["SigFig`"]
-
-
 Export["hc.csv", Transpose[{mbhs/MS, hcs, hcsCore, hcIas, hcIasCore, hcOverall, hcOverallCore}], "TableHeadings" -> {"Mbh", "Cusp","Core", "Ia", "IaCore", "Overall", "OverallCore"}]
 
 mdotsAll=Map[OutputForm[SigForm[#,3, scientific->True]]&\
@@ -117,9 +117,6 @@ Export["mdots.csv", mdotsAll, TableHeadings->
 
 Export["rs.csv", Transpose[{mbhs/MS, rsOverall, rsOverallCore,rsOverallGamma,radiiIa}], "TableHeadings"->
 {"Mbh", "rsCusp", "rsCore", "rsGamma", "rIa"}]
-
-
-
 
 
 
