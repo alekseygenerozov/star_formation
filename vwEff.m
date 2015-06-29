@@ -322,7 +322,7 @@ vwc0=(vwc0/.FindRoot[{vwc0==vwComptonGen[mbh, Sqrt[vw0^2+vwc0^2+vwIa^2], \[Capit
  ]
 
 
-\[CapitalGamma]fitM[mbh_]:=If[mbh<3.*10.^7*MS, 0.8, -0.3*Log10[mbh/(3*10.^7*MS)]+0.8]
+\[CapitalGamma]fitM[mbh_]:=If[mbh<4.*10.^7*MS, 0.7, -0.3*Log10[mbh/(4*10.^7*MS)]+0.7]
 (*Properties at the stagnation radius rs*)
 densSlope[\[CapitalGamma]_]:=-(1./6.*(1.-4.*(1+\[CapitalGamma])))
 rs[mbh_,vw_,\[CapitalGamma]_]:=((13.+8.\[CapitalGamma])/(4.+2.\[CapitalGamma])-densSlope[\[CapitalGamma]]*(3./(2.+\[CapitalGamma])))G mbh/vw^2/densSlope[\[CapitalGamma]]

@@ -75,6 +75,7 @@ mdotIasGamma = Table[mdotIA[mbhs[[i]], radiiIa[[i]], \[CapitalGamma]s[[i]], \[Et
 mdotMaxCoolsCore = Table[mdotMaxCool[mbhs[[i]], 0.1, \[Eta]s[[i]]], {i, 1, Length[\[Eta]s]}];
 mdotMaxCools = Table[mdotMaxCool[mbhs[[i]], 0.8, \[Eta]s[[i]]], {i, 1, Length[\[Eta]s]}];
 mdotMaxCoolsGamma = Table[mdotMaxCool[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]]],{i, 1, Length[\[Eta]s]}];
+(*mdotMaxCoolsGamma = Table[mdotMaxCoolComplete[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]], rbrinfGen[mbhs[[i]], \[CapitalGamma]s[[i]]]],{i, 1, Length[\[Eta]s]}];*)
 
 
 TempC=10.^9;
@@ -117,6 +118,3 @@ Export["mdots.csv", mdotsAll, TableHeadings->
 
 Export["rs.csv", Transpose[{mbhs/MS, rsOverall, rsOverallCore,rsOverallGamma,radiiIa}], "TableHeadings"->
 {"Mbh", "rsCusp", "rsCore", "rsGamma", "rIa"}]
-
-
-
