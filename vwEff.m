@@ -290,7 +290,7 @@ vweffTot[mbh_, mhalo_, \[CapitalGamma]_, \[Epsilon]msp_:0.1, Lsd_:10.^34, \[Epsi
 vwstar=vweffStar[mhalo];
 vwmsp=vweffMSP[mhalo,\[Epsilon]msp, Lsd];
 
-vw0=(vwstar^2+vwmsp)^(1/2);
+vw0=(vwstar^2+vwmsp^2.)^(1/2);
 vwIa0=vweffIa[mhalo, \[Epsilon]Ia];
 rs1=rs[mbh,vw0,\[CapitalGamma]];
 rIa=radiusIa[mbh, mhalo];
