@@ -174,8 +174,7 @@ mdotStar[Mstar_]:=mdotStarReimers[Mstar]
 (*mdotStar[Mstar_]:=8 10^-14 (Mstar/MS)^-1 (Lstar[Mstar]/Lsun)(Rstar[Mstar]/Rsun)(Teff[Mstar]/4000.)^3.5 (1+gsun/(4300. gstar[MS])) MS/year*)
 enStar[Mstar_]:=0.5*mdotStar[Mstar]*\[Mu]sal[Mstar]*vwMS[Mstar]^2
 (*Fitting formula to mass-loss rate per star from Voss 2009*)
-mdotVoss[t_]:=If[t> 4. 10^6 year, 1./(nVoss/100.) 10.^-6.1 (t/(4. 10^6 year))^-1.8 MS/year, 1./(nVoss/100.) 10.^-6.1 MS/year]
-
+mdotVoss[t_]:=Piecewise[{{1./(nVoss/100.) 10.^-5.4 (t/(4. 10^6 year))^-3. MS/year, t>=4*10.^6*year}},0.]
 
 
 (*Supernova properties*)
@@ -208,12 +207,12 @@ radiusII[mbh_, rateII_, \[CapitalGamma]_]:=(rinf[mbh]^(2-\[CapitalGamma])/(rateI
 radiusII[mbh_, \[CapitalGamma]_]:=radiusII[mbh, RIIsp[Mhalo[mbh]], \[CapitalGamma]]
 
 
-(*Mass and energy injectiuon as a function of Halo mass*)
-mdotImp[t_]:=Abs[Mt0Fit'[t]] \[CapitalDelta]M[t] \[Mu]sal[Mt0Fit[t]]
-
-mdotSpecific[t_?NumericQ, mhalo_]:=Piecewise[{{NIntegrate[dNdtForm[z[t1],mhalo] Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[Mt0Fit[t1]],{t1,t,tmin,ttrans,tL[zu]}]\
-, t<=tmin}, {NIntegrate[dNdtForm[z[t1],mhalo] Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[Mt0Fit[t1]],{t1,t,ttrans,tL[zu]}], t>tmin&&t<=ttrans}},\
-NIntegrate[dNdtForm[z[t1],mhalo] Abs[dMt0dt[t1]] \[CapitalDelta]M[t1] \[Mu]sal[Mt0Fit[t1]],{t1,t,ttrans,tL[zu]}]]/NIntegrate[dNdtForm[z[tl], mhalo], {tl, t, tL[zu]}]
+(*Mass injection per star in the burst limit*)
+mdotBurst[t_]:=Piecewise[{{Abs[Mt0Fit'[t]] \[CapitalDelta]M[t] \[Mu]sal[Mt0Fit[t]], t>4.*10.^7*year}}, mdotVoss[t]]
+(*mdotSpecificOld[t_?NumericQ, mhalo_]:=Piecewise[{{NIntegrate[dNdtForm[z[t1],mhalo] mdotBurst[t1],{t1,t,tmin,ttrans,tL[zu]}]\
+, t<=tmin}, {NIntegrate[dNdtForm[z[t1],mhalo] mdotBurst[t1],{t1,t,ttrans,tL[zu]}], t>tmin&&t<=ttrans}},\
+NIntegrate[dNdtForm[z[t1],mhalo] mdotBurst[t1],{t1,t,ttrans,tL[zu]}]]/NIntegrate[dNdtForm[z[tl], mhalo], {tl, t, tL[zu]}]*)
+mdotSpecific[t_?NumericQ, mhalo_]:=NIntegrate[dNdtForm[z[t1],mhalo] mdotBurst[t1],{t1,t,tL[zu]}, Exclusions->{tmin, ttrans, 4.*10.^7*year}]/NIntegrate[dNdtForm[z[tl], mhalo], {tl, t, tL[zu]}]
 
 
 mdotForm[mhalo_]:=mdotSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0, tL[zu]}]
@@ -253,9 +252,9 @@ vweffStar[mhalo_]:=Sqrt[2 (edotMSForm[mhalo]+edotTOForm[mhalo]+edotMSAcc[mhalo]+
 edotMSImp[t_?NumericQ]:=0.5 NIntegrate[enStar[Mstar],{Mstar, 0.1 , Mt0Fit[t]}]
 edotTOImp[t_]:=edotWR[t]
 mdotMSImp[t_?NumericQ]:= NIntegrate[mdotStar[Mstar]\[Mu]sal[Mstar],{Mstar, 0.1 , Mt0Fit[t]}]
-vweffStarImp[t_]:=Sqrt[2 (edotMSImp[t]+edotTOImp[t])/mdotImp[t]]
-(*vweffStarImp2[t_]:=Sqrt[2 (edotMSImp[t]+edotTOImp[t])/(mdotImp[t]+mdotMSImp[t])]*)
-\[Eta]Imp[t_]:=mdotImp[t]/mavg th
+vweffStarImp[t_]:=Sqrt[2 (edotMSImp[t]+edotTOImp[t])/mdotBurst[t]]
+(*vweffStarImp2[t_]:=Sqrt[2 (edotMSImp[t]+edotTOImp[t])/(mdotBurst[t]+mdotMSImp[t])]*)
+\[Eta]Imp[t_]:=mdotBurst[t]/mavg th
 
 (*Effective vws for different heating sources for different star formation histories*)
 vweffIa[mhalo_, \[Epsilon]Ia_:0.4]:=Sqrt[(2.th rateIa[mhalo] \[Epsilon]Ia 10.^51)/\[Eta][mhalo]]

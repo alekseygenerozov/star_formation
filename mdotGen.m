@@ -7,28 +7,6 @@ AppendTo[$Path,"/Users/aleksey/code/mathematica/star_formation_code"];
 Needs["vwEff`"]
 
 
-SetDirectory["/Users/aleksey/Second_Year_Project/star_formation"];
-(*Reading saved up quantities from file*)
-etaf=Import["eta.csv", "HeaderLines"->1];
-(*Black hole masses*)
-mbhs=etaf[[;;,1]]*MS;
-(*etas*)
-\[Eta]s=etaf[[;;,2]];
-(*Total vwEff*)
-vweffTots=Import["vwSources.csv", "HeaderLines"->1][[;;,-1]]*10.^5;
-vweffIasCorrected=Import["vwSources.csv", "HeaderLines"->1][[;;,3]]*10.^5;
-vweffOther=(vweffTots^2.-vweffIasCorrected^2.)^0.5;
-
-vweffTotsCore=Import["vwSourcesCore.csv", "HeaderLines"->1][[;;,-1]]*10.^5;
-vweffIasCoreCorrected=Import["vwSourcesCore.csv", "HeaderLines"->1][[;;,3]]*10.^5;
-vweffOtherCore=(vweffTotsCore^2.-vweffIasCoreCorrected^2.)^0.5;
-
-vweffTotsGamma=Import["vwSourcesGamma.csv", "HeaderLines"->1][[;;,-1]]*10.^5;
-vweffIasGammaCorrected=Import["vwSourcesGamma.csv", "HeaderLines"->1][[;;,3]]*10.^5;
-(*Ia radius*)
-radiiIa=Import["Ia.csv", "HeaderLines"->1][[;;,2]];
-
-
 rsCusp = Table[rs[mbhs[[i]], Sqrt[vweffTots[[i]]^2-vweffIasCorrected[[i]]^2], 0.8], {i, 1, Length[mbhs]}];
 rsCore = Table[rs[mbhs[[i]], Sqrt[vweffTotsCore[[i]]^2-vweffIasCoreCorrected[[i]]^2], 0.1], {i, 1, Length[mbhs]}];
 rsGamma = Table[rs[mbhs[[i]], Sqrt[vweffTotsGamma[[i]]^2-vweffIasGammaCorrected[[i]]^2], 0.1], {i, 1, Length[mbhs]}];
@@ -118,3 +96,6 @@ Export["mdots.csv", mdotsAll, TableHeadings->
 
 Export["rs.csv", Transpose[{mbhs/MS, rsOverall, rsOverallCore,rsOverallGamma,radiiIa}], "TableHeadings"->
 {"Mbh", "rsCusp", "rsCore", "rsGamma", "rIa"}]
+
+
+
