@@ -164,7 +164,7 @@ vwMS[Mstar_]:=4.3 10^7 Sqrt[(Mstar/MS)/(Rstar[Mstar]/Rsun)]
 (*Number of stars in stellar population from Voss--100 stars with stellar masses between 8 and 120 Msun with a Salpeter IMF. Should resolve slight discrepancy between upper mass limit in Voss and the one used here.*)
 nVoss=100./NIntegrate[\[Mu]sal[Mstar],{Mstar, 8. MS, 100. MS}];
 (*Wind power Voss et al. 2009--energy budget is actually dominated by Wolf-Rayet stars.*)
-twrcut=10.^8*year;
+twrcut=10.^7*year;
 edotWR[t_]:=Piecewise[{{ 10.^36.1/(nVoss/100.),t<4.0 10^6 year}, {0.,t>twrcut}}, 10.^36.1/(nVoss/100.)*(t/(4. 10^6 year))^-3.73]
 
 (*Reimers' prescription for stellar mass loss return rate. Notice that this would significantly overestimate the mass return rate for the sun, although from observation there is a very wide scatter about this relation. Even an individual star could show orders of magnitude variability in mdot.*)
@@ -174,7 +174,7 @@ mdotStar[Mstar_]:=mdotStarReimers[Mstar]
 (*mdotStar[Mstar_]:=8 10^-14 (Mstar/MS)^-1 (Lstar[Mstar]/Lsun)(Rstar[Mstar]/Rsun)(Teff[Mstar]/4000.)^3.5 (1+gsun/(4300. gstar[MS])) MS/year*)
 enStar[Mstar_]:=0.5*mdotStar[Mstar]*\[Mu]sal[Mstar]*vwMS[Mstar]^2
 (*Fitting formula to mass-loss rate per star from Voss 2009*)
-mdotVoss[t_]:=Piecewise[{{1./(nVoss/100.) 10.^-5.4 (t/(4. 10^6 year))^-3. MS/year, t>=4*10.^6*year}},0.]
+mdotVoss[t_]:=Piecewise[{{1./(nVoss/100.) 10.^-5.4 (t/(4. 10^6 year))^-3. MS/year, t>=4*10.^6*year}, {1./(nVoss/100.) 10.^-6.5 MS/year, t<4*10.^6*year}},0.]
 
 
 (*Supernova properties*)
