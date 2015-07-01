@@ -212,7 +212,7 @@ mdotBurst[t_]:=Piecewise[{{Abs[Mt0Fit'[t]] \[CapitalDelta]M[t] \[Mu]sal[Mt0Fit[t
 (*mdotSpecificOld[t_?NumericQ, mhalo_]:=Piecewise[{{NIntegrate[dNdtForm[z[t1],mhalo] mdotBurst[t1],{t1,t,tmin,ttrans,tL[zu]}]\
 , t<=tmin}, {NIntegrate[dNdtForm[z[t1],mhalo] mdotBurst[t1],{t1,t,ttrans,tL[zu]}], t>tmin&&t<=ttrans}},\
 NIntegrate[dNdtForm[z[t1],mhalo] mdotBurst[t1],{t1,t,ttrans,tL[zu]}]]/NIntegrate[dNdtForm[z[tl], mhalo], {tl, t, tL[zu]}]*)
-mdotSpecific[t_?NumericQ, mhalo_]:=NIntegrate[dNdtForm[z[t1],mhalo] mdotBurst[t1],{t1,t,tL[zu]}, Exclusions->{tmin, ttrans, 4.*10.^7*year}]/NIntegrate[dNdtForm[z[tl], mhalo], {tl, t, tL[zu]}]
+mdotSpecific[t_?NumericQ, mhalo_]:=NIntegrate[dNdtForm[z[t1],mhalo] mdotBurst[t1],{t1,t,tL[zu]}, Exclusions->{tmin, 4.*10.^6*year, ttrans, 4.*10.^7*year}]/NIntegrate[dNdtForm[z[tl], mhalo], {tl, t, tL[zu]}]
 
 
 mdotForm[mhalo_]:=mdotSpecific[0, mhalo]*NIntegrate[dNdtForm[z[t1], mhalo], {t1, 0, tL[zu]}]
@@ -289,17 +289,21 @@ eddr/.FindRoot[eddr*(alpha*epsSharma[alpha*eddr])^((\[CapitalGamma]-2.)/(\[Capit
 vweffTot[mbh_, mhalo_, \[CapitalGamma]_, \[Epsilon]msp_:0.1, Lsd_:10.^34, \[Epsilon]Ia_:0.4, Tc_:10.^9]:=Module[{vwstar, vwmsp, vw0, vwc0,  rs1, \[Eta]1, vwIa0, vwIa, vwc, rIa},
 vwstar=vweffStar[mhalo];
 vwmsp=vweffMSP[mhalo,\[Epsilon]msp, Lsd];
+vw0=(vwstar^2.+vwmsp^2.)^(1/2);
 
-vw0=(vwstar^2+vwmsp^2.)^(1/2);
+(*Initial estimate of Ia heating rate*)
 vwIa0=vweffIa[mhalo, \[Epsilon]Ia];
 rs1=rs[mbh,vw0,\[CapitalGamma]];
 rIa=radiusIa[mbh, mhalo];
 vwIa=If[rs1>rIa, vwIa0, 0.];
 
+(*Calculate compton heating rate*)
 vwc0=(vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta][mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6]);
+(*Re-check if Ia heating should be included*)
 rs1=rs[mbh,(vw0^2.+vwc0^2.)^0.5,\[CapitalGamma]];
 vwIa=If[rs1>rIa, vwIa0, 0.];
 
+(*Final calculation of compton heating*)
 vwc0=(vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta][mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6]);
 {vwstar, vwmsp, vwc0, vwIa0, Sqrt[vw0^2+vwIa^2+vwc0^2], vwIa}
 
