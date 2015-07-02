@@ -165,7 +165,7 @@ vwMS[Mstar_]:=4.3 10^7 Sqrt[(Mstar/MS)/(Rstar[Mstar]/Rsun)]
 (*Number of stars in stellar population from Voss--100 stars with stellar masses between 8 and 120 Msun with a Salpeter IMF. Should resolve slight discrepancy between upper mass limit in Voss and the one used here.*)
 nVoss=100./NIntegrate[\[Mu]sal[Mstar],{Mstar, 8. MS, 100. MS}];
 (*Wind power Voss et al. 2009--energy budget is actually dominated by Wolf-Rayet stars.*)
-twrcut=10.^7*year;
+twrcut=10.^8*year;
 edotWR[t_]:=Piecewise[{{ 10.^36.1/(nVoss/100.),t<4.0 10^6 year}, {0.,t>twrcut}}, 10.^36.1/(nVoss/100.)*(t/(4. 10^6 year))^-3.73]
 
 (*Reimers' prescription for stellar mass loss return rate. Notice that this would significantly overestimate the mass return rate for the sun, although from observation there is a very wide scatter about this relation. Even an individual star could show orders of magnitude variability in mdot.*)

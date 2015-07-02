@@ -54,10 +54,11 @@ rinf[mbh_]:=14*(mbh/(10.^8 MS))^0.6 pc
 rinfCusp[mbh_]:=8.*(mbh/(10.^8*MS))^0.6*pc
 rinfCore[mbh_]:=25.*(mbh/(10.^8*MS))^0.6*pc
 (*Scaling relation for the break radius for cores*)
-rbCore[mbh_]:=106*(mbh/(10.^8 MS))^0.39*pc
-rbGen[mbh_, \[CapitalGamma]_]:=If[\[CapitalGamma]<0.3, rbCore[mbh], 100.*pc]
+rbCore[mbh_]:=90.*(mbh/(10.^8 MS))^0.5*pc
+rbCusp[mbh_]:=240.*pc
+rbGen[mbh_, \[CapitalGamma]_]:=If[\[CapitalGamma]<0.3, rbCore[mbh], rbCusp]
 (*ratio of break radius to influence radius for core galaxies*)
-rbrinfCusp[mbh_]:=(100.*pc/rinfCusp[mbh])
+rbrinfCusp[mbh_]:=(rbCusp/rinfCusp[mbh])
 rbrinfCore[mbh_]:=rbCore[mbh]/rinfCore[mbh]
 (*smoothly interpolate between scaling relations*)
 rbrinfInt[mbh_, \[CapitalGamma]_]:=((\[CapitalGamma]-0.3)*rbrinfCusp[mbh]-(\[CapitalGamma]-0.5)*rbrinfCore[mbh])/0.2
@@ -116,7 +117,6 @@ f32=-0.159;
 f1[mhalo_]:= f10 Exp[-(Log10[mhalo/MS]-f11)^2/(2 f12^2)]
 f2[mhalo_]:=f20 +f21 Log10[(mhalo/MS)/10.^12]
 f3[mhalo_]:=10.^(f30+f31 ((mhalo/MS)/10.^12)^f32)
-(*Note that we divide by the mean stellar mass (in solar masses) to obtain the rate of star formation--in g s^-1*)
 (*Note that we divide by the mean stellar mass (in solar masses) to obtain the rate of star formation--in g s^-1*)
 \[Epsilon]Floor=1.;
 tScale = 10^8*year;
@@ -177,7 +177,7 @@ mdotStar[Mstar_]:=mdotStarReimers[Mstar]
 (*mdotStar[Mstar_]:=8 10^-14 (Mstar/MS)^-1 (Lstar[Mstar]/Lsun)(Rstar[Mstar]/Rsun)(Teff[Mstar]/4000.)^3.5 (1+gsun/(4300. gstar[MS])) MS/year*)
 enStar[Mstar_]:=0.5*mdotStar[Mstar]*\[Mu]sal[Mstar]*vwMS[Mstar]^2
 (*Fitting formula to mass-loss rate per star from Voss 2009*)
-mdotVoss[t_]:=Piecewise[{{1./(nVoss/100.) 10.^-5.4 (t/(4. 10^6 year))^-3. MS/year, t>=4*10.^6*year}},0.]
+mdotVoss[t_]:=Piecewise[{{1./(nVoss/100.) 10.^-5.4 (t/(4. 10^6 year))^-3. MS/year, t>=4*10.^6*year}, {1./(nVoss/100.) 10.^-6.5 MS/year, t<4*10.^6*year}},0.]
 
 
 (*Supernova properties*)
