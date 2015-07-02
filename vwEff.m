@@ -58,7 +58,7 @@ rbCore[mbh_]:=90.*(mbh/(10.^8 MS))^0.5*pc
 rbCusp[mbh_]:=240.*pc
 rbGen[mbh_, \[CapitalGamma]_]:=If[\[CapitalGamma]<0.3, rbCore[mbh], rbCusp]
 (*ratio of break radius to influence radius for core galaxies*)
-rbrinfCusp[mbh_]:=(rbCusp/rinfCusp[mbh])
+rbrinfCusp[mbh_]:=(rbCusp[mbh]/rinfCusp[mbh])
 rbrinfCore[mbh_]:=rbCore[mbh]/rinfCore[mbh]
 (*smoothly interpolate between scaling relations*)
 rbrinfInt[mbh_, \[CapitalGamma]_]:=((\[CapitalGamma]-0.3)*rbrinfCusp[mbh]-(\[CapitalGamma]-0.5)*rbrinfCore[mbh])/0.2
