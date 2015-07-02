@@ -54,10 +54,11 @@ rinf[mbh_]:=14*(mbh/(10.^8 MS))^0.6 pc
 rinfCusp[mbh_]:=8.*(mbh/(10.^8*MS))^0.6*pc
 rinfCore[mbh_]:=25.*(mbh/(10.^8*MS))^0.6*pc
 (*Scaling relation for the break radius for cores*)
-rbCore[mbh_]:=106*(mbh/(10.^8 MS))^0.39*pc
-rbGen[mbh_, \[CapitalGamma]_]:=If[\[CapitalGamma]<0.3, rbCore[mbh], 100.*pc]
+rbCore[mbh_]:=90.*(mbh/(10.^8 MS))^0.5*pc
+rbCusp[mbh_]:=240.*pc
+rbGen[mbh_, \[CapitalGamma]_]:=If[\[CapitalGamma]<0.3, rbCore[mbh], rbCusp]
 (*ratio of break radius to influence radius for core galaxies*)
-rbrinfCusp[mbh_]:=(100.*pc/rinfCusp[mbh])
+rbrinfCusp[mbh_]:=(rbCusp/rinfCusp[mbh])
 rbrinfCore[mbh_]:=rbCore[mbh]/rinfCore[mbh]
 (*smoothly interpolate between scaling relations*)
 rbrinfInt[mbh_, \[CapitalGamma]_]:=((\[CapitalGamma]-0.3)*rbrinfCusp[mbh]-(\[CapitalGamma]-0.5)*rbrinfCore[mbh])/0.2
