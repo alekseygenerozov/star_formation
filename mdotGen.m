@@ -1,3 +1,5 @@
+(* ::Package:: *)
+
 #!/usr/local/bin/MathematicaScript/ -script
 
 
@@ -69,7 +71,7 @@ mdotIasGamma = Table[mdotIA[mbhs[[i]], radiiIa[[i]], \[CapitalGamma]s[[i]], \[Et
     {i, 1, Length[\[Eta]s]}];
 
 
-mdotMaxCoolsCore = Table[mdotMaxCool[mbhs[[i]], 0.1, \[Eta]s[[i]], rbrinfGen[mbhs[[i]], 0.1]], {i, 1, Length[\[Eta]s]}];
+mdotMaxCoolsCore = Table[mdotMaxCoolComplete[mbhs[[i]], 0.1, \[Eta]s[[i]], rbrinfGen[mbhs[[i]], 0.1]], {i, 1, Length[\[Eta]s]}];
 mdotMaxCools = Table[mdotMaxCoolComplete[mbhs[[i]], 0.8, \[Eta]s[[i]], rbrinfGen[mbhs[[i]], 0.8]], {i, 1, Length[\[Eta]s]}];
 (*mdotMaxCoolsGamma = Table[mdotMaxCool[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]]],{i, 1, Length[\[Eta]s]}];*)
 mdotMaxCoolsGamma = Table[mdotMaxCoolComplete[mbhs[[i]], \[CapitalGamma]s[[i]], \[Eta]s[[i]], rbrinfGen[mbhs[[i]], \[CapitalGamma]s[[i]]]], {i, 1, Length[\[Eta]s]}];
@@ -115,6 +117,9 @@ Export["mdots.csv", mdotsAll, TableHeadings->
 
 Export["rs.csv", Transpose[{mbhs/MS, rsOverall, rsOverallCore,rsOverallGamma,radiiIa}], "TableHeadings"->
 {"Mbh", "rsCusp", "rsCore", "rsGamma", "rIa"}]
+
+
+
 
 
 
