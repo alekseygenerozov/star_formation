@@ -319,7 +319,7 @@ vwIa=If[rs1>rIa && t>4.*10.^7*year, vwIa0, 0.];
 
 vwc0=(vwc0/.FindRoot[{vwc0==vwComptonGen[mbh, Sqrt[vw0^2+vwc0^2+vwIa^2], \[CapitalGamma], \[Eta]Imp[t],  Tc]}, {vwc0,vw0}, PrecisionGoal->6, AccuracyGoal->6]);
 rs1=rs[mbh,(vw0^2.+vwc0^2.)^0.5,\[CapitalGamma]];
-vwIa=If[rs1>rIa  && t>4.*10.^7*year, vwIa0, 0.];
+vwIa=If[rs1>rIa && t>4.*10.^7*year, vwIa0, 0.];
 vwc0=(vwc0/.FindRoot[{vwc0==vwComptonGen[mbh, Sqrt[vw0^2+vwc0^2+vwIa^2], \[CapitalGamma], \[Eta]Imp[t],  Tc]}, {vwc0,vw0}, PrecisionGoal->6, AccuracyGoal->6]);
 
 {vwc0, vwIa0, Sqrt[vw0^2+vwIa^2+vwc0^2], vwIa}
