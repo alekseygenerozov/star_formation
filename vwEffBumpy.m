@@ -293,35 +293,33 @@ vweffTot[mbh_, mhalo_, \[CapitalGamma]_, \[Epsilon]msp_:0.1, Lsd_:10.^34, \[Epsi
 vwstar=vweffStar[mhalo];
 vwmsp=vweffMSP[mhalo,\[Epsilon]msp, Lsd];
 vw0=(vwstar^2.+vwmsp^2.)^(1/2);
-
 (*Initial estimate of Ia heating rate*)
 vwIa0=vweffIa[mhalo, \[Epsilon]Ia];
-rs1=rs[mbh,vw0,\[CapitalGamma]];
-rIa=radiusIa[mbh, mhalo];
-vwIa=If[rs1>rIa, vwIa0, 0.];
 
 (*Calculate compton heating rate*)
-vwc0=(vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta][mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6]);
-(*Re-check if Ia heating should be included*)
+vwc0=(vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2], \[CapitalGamma], \[Eta][mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6]);
 rs1=rs[mbh,(vw0^2.+vwc0^2.)^0.5,\[CapitalGamma]];
+rIa=radiusIa[mbh, mhalo];
 vwIa=If[rs1>rIa, vwIa0, 0.];
 
 (*Final calculation of compton heating*)
 vwc0=(vwc/.FindRoot[{vwc==vwComptonGen[mbh, Sqrt[vw0^2+vwc^2+vwIa^2], \[CapitalGamma], \[Eta][mhalo],  Tc]}, {vwc,vw0}, PrecisionGoal->6, AccuracyGoal->6]);
 {vwstar, vwmsp, vwc0, vwIa0, Sqrt[vw0^2+vwIa^2+vwc0^2], vwIa}
 
- ]
+]
 vweffTotImp[mbh_, t_, \[CapitalGamma]_,  \[Epsilon]msp_:0.1,Lsd_:10.^34, \[Epsilon]Ia_:0.4, Tc_:10.^9]:=Module[{vw0,  vwc0, rs1, \[Eta]1, vwIa0, vwc, rIa, vwIa},
 
 vw0=(vweffStarImp[t]^2+vweffMSPImp[t,\[Epsilon]msp, Lsd]^2)^(1/2);
 vwIa0=vweffIaImp[t, \[Epsilon]Ia];
 rs1=rs[mbh,vw0,\[CapitalGamma]];
+(*
+vwIa=If[rs1>rIa && t>4.*10.^7*year, vwIa0, 0.];
+*)
+vwc0=(vwc0/.FindRoot[{vwc0==vwComptonGen[mbh, Sqrt[vw0^2+vwc0^2], \[CapitalGamma], \[Eta]Imp[t],  Tc]}, {vwc0,vw0}, PrecisionGoal->6, AccuracyGoal->6]);
+rs1=rs[mbh,(vw0^2.+vwc0^2.)^0.5,\[CapitalGamma]];
 rIa=radiusIaImp[mbh, t];
 vwIa=If[rs1>rIa && t>4.*10.^7*year, vwIa0, 0.];
 
-vwc0=(vwc0/.FindRoot[{vwc0==vwComptonGen[mbh, Sqrt[vw0^2+vwc0^2+vwIa^2], \[CapitalGamma], \[Eta]Imp[t],  Tc]}, {vwc0,vw0}, PrecisionGoal->6, AccuracyGoal->6]);
-rs1=rs[mbh,(vw0^2.+vwc0^2.)^0.5,\[CapitalGamma]];
-vwIa=If[rs1>rIa && t>4.*10.^7*year, vwIa0, 0.];
 vwc0=(vwc0/.FindRoot[{vwc0==vwComptonGen[mbh, Sqrt[vw0^2+vwc0^2+vwIa^2], \[CapitalGamma], \[Eta]Imp[t],  Tc]}, {vwc0,vw0}, PrecisionGoal->6, AccuracyGoal->6]);
 
 {vwc0, vwIa0, Sqrt[vw0^2+vwIa^2+vwc0^2], vwIa}
