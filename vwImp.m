@@ -16,6 +16,7 @@ vweffIaImps=tmp[[;;, 2]];
 vweffTotImps=tmp[[;;, 3]];
 vweffIaImps2=tmp[[;;, 4]];
 vweffOther=(vweffTotImps^2.-vweffIaImps2^2.)^0.5;
+rslist6=rslist;
 rslist = Table[rs[mbh, vweffTotImps[[i]], 0.8], {i, 1, Length[timeImps]}];
 
 vweffStarImps=vweffStarImp/@timeImps;
